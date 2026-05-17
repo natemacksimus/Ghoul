@@ -1764,6 +1764,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2138617748}
+  - component: {fileID: 2138617753}
   - component: {fileID: 2138617750}
   - component: {fileID: 2138617752}
   - component: {fileID: 2138617747}
@@ -1950,6 +1951,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7226674ad525404e8a63591d011ea67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  ShowTopMostFoldoutHeaderGroup: 1
   moveAmount: {x: 0, y: 0}
   isFacingRight: 0
   lockFacingDir: 0
@@ -2066,6 +2068,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc4dc46a3a380ec4b808a96cc87d56f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
+  ShowTopMostFoldoutHeaderGroup: 1
   maxHealth: 100
   currentHealth: 0
   currentSpeed: 5
@@ -2079,6 +2082,31 @@ MonoBehaviour:
   knockbackForceTime: 0.25
   weaponSwingSound: {fileID: 0}
   weaponHitSound: {fileID: 0}
+--- !u!114 &2138617753
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2138617744}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 4224779661
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

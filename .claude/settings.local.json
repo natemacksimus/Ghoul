@@ -10,7 +10,8 @@
       "PowerShell(cmd /c \"dir C:\\\\Users\\\\mackn\\\\AppData\\\\Local /b /ad 2>nul\" | Select-Object -First 30)",
       "PowerShell(cmd /c \"dir C:\\\\Users\\\\mackn\\\\AppData\\\\Local\\\\GitHubDesktop /b /ad 2>nul\")",
       "PowerShell(cmd /c \"where /r C:\\\\Users\\\\mackn\\\\AppData\\\\Local\\\\GitHubDesktop git.exe 2>nul\")",
-      "PowerShell($git = \"C:\\\\Users\\\\mackn\\\\AppData\\\\Local\\\\GitHubDesktop\\\\app-3.5.8\\\\resources\\\\app\\\\git\\\\cmd\\\\git.exe\"; & $git -C \"C:\\\\Github\\\\Ghoul\" add -A; & $git -C \"C:\\\\Github\\\\Ghoul\" status)"
+      "PowerShell($git = \"C:\\\\Users\\\\mackn\\\\AppData\\\\Local\\\\GitHubDesktop\\\\app-3.5.8\\\\resources\\\\app\\\\git\\\\cmd\\\\git.exe\"; & $git -C \"C:\\\\Github\\\\Ghoul\" add -A; & $git -C \"C:\\\\Github\\\\Ghoul\" status)",
+      "PowerShell($git = \"C:\\\\Users\\\\mackn\\\\AppData\\\\Local\\\\GitHubDesktop\\\\app-3.5.8\\\\resources\\\\app\\\\git\\\\cmd\\\\git.exe\"; & $git -C \"C:\\\\Github\\\\Ghoul\" push)"
     ]
   }
 }
