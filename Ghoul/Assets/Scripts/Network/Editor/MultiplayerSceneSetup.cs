@@ -3,6 +3,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using Unity.Netcode;
 using Unity.Netcode.Components;
@@ -169,6 +170,15 @@ public static class MultiplayerSceneSetup
 
     private static void BuildLobbyUI()
     {
+        // EventSystem — required for all UI interaction.
+        // The new Input System is already in this project, so use its UI module.
+        if (Object.FindObjectOfType<EventSystem>() == null)
+        {
+            GameObject esGO = new GameObject("EventSystem");
+            esGO.AddComponent<EventSystem>();
+            esGO.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
+        }
+
         // Canvas
         GameObject canvasGO = new GameObject("NetworkUI");
         Canvas canvas = canvasGO.AddComponent<Canvas>();
