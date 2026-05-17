@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
-public abstract class GameCharacterController : MonoBehaviour, IKillable
+public abstract class EntityController : NetworkBehaviour, IKillable
 {
     [ShowOnly][SerializeField] protected Vector2 moveAmount;
 
@@ -78,6 +79,12 @@ public abstract class GameCharacterController : MonoBehaviour, IKillable
 
     [SerializeField] private float knockbackReduceFactor = 0.1f;
 
+    // Syncs the owner's facing direction to all other clients.
+    private NetworkVariable<bool> netFacingRight = new NetworkVariable<bool>(
+        false,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Owner);
+
     protected Controller2D controller2D;
     protected AudioSource audioSource;
     protected BoxCollider2D boxCollider2D;
@@ -88,6 +95,44 @@ public abstract class GameCharacterController : MonoBehaviour, IKillable
     protected virtual void Start()
     {
         boxCollider2D = GetComponent<BoxCollider2D>();
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        netFacingRight.OnValueChanged += OnFacingDirectionChanged;
+        if (IsOwner)
+        {
+            netFacingRight.Value = isFacingRight;
+        }
+        else
+        {
+            SyncFacingDirection(netFacingRight.Value);
+        }
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        netFacingRight.OnValueChanged -= OnFacingDirectionChanged;
+    }
+
+    private void OnFacingDirectionChanged(bool oldValue, bool newValue)
+    {
+        if (!IsOwner) { SyncFacingDirection(newValue); }
+    }
+
+    private void SyncFacingDirection(bool facingRight)
+    {
+        if (isFacingRight == facingRight) { return; }
+        isFacingRight = facingRight;
+        Vector3 scale = transform.localScale;
+        scale.x *= -1;
+        transform.localScale = scale;
+        if (characterUI != null)
+        {
+            Vector3 uiScale = characterUI.transform.localScale;
+            uiScale.x *= -1;
+            characterUI.transform.localScale = uiScale;
+        }
     }
 
     protected virtual void Update()
@@ -176,15 +221,17 @@ public abstract class GameCharacterController : MonoBehaviour, IKillable
     }
 
     public virtual void Flip()
-    {      
+    {
         isFacingRight = !isFacingRight;
+        if (IsSpawned && IsOwner) { netFacingRight.Value = isFacingRight; }
+
         Vector3 playerScale = transform.localScale;
-        playerScale.x = playerScale.x * -1;
+        playerScale.x *= -1;
         transform.localScale = playerScale;
 
         if (characterUI == null) { return; }
         Vector3 characterUIScale = characterUI.transform.localScale;
-        characterUIScale.x = characterUIScale.x * -1;
+        characterUIScale.x *= -1;
         characterUI.transform.localScale = characterUIScale;
     }
 

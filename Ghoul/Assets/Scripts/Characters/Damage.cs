@@ -48,7 +48,7 @@ public class Damage : MonoBehaviour
     {
         if (characterStats != null)
         {
-            faceDir = characterStats.GetComponent<GameCharacterController>().IsFacingRight ? 1 : -1;
+            faceDir = characterStats.GetComponent<EntityController>().IsFacingRight ? 1 : -1;
             damageToInflict = characterStats.GetCurrentDamage();
             knockbackPower = characterStats.GetKnockbackPower();
             knockbackTime = characterStats.GetKnockbackTime();

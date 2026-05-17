@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Github\\\\Ghoul\\\\Ghoul\\\\Assets\\\\Prefabs\" -Recurse | Select-Object Name, @{Name=\"Type\";Expression={if\\($_.PSIsContainer\\){\"Directory\"}else{\"File\"}}} | Format-Table -AutoSize)",
+      "PowerShell(New-Item *)",
+      "PowerShell(git *)",
+      "PowerShell(Get-Command *)",
+      "PowerShell(where.exe git 2>$null; [System.IO.Directory]::GetFiles\\(\"C:\\\\Users\\\\mackn\\\\AppData\\\\Local\\\\Programs\", \"git.exe\", \"AllDirectories\"\\) 2>$null | Select-Object -First 3)",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\mackn\\\\AppData\\\\Local\" -Directory -ErrorAction SilentlyContinue | Where-Object { $_.Name -match -join\\(\"git\",\"hub\",\"desktop\",\"|git\"\\) } | Select-Object FullName)",
+      "PowerShell(cmd /c \"dir C:\\\\Users\\\\mackn\\\\AppData\\\\Local /b /ad 2>nul\" | Select-Object -First 30)",
+      "PowerShell(cmd /c \"dir C:\\\\Users\\\\mackn\\\\AppData\\\\Local\\\\GitHubDesktop /b /ad 2>nul\")",
+      "PowerShell(cmd /c \"where /r C:\\\\Users\\\\mackn\\\\AppData\\\\Local\\\\GitHubDesktop git.exe 2>nul\")",
+      "PowerShell($git = \"C:\\\\Users\\\\mackn\\\\AppData\\\\Local\\\\GitHubDesktop\\\\app-3.5.8\\\\resources\\\\app\\\\git\\\\cmd\\\\git.exe\"; & $git -C \"C:\\\\Github\\\\Ghoul\" add -A; & $git -C \"C:\\\\Github\\\\Ghoul\" status)"
+    ]
+  }
+}

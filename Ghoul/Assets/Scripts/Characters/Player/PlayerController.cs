@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
+using Unity.Netcode;
 //using LevelManagement;
 //using Cinemachine;
 
-public class PlayerController : GameCharacterController
+public class PlayerController : EntityController
 {
     [SerializeField] private float dodgeCooldownSet = 1f;
     [ShowOnly] [SerializeField] float dodgeCooldownTimer;
@@ -39,15 +40,13 @@ public class PlayerController : GameCharacterController
     [SerializeField] private bool isAirborne = false;
 
     //public float jump = 5f;
-    [SerializeField] private float maxJumpYVelocity = 2f;
-    [SerializeField] private float minJumpYVelocity = 1f;
+    [SerializeField] private float maxJumpYVelocity = 30f;
+    [SerializeField] private float minJumpYVelocity = 15f;
     [ShowOnly][SerializeField] private float addJumpXVelocity = 0f;
     [SerializeField] private float maxAddJumpXVelocity = 2f;
     [SerializeField] private float minAddJumpXVelocity = 0f;
 
     [SerializeField] private bool jumpPressed = false;
-    //[SerializeField] private bool dodgePressed = false;
-    //[SerializeField] private FlintSpark flintSpark;
     public GameObject arrowSpawnPoint;
     [SerializeField] private GameObject hookInstance;
     public GameObject HookInstance { get => hookInstance; set => hookInstance = value; }
@@ -88,11 +87,6 @@ public class PlayerController : GameCharacterController
     //[SerializeField] private CinemachineVirtualCamera virtualCamera;
     //private CinemachineFramingTransposer transposer;
 
-    [SerializeField] private int attackingHungerCost = 2;
-    [SerializeField] private int attackingStrongHungerCost = 3;
-    [SerializeField] private int jumpingHungerCost = 2;
-    [SerializeField] private int dodgingThirstCost = 2;
-
     [SerializeField] private float deathDelay = 1.5f;  // time between when the player dies and the when the scene reloads
 
     [SerializeField] private Item itemToPickup = null;
@@ -104,15 +98,26 @@ public class PlayerController : GameCharacterController
     //public List<CreatureController> targeters;
 
     
+    public override void OnNetworkSpawn()
+    {
+        if (!IsOwner)
+        {
+            // Remote players: disable input and local physics.
+            // ClientNetworkTransform (added to the prefab) drives their position.
+            var playerInput = GetComponent<PlayerInput>();
+            if (playerInput != null) { playerInput.enabled = false; }
+            enabled = false;
+        }
+    }
+
     protected override void Start()
     {
         base.Start();
-        
+
         audioSource = GetComponent<AudioSource>();
         controller2D = GetComponent<Controller2D>();
         animator = GetComponent<Animator>();
         playerStats = GetComponent<PlayerStats>();
-        //playerInventory = PlayerInventory.Instance;
 
 
         //GameObject virtualCameraObject = GameObject.FindGameObjectWithTag("Cinemachine Camera");
@@ -127,36 +132,9 @@ public class PlayerController : GameCharacterController
     {
         base.Update();
 
-        ReviewTargetersList();
-
         //moveDirection = moveAction.ReadValue<Vector2>();
     }
 
-    private void ReviewTargetersList()
-    {
-        //if (targeters.Count > 0)
-        //{
-        //    List<CreatureController> targetersToDrop = new();
-
-        //    // find all targeters that are no longer targeting the player
-        //    foreach (CreatureController targeter in targeters)
-        //    {
-        //        if (targeter.CurrentTarget != this.gameObject)
-        //        {
-        //            //Debug.Log("non-player target: " + targeter.CurrentTarget);
-        //            targetersToDrop.Add(targeter);
-        //        }
-        //    }
-
-        //    // remove all targeters found above from "targeters" list if not longer targeting the player
-        //    if (targetersToDrop.Count < 1) { return; }
-        //    foreach (CreatureController toDrop in targetersToDrop)
-        //    {
-        //        //Debug.Log("dropped");
-        //        targeters.Remove(toDrop);
-        //    }
-        //}
-    }
 
     protected override void FixedUpdate()
     {
@@ -216,14 +194,12 @@ public class PlayerController : GameCharacterController
             isRunning = false;
         }
 
-        // Enable / Disable movement fatigue for running and wallsliding
-        playerStats.MovementFatigue(isRunning, wallSliding);
 
         CalculateMoveAmount();
-        HandleWallSliding();
-        HandleAnimations();
+        //HandleWallSliding();
+        //HandleAnimations();
 
-        LadderMovement();
+        //LadderMovement();
         
         //if (disableInput && controller2D.collisions.below) { moveAmount.x = 0; }
         Move();
@@ -309,31 +285,7 @@ public class PlayerController : GameCharacterController
             //PlayerInventory.Instance.PrintDictionary();
             //GameManager.Instance.BuildWorld.RerunSurePath();
 
-            //if (!isResting) { if (disableInput) { return; } }
-
-            //// Toggle resting
-            //if (controller2D.collisions.below)
-            //{
-            //    // if targeted and not resting, prevent resting
-            //    if (targeters.Count > 0 && !isResting)
-            //    {
-            //        Debug.Log("too many enemies.");
-            //        animator.SetBool("failedResting", true);
-            //        return;
-            //    }
-
-            //    isResting = !isResting;
-
-
-            //    if (isResting)
-            //    {
-            //        animator.SetBool("isResting", true);
-
-            //        // zero out x movement
-            //        moveAmount.x = 0;
-            //    }
-            //    else { animator.SetBool("isResting", false); }
-            //}
+            
         }
 
         // Return look down to original position, if not pressing down
@@ -343,13 +295,12 @@ public class PlayerController : GameCharacterController
     public void InventoryLeft(InputAction.CallbackContext context)
     {
         if (disableInput) { return; }
-        //if (playerInventory == null) { return; }
         DisableInputIfMenuOpen();
 
 
         if (context.interaction is HoldInteraction)
         {
-            TryUseFood();
+
         }
         else
         {
@@ -362,13 +313,12 @@ public class PlayerController : GameCharacterController
     public void InventoryRight(InputAction.CallbackContext context)
     {
         if (disableInput) { return; }
-        //if (playerInventory == null) { return; }
         DisableInputIfMenuOpen();
 
 
         if (context.interaction is HoldInteraction)
         {
-            TryUseWater();
+
         }
         else
         {
@@ -376,52 +326,6 @@ public class PlayerController : GameCharacterController
             //playerInventory.ChangeHighlightedSlot(1);
             playerStats.UpdateCurrentDamageAndKnockback();
         }
-    }
-
-    public void UseFood(InputAction.CallbackContext context)
-    {
-        if (disableInput) { return; }
-        //if (playerInventory == null) { return; }
-        DisableInputIfMenuOpen();
-
-        TryUseFood();
-    }
-
-    public void UseWater(InputAction.CallbackContext context)
-    {
-        if (disableInput) { return; }
-        //if (playerInventory == null) { return; }
-        DisableInputIfMenuOpen();
-
-        TryUseWater();
-    }
-
-    private void TryUseFood()
-    {
-        // Try use food unit
-        //bool usedResource = PlayerInventory.Instance.PlayerResources.TryReceivePayment(1, 0, 0, 0, 0);
-
-        // Recover hunger and health
-        //if (usedResource)
-        //{
-        //    playerStats.ChangeHealth(playerStats.HealthPerFood);
-        //    playerStats.ChangeHunger(playerStats.HungerPerMeatRecovered);
-        //}
-        //else { Debug.Log("Not enough food resource."); }
-    }
-
-    private void TryUseWater()
-    {
-        // Try use water unit
-        //bool usedResource = PlayerInventory.Instance.PlayerResources.TryReceivePayment(0, 1, 0, 0, 0);
-
-        // Recover thirst and health
-        //if (usedResource)
-        //{
-        //    playerStats.ChangeHealth(playerStats.HealthPerWater);
-        //    playerStats.ChangeThirst(playerStats.ThirstPerWaterRecovered);
-        //}
-        //else { Debug.Log("Not enough water resource."); }
     }
 
     public void OpenMenu(InputAction.CallbackContext context)
@@ -455,7 +359,6 @@ public class PlayerController : GameCharacterController
         if (dodgeCooldownTimer <= 0)
         {
             Debug.Log("Dodge");
-            playerStats.ChangeThirst(-dodgingThirstCost);
 
             //animator.SetTrigger("dodge");
             dodgeCooldownTimer = dodgeCooldownSet;
@@ -652,9 +555,6 @@ public class PlayerController : GameCharacterController
     {
         // wallsliding jump
 
-        // spend hunger to jump
-        playerStats.ChangeHunger(-jumpingHungerCost);
-
         // play jump sound
         PlayJump();
 
@@ -680,10 +580,6 @@ public class PlayerController : GameCharacterController
     public override void Jump()
     {
         base.Jump();
-
-        // cancel jump if landing anim required
-        if (isAirborne && heightDropFromMax > -landingAnimThreshold) { EnableZeroMoveX(); }
-        //else { Debug.Log("heightDropFromMax: " + heightDropFromMax + "; landingthres: " + -landingAnimThreshold); }
 
         // normal jump
 
@@ -712,9 +608,6 @@ public class PlayerController : GameCharacterController
             }
             else
             {
-                // spend hunger to jump
-                playerStats.ChangeHunger(-jumpingHungerCost);
-
                 // play jump sound
                 PlayJump();
 
@@ -836,40 +729,37 @@ public class PlayerController : GameCharacterController
         }
     }
 
-    private void HandleAnimations()
-    {
-        if (animator == null) { return; }
-        if (controller2D.collisions.below)
-        {
-            if (animator.GetBool("isGrounded") == false) 
-            {
-                //Debug.Log("airTime: " + base.airTime);
-                //animator.SetFloat("airTime", airTime);
-                airTime = 0;
-                animator.SetFloat("heightDrop", heightDropFromMax);
-                PlayHitGround(); 
-            }
-            animator.SetBool("isGrounded", true);
-        }
-        else
-        {
-            animator.SetBool("isGrounded", false);
-        }
-
-
-
-        if (!controller2D.collisions.below && moveAmount.y > 0)
-        {
-            animator.SetBool("isFalling", false);
-        }
-        else
-        {
-            animator.SetBool("isFalling", true);
-        }
-        float movingHorizontally = directionalInput.x;
-        float movingVertically = moveAmount.y;
-        animator.SetFloat("speed", Mathf.Abs(movingHorizontally));
-    }
+    //private void HandleAnimations()
+    //{
+    //    if (animator == null) { return; }
+    //    if (controller2D.collisions.below)
+    //    {
+    //        if (animator.GetBool("isGrounded") == false) 
+    //        {
+    //            //Debug.Log("airTime: " + base.airTime);
+    //            //animator.SetFloat("airTime", airTime);
+    //            airTime = 0;
+    //            animator.SetFloat("heightDrop", heightDropFromMax);
+    //            PlayHitGround(); 
+    //        }
+    //        animator.SetBool("isGrounded", true);
+    //    }
+    //    else
+    //    {
+    //        animator.SetBool("isGrounded", false);
+    //    } 
+    //    if (!controller2D.collisions.below && moveAmount.y > 0)
+    //    {
+    //        animator.SetBool("isFalling", false);
+    //    }
+    //    else
+    //    {
+    //        animator.SetBool("isFalling", true);
+    //    }
+    //    float movingHorizontally = directionalInput.x;
+    //    float movingVertically = moveAmount.y;
+    //    animator.SetFloat("speed", Mathf.Abs(movingHorizontally));
+    //}
 
     private void LadderMovement()
     {
@@ -1000,37 +890,27 @@ public class PlayerController : GameCharacterController
         if (!wallSliding) { timeToWallUnstick = wallStickTime; }
     }
 
-    IEnumerator LoadBaseScene()
-    {
-        DisableResting();
-        DisableZeroMoveX();
-        disableInput = true;
-        InvincibilityOff();
+    //IEnumerator LoadBaseScene()
+    //{
+    //    DisableResting();
+    //    DisableZeroMoveX();
+    //    disableInput = true;
+    //    InvincibilityOff();
 
-        yield return new WaitForSeconds(deathDelay);
-        //Reset inventory
-        //playerInventory.ResetInventory();
+    //    yield return new WaitForSeconds(deathDelay);
+    //    //Reset inventory
+    //    //playerInventory.ResetInventory();
         
         
-        //LevelManagement.LevelLoader.LoadLevel("Base");
+    //    //LevelManagement.LevelLoader.LoadLevel("Base");
 
-        //SceneController.ReloadScene();
-    }
+    //    //SceneController.ReloadScene();
+    //}
 
-    public override void Kill()
-    {
-        StartCoroutine(LoadBaseScene());
-    }
-
-    public void SparkFlint()
-    {
-        //if (flintSpark != null && attackRateTimer <= 0) 
-        //{ 
-        //    flintSpark.PlayParticleSystem(); 
-
-        //}
-        //else { Debug.Log("timer: " + attackRateTimer); }
-    }
+    //public override void Kill()
+    //{
+    //    StartCoroutine(LoadBaseScene());
+    //}
 
     public void UpdateWallslidingAbility(float newValue)
     {

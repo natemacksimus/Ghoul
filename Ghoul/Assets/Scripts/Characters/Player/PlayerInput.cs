@@ -22,8 +22,6 @@ public class PlayerInput : MonoBehaviour
     private InputAction menuAction;
     private InputAction downAction;
     private InputAction upAction;
-    private InputAction foodAction;
-    private InputAction waterAction;
     #endregion
 
 
@@ -43,7 +41,7 @@ public class PlayerInput : MonoBehaviour
         playerControls.Player.Move.canceled += MoveInput;
         playerControls.Player.Jump.performed += OnJumpInputDown;
         playerControls.Player.Jump.canceled += OnJumpInputUp;
-        //playerControls.Player.Fire.performed += UseItem;
+        playerControls.Player.Attack.performed += UseItem;
         //playerControls.Player.InventoryLeft.performed += InventoryLeft;
         //playerControls.Player.InventoryRight.performed += InventoryRight;
         //playerControls.Player.Pickup.performed += PickupItem;
@@ -53,14 +51,13 @@ public class PlayerInput : MonoBehaviour
         //playerControls.Player.DownPress.canceled += LookReturn;
         //playerControls.Player.UpPress.performed += UpPress;
         //playerControls.Player.UpPress.canceled += LookReturn;
-        //playerControls.Player.UseFood.performed += UseFood;
-        //playerControls.Player.UseWater.performed += UseWater;
+
     }
     private void OnEnable()
     {
         moveAction = playerControls.Player.Move;
         jumpAction = playerControls.Player.Jump;
-        //attackAction = playerControls.Player.Fire;
+        attackAction = playerControls.Player.Attack;
         //inventoryLeftAction = playerControls.Player.InventoryLeft;
         //inventoryRightAction = playerControls.Player.InventoryRight;
         //pickupAction = playerControls.Player.Pickup;
@@ -68,22 +65,18 @@ public class PlayerInput : MonoBehaviour
         //menuAction = playerControls.Player.Menu;
         //downAction = playerControls.Player.DownPress;
         //upAction = playerControls.Player.UpPress;
-        //foodAction = playerControls.Player.UseFood;
-        //waterAction = playerControls.Player.UseWater;
 
 
         moveAction.Enable();
         jumpAction.Enable();
         attackAction.Enable();
-        inventoryLeftAction.Enable();
-        inventoryRightAction.Enable();
-        pickupAction.Enable();
-        dodgeAction.Enable();
-        menuAction.Enable();
-        downAction.Enable();
-        upAction.Enable();
-        foodAction.Enable();
-        waterAction.Enable();
+        //inventoryLeftAction.Enable();
+        //inventoryRightAction.Enable();
+        //pickupAction.Enable();
+        //dodgeAction.Enable();
+        //menuAction.Enable();
+        //downAction.Enable();
+        //upAction.Enable();
     }
 
     private void OnDisable()
@@ -91,22 +84,20 @@ public class PlayerInput : MonoBehaviour
         moveAction.Disable();
         jumpAction.Disable();
         attackAction.Disable();
-        inventoryLeftAction.Disable();
-        inventoryRightAction.Disable();
-        pickupAction.Disable();
-        dodgeAction.Disable();
-        menuAction.Disable();
-        downAction.Disable();
-        upAction.Disable();
-        foodAction.Disable();
-        waterAction.Disable();
+        //inventoryLeftAction.Disable();
+        //inventoryRightAction.Disable();
+        //pickupAction.Disable();
+        //dodgeAction.Disable();
+        //menuAction.Disable();
+        //downAction.Disable();
+        //upAction.Disable();
 
 
         playerControls.Player.Move.performed -= MoveInput;
         playerControls.Player.Move.canceled -= MoveInput;
         playerControls.Player.Jump.performed -= OnJumpInputDown;
         playerControls.Player.Jump.canceled -= OnJumpInputUp;
-        //playerControls.Player.Fire.performed -= UseItem;
+        playerControls.Player.Attack.performed -= UseItem;
         //playerControls.Player.InventoryLeft.performed -= InventoryLeft;
         //playerControls.Player.InventoryRight.performed -= InventoryRight;
         //playerControls.Player.Pickup.performed -= PickupItem;
@@ -116,8 +107,6 @@ public class PlayerInput : MonoBehaviour
         //playerControls.Player.DownPress.canceled -= LookReturn;
         //playerControls.Player.UpPress.performed -= UpPress;
         //playerControls.Player.UpPress.canceled -= LookReturn;
-        //playerControls.Player.UseFood.performed -= UseFood;
-        //playerControls.Player.UseWater.performed -= UseWater;
     }
 
     //private void Start()
@@ -165,20 +154,6 @@ public class PlayerInput : MonoBehaviour
         if (playerController == null) { return; }
 
         playerController.InventoryRight(context);
-    }
-
-    private void UseFood(InputAction.CallbackContext context)
-    {
-        if (playerController == null) { return; }
-
-        playerController.UseFood(context);
-    }
-
-    private void UseWater(InputAction.CallbackContext context)
-    {
-        if (playerController == null) { return; }
-
-        playerController.UseWater(context);
     }
 
     private void OpenMenu(InputAction.CallbackContext context)
