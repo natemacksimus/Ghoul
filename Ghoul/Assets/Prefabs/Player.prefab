@@ -52,7 +52,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 4224779661
+  GlobalObjectIdHash: 2740168362
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -78,17 +78,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   ShowTopMostFoldoutHeaderGroup: 1
-  moveAmount: {x: 0, y: 0}
-  isFacingRight: 0
+  moveAmount: {x: 4.4562664e-22, y: 0}
+  isFacingRight: 1
   lockFacingDir: 0
   disableInput: 0
   disableJump: 0
   characterUI: {fileID: 0}
   hitObject: {fileID: 0}
   previousYVelocity: 0
-  previousXVelocity: 0
+  previousXVelocity: 4.4562664e-22
   lastXVelocity: 0
-  airTime: 0
+  airTime: 121.0517
   yValueAirMax: 0
   yValueAirMin: 0
   isDead: 0
@@ -111,22 +111,22 @@ MonoBehaviour:
   accelerationTurning: 0.1
   lookUpAmt: 0.8
   lookDownAmt: 0.15
-  fallAmountMax: 5
-  gravity: -10
+  fallAmountMax: 10
+  gravity: -6
   coyoteTime: 0.05
   jumpBuffer: 0.05
   jumpBufferTimer: 0
   airTimeStartPos: {x: 0, y: 0}
   airTimeEndPos: {x: 0, y: 0}
   airTimeMaxPos: {x: 0, y: 0}
-  heightDrop: 0
-  heightDropFromMax: 0
+  heightDrop: -0.87999964
+  heightDropFromMax: -3.6399984
   landingAnimThreshold: 5
   isAirborne: 0
-  maxJumpYVelocity: 30
-  minJumpYVelocity: 15
+  maxJumpYVelocity: 50
+  minJumpYVelocity: 5
   addJumpXVelocity: 0
-  maxAddJumpXVelocity: 2
+  maxAddJumpXVelocity: 0
   minAddJumpXVelocity: 0
   jumpPressed: 0
   arrowSpawnPoint: {fileID: 0}
@@ -172,8 +172,8 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   maxHealth: 100
   currentHealth: 0
-  currentSpeed: 5
-  baseSpeed: 5
+  currentSpeed: 6
+  baseSpeed: 6
   attackRate: 0
   baseDamage: 1
   currentDamage: 0

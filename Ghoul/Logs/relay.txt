@@ -1,0 +1,591 @@
+[2026-06-16T23:23:42.480Z] [INFO] relay.startup port=9001 mcpClientPort=9002 editorPid=1968
+[2026-06-16T23:23:42.481Z] [INFO] log === RELAY SERVER STARTED === (unity-ai-relay v1.0.12-build.96)
+[2026-06-16T23:23:42.482Z] [INFO] log Starting relay server...
+[2026-06-16T23:23:42.482Z] [INFO] log Command line arguments: ["bun","B:/~BUN/root/relay_win.exe","--relay","--port","9001","--mcp-client-port","9002","--editor-pid","1968","--shutdown-delay","180","--log-dir","D:\\Github\\Ghoul\\Ghoul\\Logs"]
+[2026-06-16T23:23:42.482Z] [INFO] log Parsed config: {"port":9001,"mcpClientPort":9002,"editorPid":"1968","shutdownDelaySeconds":180}
+[2026-06-16T23:23:42.483Z] [INFO] log Initializing relay components...
+[2026-06-16T23:23:42.484Z] [INFO] log Creating RelayEditor...
+[2026-06-16T23:23:42.499Z] [INFO] log WebSocket server started
+[2026-06-16T23:23:42.499Z] [INFO] log Relay server initialization completed
+[2026-06-16T23:23:42.500Z] [INFO] log MCP Client initialized at port: 9002
+[2026-06-16T23:23:42.513Z] [WARN] log [shell-env] Shell environment did not contain a PATH variable
+[2026-06-16T23:23:42.544Z] [INFO] log Unity MCP Relay server started | Port: 9002 | Endpoints: /mcp/start-server, /mcp/stop-server, /mcp/server-status, /mcp/call-tool
+[2026-06-16T23:23:42.687Z] [INFO] log Unity client connected with ID: editor-1968-rmy2mi (relay 1.0.12-build.96)
+[2026-06-16T23:23:42.688Z] [INFO] connection.established clientId=editor-1968-rmy2mi port=9001
+[2026-06-16T23:24:20.009Z] [INFO] log Shutdown request received from client editor-1968-rmy2mi
+[2026-06-16T23:24:20.009Z] [INFO] log Unity client requested immediate shutdown - shutting down now, reason: Shutdown requested by client
+[2026-06-16T23:24:20.010Z] [INFO] log Shutdown: Initiating graceful shutdown: Shutdown requested by client
+[2026-06-16T23:25:01.922Z] [INFO] relay.startup port=9001 mcpClientPort=9002 editorPid=37536
+[2026-06-16T23:25:01.923Z] [INFO] log === RELAY SERVER STARTED === (unity-ai-relay v1.0.12-build.96)
+[2026-06-16T23:25:01.923Z] [INFO] log Starting relay server...
+[2026-06-16T23:25:01.923Z] [INFO] log Command line arguments: ["bun","B:/~BUN/root/relay_win.exe","--relay","--port","9001","--mcp-client-port","9002","--editor-pid","37536","--shutdown-delay","180","--log-dir","D:\\Github\\Ghoul\\Ghoul\\Logs"]
+[2026-06-16T23:25:01.923Z] [INFO] log Parsed config: {"port":9001,"mcpClientPort":9002,"editorPid":"37536","shutdownDelaySeconds":180}
+[2026-06-16T23:25:01.925Z] [INFO] log Initializing relay components...
+[2026-06-16T23:25:01.925Z] [INFO] log Creating RelayEditor...
+[2026-06-16T23:25:01.931Z] [INFO] log WebSocket server started
+[2026-06-16T23:25:01.931Z] [INFO] log Relay server initialization completed
+[2026-06-16T23:25:01.932Z] [INFO] log MCP Client initialized at port: 9002
+[2026-06-16T23:25:01.945Z] [WARN] log [shell-env] Shell environment did not contain a PATH variable
+[2026-06-16T23:25:01.973Z] [INFO] log Unity MCP Relay server started | Port: 9002 | Endpoints: /mcp/start-server, /mcp/stop-server, /mcp/server-status, /mcp/call-tool
+[2026-06-16T23:25:02.414Z] [INFO] log Unity client connected with ID: editor-37536-wz78bk (relay 1.0.12-build.96)
+[2026-06-16T23:25:02.415Z] [INFO] connection.established clientId=editor-37536-wz78bk port=9001
+[2026-06-16T23:29:28.200Z] [DEBUG] log [SharedTask] get preferences: starting new task
+[2026-06-16T23:29:28.221Z] [DEBUG] log [GatewayPrefs] seeded preferences with user's environment {"Claude Code":{},"Codex":{},"Gemini":{}}
+[2026-06-16T23:29:28.230Z] [DEBUG] log [GatewayPrefs] getPreferences completed successfully with 4 providers (persisted=false)
+[2026-06-16T23:29:28.322Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-06-16T23:29:28.454Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.179
+[2026-06-16T23:29:28.455Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.179","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-06-16T23:29:28.455Z] [DEBUG] log [GatewayPrefs] Emitted PreferencesUpdated with 3 versions
+[2026-06-16T23:29:47.002Z] [DEBUG] log [SharedTask] get preferences: starting new task
+[2026-06-16T23:29:47.008Z] [DEBUG] log [GatewayPrefs] getPreferences completed successfully with 4 providers (persisted=true)
+[2026-06-16T23:29:47.077Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-06-16T23:29:47.189Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.179
+[2026-06-16T23:29:47.190Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.179","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-06-16T23:29:47.190Z] [DEBUG] log [GatewayPrefs] Emitted PreferencesUpdated with 3 versions
+[2026-06-16T23:30:00.440Z] [DEBUG] log [SharedTask] get preferences: starting new task
+[2026-06-16T23:30:00.444Z] [DEBUG] log [GatewayPrefs] getPreferences completed successfully with 4 providers (persisted=true)
+[2026-06-16T23:30:00.514Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-06-16T23:30:00.625Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.179
+[2026-06-16T23:30:00.625Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.179","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-06-16T23:30:00.626Z] [DEBUG] log [GatewayPrefs] Emitted PreferencesUpdated with 3 versions
+[2026-06-16T23:30:36.567Z] [DEBUG] log [SharedTask] get preferences: starting new task
+[2026-06-16T23:30:36.573Z] [DEBUG] log [GatewayPrefs] getPreferences completed successfully with 4 providers (persisted=true)
+[2026-06-16T23:30:36.643Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-06-16T23:30:36.754Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.179
+[2026-06-16T23:30:36.754Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.179","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-06-16T23:30:36.754Z] [DEBUG] log [GatewayPrefs] Emitted PreferencesUpdated with 3 versions
+[2026-06-16T23:31:56.127Z] [DEBUG] message.received type=gateway/providers_request
+[2026-06-16T23:31:56.146Z] [DEBUG] log [cursor] getCursorPostInstall: loginExec command="agent"
+[2026-06-16T23:31:56.217Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-06-16T23:31:56.334Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.179
+[2026-06-16T23:31:56.334Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.179","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-06-16T23:31:56.335Z] [DEBUG] log Sent provider versions: 3 providers
+[2026-06-16T23:32:29.356Z] [INFO] log Domain reload signal received from client editor-37536-wz78bk
+[2026-06-16T23:32:29.357Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-06-16T23:32:29.357Z] [DEBUG] acp.queue.pause depth=0
+[2026-06-16T23:32:29.761Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-06-16T23:32:29.762Z] [DEBUG] acp.queue.pause depth=0
+[2026-06-16T23:32:29.762Z] [INFO] log Client disconnected - blocking and caching for recovery
+[2026-06-16T23:32:29.763Z] [WARN] connection.lost clientId=null
+[2026-06-16T23:32:29.763Z] [WARN] log Client disconnected - sessions will persist until auto-shutdown, reason: Client disconnected
+[2026-06-16T23:32:29.763Z] [INFO] log Auto-shutdown timer started due to client disconnection
+[2026-06-16T23:32:34.983Z] [DEBUG] log Relay->Editor communication is unblocked
+[2026-06-16T23:32:34.983Z] [INFO] log Unity client connected with ID: editor-37536-p911vj (relay 1.0.12-build.96)
+[2026-06-16T23:32:34.984Z] [INFO] connection.established clientId=editor-37536-p911vj port=9001
+[2026-06-16T23:33:05.234Z] [DEBUG] log [SharedTask] get preferences: starting new task
+[2026-06-16T23:33:05.313Z] [DEBUG] log [GatewayPrefs] getPreferences completed successfully with 4 providers (persisted=true)
+[2026-06-16T23:33:05.383Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-06-16T23:33:05.410Z] [DEBUG] message.received type=gateway/providers_request
+[2026-06-16T23:33:05.428Z] [DEBUG] log [cursor] getCursorPostInstall: loginExec command="agent"
+[2026-06-16T23:33:05.502Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-06-16T23:33:05.530Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.179
+[2026-06-16T23:33:05.531Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.179","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-06-16T23:33:05.531Z] [DEBUG] log [GatewayPrefs] Emitted PreferencesUpdated with 3 versions
+[2026-06-16T23:33:05.623Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.179
+[2026-06-16T23:33:05.624Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.179","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-06-16T23:33:05.624Z] [DEBUG] log Sent provider versions: 3 providers
+[2026-06-16T23:44:15.496Z] [INFO] log Domain reload signal received from client editor-37536-p911vj
+[2026-06-16T23:44:15.496Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-06-16T23:44:15.496Z] [DEBUG] acp.queue.pause depth=0
+[2026-06-16T23:44:15.891Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-06-16T23:44:15.891Z] [DEBUG] acp.queue.pause depth=0
+[2026-06-16T23:44:15.891Z] [INFO] log Client disconnected - blocking and caching for recovery
+[2026-06-16T23:44:15.892Z] [WARN] connection.lost clientId=null
+[2026-06-16T23:44:15.892Z] [WARN] log Client disconnected - sessions will persist until auto-shutdown, reason: Client disconnected
+[2026-06-16T23:44:15.893Z] [INFO] log Auto-shutdown timer started due to client disconnection
+[2026-06-16T23:44:21.471Z] [DEBUG] log Relay->Editor communication is unblocked
+[2026-06-16T23:44:21.471Z] [INFO] log Unity client connected with ID: editor-37536-mnq43a (relay 1.0.12-build.96)
+[2026-06-16T23:44:21.471Z] [INFO] connection.established clientId=editor-37536-mnq43a port=9001
+[2026-06-16T23:44:56.958Z] [DEBUG] log [SharedTask] get preferences: starting new task
+[2026-06-16T23:44:56.969Z] [DEBUG] log [GatewayPrefs] getPreferences completed successfully with 4 providers (persisted=true)
+[2026-06-16T23:44:57.040Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-06-16T23:44:57.151Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.179
+[2026-06-16T23:44:57.151Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.179","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-06-16T23:44:57.152Z] [DEBUG] log [GatewayPrefs] Emitted PreferencesUpdated with 3 versions
+[2026-06-16T23:45:48.580Z] [INFO] log Domain reload signal received from client editor-37536-mnq43a
+[2026-06-16T23:45:48.581Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-06-16T23:45:48.581Z] [DEBUG] acp.queue.pause depth=0
+[2026-06-16T23:45:49.049Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-06-16T23:45:49.049Z] [DEBUG] acp.queue.pause depth=0
+[2026-06-16T23:45:49.049Z] [INFO] log Client disconnected - blocking and caching for recovery
+[2026-06-16T23:45:49.050Z] [WARN] connection.lost clientId=null
+[2026-06-16T23:45:49.050Z] [WARN] log Client disconnected - sessions will persist until auto-shutdown, reason: Client disconnected
+[2026-06-16T23:45:49.050Z] [INFO] log Auto-shutdown timer started due to client disconnection
+[2026-06-16T23:48:01.125Z] [INFO] relay.startup port=9003 mcpClientPort=9004 editorPid=16348
+[2026-06-16T23:48:01.126Z] [INFO] log === RELAY SERVER STARTED === (unity-ai-relay v1.0.12-build.96)
+[2026-06-16T23:48:01.126Z] [INFO] log Starting relay server...
+[2026-06-16T23:48:01.127Z] [INFO] log Command line arguments: ["bun","B:/~BUN/root/relay_win.exe","--relay","--port","9003","--mcp-client-port","9004","--editor-pid","16348","--shutdown-delay","180","--log-dir","D:\\Github\\Ghoul\\Ghoul\\Logs"]
+[2026-06-16T23:48:01.127Z] [INFO] log Parsed config: {"port":9003,"mcpClientPort":9004,"editorPid":"16348","shutdownDelaySeconds":180}
+[2026-06-16T23:48:01.128Z] [INFO] log Initializing relay components...
+[2026-06-16T23:48:01.128Z] [INFO] log Creating RelayEditor...
+[2026-06-16T23:48:01.132Z] [INFO] log WebSocket server started
+[2026-06-16T23:48:01.133Z] [INFO] log Relay server initialization completed
+[2026-06-16T23:48:01.134Z] [INFO] log MCP Client initialized at port: 9004
+[2026-06-16T23:48:01.144Z] [WARN] log [shell-env] Shell environment did not contain a PATH variable
+[2026-06-16T23:48:01.167Z] [INFO] log Unity MCP Relay server started | Port: 9004 | Endpoints: /mcp/start-server, /mcp/stop-server, /mcp/server-status, /mcp/call-tool
+[2026-06-16T23:48:01.640Z] [INFO] log Unity client connected with ID: editor-16348-rvm2u6 (relay 1.0.12-build.96)
+[2026-06-16T23:48:01.641Z] [INFO] connection.established clientId=editor-16348-rvm2u6 port=9003
+[2026-06-16T23:48:20.552Z] [INFO] log Shutdown request received from client editor-16348-rvm2u6
+[2026-06-16T23:48:20.552Z] [INFO] log Unity client requested immediate shutdown - shutting down now, reason: Shutdown requested by client
+[2026-06-16T23:48:20.553Z] [INFO] log Shutdown: Initiating graceful shutdown: Shutdown requested by client
+[2026-06-16T23:48:49.053Z] [INFO] log Auto-shutdown timer fired after 180s inactivity, shutting down: Dedicated client disconnected
+[2026-06-16T23:48:49.054Z] [INFO] log Shutdown: Initiating graceful shutdown: Dedicated client disconnected
+[2026-06-17T00:09:03.248Z] [INFO] relay.startup port=9001 mcpClientPort=9002 editorPid=40320
+[2026-06-17T00:09:03.249Z] [INFO] log Starting relay server...
+[2026-06-17T00:09:03.249Z] [INFO] log === RELAY SERVER STARTED === (unity-ai-relay v1.0.12-build.96)
+[2026-06-17T00:09:03.250Z] [INFO] log Command line arguments: ["bun","B:/~BUN/root/relay_win.exe","--relay","--port","9001","--mcp-client-port","9002","--editor-pid","40320","--shutdown-delay","180","--log-dir","D:\\Github\\Ghoul\\Ghoul\\Logs"]
+[2026-06-17T00:09:03.250Z] [INFO] log Parsed config: {"port":9001,"mcpClientPort":9002,"editorPid":"40320","shutdownDelaySeconds":180}
+[2026-06-17T00:09:03.251Z] [INFO] log Initializing relay components...
+[2026-06-17T00:09:03.251Z] [INFO] log Creating RelayEditor...
+[2026-06-17T00:09:03.256Z] [INFO] log WebSocket server started
+[2026-06-17T00:09:03.256Z] [INFO] log Relay server initialization completed
+[2026-06-17T00:09:03.261Z] [INFO] log MCP Client initialized at port: 9002
+[2026-06-17T00:09:03.267Z] [WARN] log [shell-env] Shell environment did not contain a PATH variable
+[2026-06-17T00:09:03.294Z] [INFO] log Unity MCP Relay server started | Port: 9002 | Endpoints: /mcp/start-server, /mcp/stop-server, /mcp/server-status, /mcp/call-tool
+[2026-06-17T00:09:03.738Z] [INFO] log Unity client connected with ID: editor-40320-c8pg1w (relay 1.0.12-build.96)
+[2026-06-17T00:09:03.738Z] [INFO] connection.established clientId=editor-40320-c8pg1w port=9001
+[2026-06-17T00:10:43.818Z] [DEBUG] log [SharedTask] get preferences: starting new task
+[2026-06-17T00:10:43.898Z] [DEBUG] log [GatewayPrefs] getPreferences completed successfully with 4 providers (persisted=true)
+[2026-06-17T00:10:43.995Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-06-17T00:10:44.028Z] [DEBUG] message.received type=gateway/providers_request
+[2026-06-17T00:10:44.048Z] [DEBUG] log [cursor] getCursorPostInstall: loginExec command="agent"
+[2026-06-17T00:10:44.121Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-06-17T00:10:44.918Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.179
+[2026-06-17T00:10:44.918Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.179","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-06-17T00:10:44.918Z] [DEBUG] log Sent provider versions: 3 providers
+[2026-06-17T00:10:44.927Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.179
+[2026-06-17T00:10:44.929Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.179","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-06-17T00:10:44.929Z] [DEBUG] log [GatewayPrefs] Emitted PreferencesUpdated with 3 versions
+[2026-06-17T00:11:22.814Z] [DEBUG] log [SharedTask] get preferences: starting new task
+[2026-06-17T00:11:22.817Z] [DEBUG] log [GatewayPrefs] getPreferences completed successfully with 4 providers (persisted=true)
+[2026-06-17T00:11:22.889Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-06-17T00:11:23.028Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.179
+[2026-06-17T00:11:23.028Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.179","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-06-17T00:11:23.028Z] [DEBUG] log [GatewayPrefs] Emitted PreferencesUpdated with 3 versions
+[2026-06-17T00:11:42.483Z] [DEBUG] log [SharedTask] get preferences: starting new task
+[2026-06-17T00:11:42.488Z] [DEBUG] log [GatewayPrefs] getPreferences completed successfully with 4 providers (persisted=true)
+[2026-06-17T00:11:42.557Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-06-17T00:11:42.695Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.179
+[2026-06-17T00:11:42.695Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.179","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-06-17T00:11:42.696Z] [DEBUG] log [GatewayPrefs] Emitted PreferencesUpdated with 3 versions
+[2026-06-17T00:12:19.566Z] [INFO] log Domain reload signal received from client editor-40320-c8pg1w
+[2026-06-17T00:12:19.566Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-06-17T00:12:19.566Z] [DEBUG] acp.queue.pause depth=0
+[2026-06-17T00:12:20.279Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-06-17T00:12:20.279Z] [DEBUG] acp.queue.pause depth=0
+[2026-06-17T00:12:20.280Z] [INFO] log Client disconnected - blocking and caching for recovery
+[2026-06-17T00:12:20.280Z] [WARN] connection.lost clientId=null
+[2026-06-17T00:12:20.280Z] [WARN] log Client disconnected - sessions will persist until auto-shutdown, reason: Client disconnected
+[2026-06-17T00:12:20.281Z] [INFO] log Auto-shutdown timer started due to client disconnection
+[2026-06-17T00:15:20.298Z] [INFO] log Auto-shutdown timer fired after 180s inactivity, shutting down: Dedicated client disconnected
+[2026-06-17T00:15:20.298Z] [INFO] log Shutdown: Initiating graceful shutdown: Dedicated client disconnected
+[2026-06-17T00:20:14.222Z] [INFO] relay.startup port=9001 mcpClientPort=9002 editorPid=39804
+[2026-06-17T00:20:14.223Z] [INFO] log === RELAY SERVER STARTED === (unity-ai-relay v1.0.12-build.96)
+[2026-06-17T00:20:14.224Z] [INFO] log Starting relay server...
+[2026-06-17T00:20:14.224Z] [INFO] log Command line arguments: ["bun","B:/~BUN/root/relay_win.exe","--relay","--port","9001","--mcp-client-port","9002","--editor-pid","39804","--shutdown-delay","180","--log-dir","D:\\Github\\Ghoul\\Ghoul\\Logs"]
+[2026-06-17T00:20:14.224Z] [INFO] log Parsed config: {"port":9001,"mcpClientPort":9002,"editorPid":"39804","shutdownDelaySeconds":180}
+[2026-06-17T00:20:14.225Z] [INFO] log Initializing relay components...
+[2026-06-17T00:20:14.225Z] [INFO] log Creating RelayEditor...
+[2026-06-17T00:20:14.231Z] [INFO] log WebSocket server started
+[2026-06-17T00:20:14.231Z] [INFO] log Relay server initialization completed
+[2026-06-17T00:20:14.232Z] [INFO] log MCP Client initialized at port: 9002
+[2026-06-17T00:20:14.248Z] [WARN] log [shell-env] Shell environment did not contain a PATH variable
+[2026-06-17T00:20:14.273Z] [INFO] log Unity MCP Relay server started | Port: 9002 | Endpoints: /mcp/start-server, /mcp/stop-server, /mcp/server-status, /mcp/call-tool
+[2026-06-17T00:20:14.711Z] [INFO] log Unity client connected with ID: editor-39804-bvgot4 (relay 1.0.12-build.96)
+[2026-06-17T00:20:14.711Z] [INFO] connection.established clientId=editor-39804-bvgot4 port=9001
+[2026-06-17T00:20:29.300Z] [DEBUG] log [SharedTask] get preferences: starting new task
+[2026-06-17T00:20:29.384Z] [DEBUG] log [GatewayPrefs] getPreferences completed successfully with 4 providers (persisted=true)
+[2026-06-17T00:20:29.463Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-06-17T00:20:29.490Z] [DEBUG] message.received type=gateway/providers_request
+[2026-06-17T00:20:29.509Z] [DEBUG] log [cursor] getCursorPostInstall: loginExec command="agent"
+[2026-06-17T00:20:29.582Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-06-17T00:20:29.615Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.179
+[2026-06-17T00:20:29.616Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.179","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-06-17T00:20:29.616Z] [DEBUG] log [GatewayPrefs] Emitted PreferencesUpdated with 3 versions
+[2026-06-17T00:20:29.715Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.179
+[2026-06-17T00:20:29.715Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.179","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-06-17T00:20:29.716Z] [DEBUG] log Sent provider versions: 3 providers
+[2026-06-17T03:43:09.139Z] [INFO] log Shutdown request received from client editor-39804-bvgot4
+[2026-06-17T03:43:09.140Z] [INFO] log Unity client requested immediate shutdown - shutting down now, reason: Shutdown requested by client
+[2026-06-17T03:43:09.140Z] [INFO] log Shutdown: Initiating graceful shutdown: Shutdown requested by client
+[2026-06-17T03:50:27.478Z] [INFO] relay.startup port=9001 mcpClientPort=9002 editorPid=21008
+[2026-06-17T03:50:27.479Z] [INFO] log === RELAY SERVER STARTED === (unity-ai-relay v1.0.12-build.96)
+[2026-06-17T03:50:27.479Z] [INFO] log Starting relay server...
+[2026-06-17T03:50:27.480Z] [INFO] log Command line arguments: ["bun","B:/~BUN/root/relay_win.exe","--relay","--port","9001","--mcp-client-port","9002","--editor-pid","21008","--shutdown-delay","180","--log-dir","D:\\Github\\Ghoul\\Ghoul\\Logs"]
+[2026-06-17T03:50:27.480Z] [INFO] log Parsed config: {"port":9001,"mcpClientPort":9002,"editorPid":"21008","shutdownDelaySeconds":180}
+[2026-06-17T03:50:27.481Z] [INFO] log Initializing relay components...
+[2026-06-17T03:50:27.481Z] [INFO] log Creating RelayEditor...
+[2026-06-17T03:50:27.487Z] [INFO] log WebSocket server started
+[2026-06-17T03:50:27.487Z] [INFO] log Relay server initialization completed
+[2026-06-17T03:50:27.488Z] [INFO] log MCP Client initialized at port: 9002
+[2026-06-17T03:50:27.498Z] [WARN] log [shell-env] Shell environment did not contain a PATH variable
+[2026-06-17T03:50:27.514Z] [INFO] log Unity MCP Relay server started | Port: 9002 | Endpoints: /mcp/start-server, /mcp/stop-server, /mcp/server-status, /mcp/call-tool
+[2026-06-17T03:50:27.990Z] [INFO] log Unity client connected with ID: editor-21008-oo3ro7 (relay 1.0.12-build.96)
+[2026-06-17T03:50:27.990Z] [INFO] connection.established clientId=editor-21008-oo3ro7 port=9001
+[2026-06-17T03:50:28.865Z] [INFO] log Shutdown request received from client editor-21008-oo3ro7
+[2026-06-17T03:50:28.865Z] [INFO] log Unity client requested immediate shutdown - shutting down now, reason: Shutdown requested by client
+[2026-06-17T03:50:28.866Z] [INFO] log Shutdown: Initiating graceful shutdown: Shutdown requested by client
+[2026-06-17T04:00:16.069Z] [INFO] relay.startup port=9001 mcpClientPort=9002 editorPid=42308
+[2026-06-17T04:00:16.070Z] [INFO] log === RELAY SERVER STARTED === (unity-ai-relay v1.0.12-build.96)
+[2026-06-17T04:00:16.071Z] [INFO] log Starting relay server...
+[2026-06-17T04:00:16.071Z] [INFO] log Command line arguments: ["bun","B:/~BUN/root/relay_win.exe","--relay","--port","9001","--mcp-client-port","9002","--editor-pid","42308","--shutdown-delay","180","--log-dir","D:\\Github\\Ghoul\\Ghoul\\Logs"]
+[2026-06-17T04:00:16.071Z] [INFO] log Parsed config: {"port":9001,"mcpClientPort":9002,"editorPid":"42308","shutdownDelaySeconds":180}
+[2026-06-17T04:00:16.072Z] [INFO] log Initializing relay components...
+[2026-06-17T04:00:16.072Z] [INFO] log Creating RelayEditor...
+[2026-06-17T04:00:16.083Z] [INFO] log WebSocket server started
+[2026-06-17T04:00:16.084Z] [INFO] log Relay server initialization completed
+[2026-06-17T04:00:16.084Z] [INFO] log MCP Client initialized at port: 9002
+[2026-06-17T04:00:16.091Z] [WARN] log [shell-env] Shell environment did not contain a PATH variable
+[2026-06-17T04:00:16.113Z] [INFO] log Unity MCP Relay server started | Port: 9002 | Endpoints: /mcp/start-server, /mcp/stop-server, /mcp/server-status, /mcp/call-tool
+[2026-06-17T04:00:16.560Z] [INFO] log Unity client connected with ID: editor-42308-a9yaio (relay 1.0.12-build.96)
+[2026-06-17T04:00:16.560Z] [INFO] connection.established clientId=editor-42308-a9yaio port=9001
+[2026-06-17T04:02:37.410Z] [DEBUG] log [SharedTask] get preferences: starting new task
+[2026-06-17T04:02:37.428Z] [DEBUG] log [GatewayPrefs] getPreferences completed successfully with 4 providers (persisted=true)
+[2026-06-17T04:02:37.519Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-06-17T04:02:37.683Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.179
+[2026-06-17T04:02:37.684Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.179","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-06-17T04:02:37.684Z] [DEBUG] log [GatewayPrefs] Emitted PreferencesUpdated with 3 versions
+[2026-06-17T04:03:44.017Z] [DEBUG] log [SharedTask] get preferences: starting new task
+[2026-06-17T04:03:44.021Z] [DEBUG] log [GatewayPrefs] getPreferences completed successfully with 4 providers (persisted=true)
+[2026-06-17T04:03:44.101Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-06-17T04:03:44.253Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.179
+[2026-06-17T04:03:44.253Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.179","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-06-17T04:03:44.254Z] [DEBUG] log [GatewayPrefs] Emitted PreferencesUpdated with 3 versions
+[2026-06-17T04:03:45.593Z] [DEBUG] log [SharedTask] get preferences: starting new task
+[2026-06-17T04:03:45.598Z] [DEBUG] log [GatewayPrefs] getPreferences completed successfully with 4 providers (persisted=true)
+[2026-06-17T04:03:45.676Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-06-17T04:03:45.824Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.179
+[2026-06-17T04:03:45.825Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.179","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-06-17T04:03:45.825Z] [DEBUG] log [GatewayPrefs] Emitted PreferencesUpdated with 3 versions
+[2026-06-17T04:13:03.066Z] [INFO] log Domain reload signal received from client editor-42308-a9yaio
+[2026-06-17T04:13:03.067Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-06-17T04:13:03.068Z] [DEBUG] acp.queue.pause depth=0
+[2026-06-17T04:13:03.547Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-06-17T04:13:03.548Z] [DEBUG] acp.queue.pause depth=0
+[2026-06-17T04:13:03.548Z] [INFO] log Client disconnected - blocking and caching for recovery
+[2026-06-17T04:13:03.548Z] [WARN] connection.lost clientId=null
+[2026-06-17T04:13:03.549Z] [WARN] log Client disconnected - sessions will persist until auto-shutdown, reason: Client disconnected
+[2026-06-17T04:13:03.549Z] [INFO] log Auto-shutdown timer started due to client disconnection
+[2026-06-17T04:16:03.568Z] [INFO] log Auto-shutdown timer fired after 180s inactivity, shutting down: Dedicated client disconnected
+[2026-06-17T04:16:03.570Z] [INFO] log Shutdown: Initiating graceful shutdown: Dedicated client disconnected
+[2026-06-17T04:16:47.357Z] [INFO] relay.startup port=9001 mcpClientPort=9002 editorPid=33216
+[2026-06-17T04:16:47.358Z] [INFO] log === RELAY SERVER STARTED === (unity-ai-relay v1.0.12-build.96)
+[2026-06-17T04:16:47.358Z] [INFO] log Starting relay server...
+[2026-06-17T04:16:47.358Z] [INFO] log Command line arguments: ["bun","B:/~BUN/root/relay_win.exe","--relay","--port","9001","--mcp-client-port","9002","--editor-pid","33216","--shutdown-delay","180","--log-dir","D:\\Github\\Ghoul\\Ghoul\\Logs"]
+[2026-06-17T04:16:47.359Z] [INFO] log Parsed config: {"port":9001,"mcpClientPort":9002,"editorPid":"33216","shutdownDelaySeconds":180}
+[2026-06-17T04:16:47.359Z] [INFO] log Initializing relay components...
+[2026-06-17T04:16:47.360Z] [INFO] log Creating RelayEditor...
+[2026-06-17T04:16:47.367Z] [INFO] log WebSocket server started
+[2026-06-17T04:16:47.368Z] [INFO] log Relay server initialization completed
+[2026-06-17T04:16:47.368Z] [INFO] log MCP Client initialized at port: 9002
+[2026-06-17T04:16:47.382Z] [WARN] log [shell-env] Shell environment did not contain a PATH variable
+[2026-06-17T04:16:47.410Z] [INFO] log Unity MCP Relay server started | Port: 9002 | Endpoints: /mcp/start-server, /mcp/stop-server, /mcp/server-status, /mcp/call-tool
+[2026-06-17T04:16:47.839Z] [INFO] log Unity client connected with ID: editor-33216-cczujq (relay 1.0.12-build.96)
+[2026-06-17T04:16:47.839Z] [INFO] connection.established clientId=editor-33216-cczujq port=9001
+[2026-06-17T04:19:55.092Z] [DEBUG] log [SharedTask] get preferences: starting new task
+[2026-06-17T04:19:55.102Z] [DEBUG] log [GatewayPrefs] getPreferences completed successfully with 4 providers (persisted=true)
+[2026-06-17T04:19:55.196Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-06-17T04:19:55.361Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.179
+[2026-06-17T04:19:55.362Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.179","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-06-17T04:19:55.362Z] [DEBUG] log [GatewayPrefs] Emitted PreferencesUpdated with 3 versions
+[2026-06-17T04:19:56.298Z] [DEBUG] log [SharedTask] get preferences: starting new task
+[2026-06-17T04:19:56.302Z] [DEBUG] log [GatewayPrefs] getPreferences completed successfully with 4 providers (persisted=true)
+[2026-06-17T04:19:56.383Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-06-17T04:19:56.531Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.179
+[2026-06-17T04:19:56.531Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.179","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-06-17T04:19:56.532Z] [DEBUG] log [GatewayPrefs] Emitted PreferencesUpdated with 3 versions
+[2026-06-17T04:21:17.049Z] [INFO] log Shutdown request received from client editor-33216-cczujq
+[2026-06-17T04:21:17.050Z] [INFO] log Unity client requested immediate shutdown - shutting down now, reason: Shutdown requested by client
+[2026-06-17T04:21:17.050Z] [INFO] log Shutdown: Initiating graceful shutdown: Shutdown requested by client
+[2026-06-17T04:21:37.627Z] [INFO] relay.startup port=9001 mcpClientPort=9002 editorPid=41700
+[2026-06-17T04:21:37.627Z] [INFO] log === RELAY SERVER STARTED === (unity-ai-relay v1.0.12-build.96)
+[2026-06-17T04:21:37.628Z] [INFO] log Starting relay server...
+[2026-06-17T04:21:37.628Z] [INFO] log Command line arguments: ["bun","B:/~BUN/root/relay_win.exe","--relay","--port","9001","--mcp-client-port","9002","--editor-pid","41700","--shutdown-delay","180","--log-dir","D:\\Github\\Ghoul\\Ghoul\\Logs"]
+[2026-06-17T04:21:37.628Z] [INFO] log Parsed config: {"port":9001,"mcpClientPort":9002,"editorPid":"41700","shutdownDelaySeconds":180}
+[2026-06-17T04:21:37.629Z] [INFO] log Initializing relay components...
+[2026-06-17T04:21:37.629Z] [INFO] log Creating RelayEditor...
+[2026-06-17T04:21:37.634Z] [INFO] log WebSocket server started
+[2026-06-17T04:21:37.635Z] [INFO] log Relay server initialization completed
+[2026-06-17T04:21:37.636Z] [INFO] log MCP Client initialized at port: 9002
+[2026-06-17T04:21:37.648Z] [WARN] log [shell-env] Shell environment did not contain a PATH variable
+[2026-06-17T04:21:37.666Z] [INFO] log Unity MCP Relay server started | Port: 9002 | Endpoints: /mcp/start-server, /mcp/stop-server, /mcp/server-status, /mcp/call-tool
+[2026-06-17T04:21:38.131Z] [INFO] log Unity client connected with ID: editor-41700-4hzbzo (relay 1.0.12-build.96)
+[2026-06-17T04:21:38.131Z] [INFO] connection.established clientId=editor-41700-4hzbzo port=9001
+[2026-06-17T04:22:54.706Z] [DEBUG] log [SharedTask] get preferences: starting new task
+[2026-06-17T04:22:54.716Z] [DEBUG] log [GatewayPrefs] getPreferences completed successfully with 4 providers (persisted=true)
+[2026-06-17T04:22:54.810Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-06-17T04:22:54.971Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.179
+[2026-06-17T04:22:54.971Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.179","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-06-17T04:22:54.971Z] [DEBUG] log [GatewayPrefs] Emitted PreferencesUpdated with 3 versions
+[2026-06-17T04:26:51.522Z] [INFO] log Shutdown request received from client editor-41700-4hzbzo
+[2026-06-17T04:26:51.523Z] [INFO] log Unity client requested immediate shutdown - shutting down now, reason: Shutdown requested by client
+[2026-06-17T04:26:51.523Z] [INFO] log Shutdown: Initiating graceful shutdown: Shutdown requested by client
+[2026-06-17T04:27:15.758Z] [INFO] relay.startup port=9001 mcpClientPort=9002 editorPid=43736
+[2026-06-17T04:27:15.759Z] [INFO] log === RELAY SERVER STARTED === (unity-ai-relay v1.0.12-build.96)
+[2026-06-17T04:27:15.760Z] [INFO] log Starting relay server...
+[2026-06-17T04:27:15.760Z] [INFO] log Command line arguments: ["bun","B:/~BUN/root/relay_win.exe","--relay","--port","9001","--mcp-client-port","9002","--editor-pid","43736","--shutdown-delay","180","--log-dir","D:\\Github\\Ghoul\\Ghoul\\Logs"]
+[2026-06-17T04:27:15.760Z] [INFO] log Parsed config: {"port":9001,"mcpClientPort":9002,"editorPid":"43736","shutdownDelaySeconds":180}
+[2026-06-17T04:27:15.761Z] [INFO] log Initializing relay components...
+[2026-06-17T04:27:15.761Z] [INFO] log Creating RelayEditor...
+[2026-06-17T04:27:15.765Z] [INFO] log WebSocket server started
+[2026-06-17T04:27:15.766Z] [INFO] log Relay server initialization completed
+[2026-06-17T04:27:15.766Z] [INFO] log MCP Client initialized at port: 9002
+[2026-06-17T04:27:15.778Z] [WARN] log [shell-env] Shell environment did not contain a PATH variable
+[2026-06-17T04:27:15.798Z] [INFO] log Unity MCP Relay server started | Port: 9002 | Endpoints: /mcp/start-server, /mcp/stop-server, /mcp/server-status, /mcp/call-tool
+[2026-06-17T04:27:16.253Z] [INFO] log Unity client connected with ID: editor-43736-wdseq9 (relay 1.0.12-build.96)
+[2026-06-17T04:27:16.253Z] [INFO] connection.established clientId=editor-43736-wdseq9 port=9001
+[2026-06-17T04:27:48.118Z] [INFO] log HTTP request | POST /mcp/server-status
+[2026-06-17T04:27:48.119Z] [INFO] log Server status check | Server: unity-mcp | Running: no
+[2026-06-17T04:27:48.126Z] [INFO] log HTTP request | POST /mcp/start-server
+[2026-06-17T04:27:48.127Z] [INFO] log Starting MCP server | Name: unity-mcp | Transport: stdio | Command: C:\Users\mackn\.unity/relay\relay_win.exe
+[2026-06-17T04:27:48.128Z] [INFO] log Starting MCP server | Name: unity-mcp | ID: mcp-1
+[2026-06-17T04:27:48.128Z] [INFO] log Creating stdio transport | Command: C:\Users\mackn\.unity/relay\relay_win.exe
+[2026-06-17T04:27:48.128Z] [INFO] log Stdio transport config | Command: C:\Users\mackn\.unity/relay\relay_win.exe --mcp | Env vars: 1
+[2026-06-17T04:27:48.129Z] [INFO] log Stdio transport ready | Command: C:\Users\mackn\.unity/relay\relay_win.exe | Args: 1 | Env: 48 vars
+[2026-06-17T04:27:48.301Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] mcp.startup workingDir=D:\Github\Ghoul\Ghoul
+[2026-06-17T04:27:48.302Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log === MCP SERVER STARTED ===
+[INFO ] [Unity Mcp Server] log PID=35804 execPath=C:\Users\mackn\.unity\relay\relay_win.exe
+[INFO ] [Unity Mcp Server] log argv: ["bun","B:/~BUN/root/relay_win.exe","--mcp"]
+[INFO ] [Unity Mcp Server] log Working directory: D:\Github\Ghoul\Ghoul
+[INFO ] [Unity Mcp Server] log Approval token: {"fromEnv":false}
+[INFO ] [Unity Mcp Server] log Project path: (not specified)
+[INFO ] [Unity Mcp Server] log Instance ID: (not specified)
+[INFO ] [Unity Mcp Server] log MCP server initializing...
+[INFO ] [Unity Mcp Server] log Initializing unity-mcp-server v1.0.0
+[2026-06-17T04:27:48.307Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Unity MCP Server started
+[2026-06-17T04:27:48.334Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Client connected: unity-relay-client 1.0.0
+[2026-06-17T04:27:48.339Z] [INFO] log MCP server connected | Name: unity-mcp
+[2026-06-17T04:27:48.460Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-bc7387cb-43736
+[2026-06-17T04:27:48.460Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[2026-06-17T04:27:48.463Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-06-17T04:27:48.471Z] [INFO] log MCP server initialized | Name: unity-mcp | Tools: 7
+[2026-06-17T04:27:48.472Z] [INFO] log MCP server started successfully | Server: mcp-1 | Tools: 7 | Duration: 345ms
+[2026-06-17T04:30:31.338Z] [DEBUG] log [SharedTask] get preferences: starting new task
+[2026-06-17T04:30:31.357Z] [DEBUG] log [GatewayPrefs] getPreferences completed successfully with 4 providers (persisted=true)
+[2026-06-17T04:30:31.444Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-06-17T04:30:31.601Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.179
+[2026-06-17T04:30:31.601Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.179","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-06-17T04:30:31.602Z] [DEBUG] log [GatewayPrefs] Emitted PreferencesUpdated with 3 versions
+[2026-06-17T04:30:57.851Z] [DEBUG] log [SharedTask] get preferences: starting new task
+[2026-06-17T04:30:57.855Z] [DEBUG] log [GatewayPrefs] getPreferences completed successfully with 4 providers (persisted=true)
+[2026-06-17T04:30:57.933Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-06-17T04:30:58.076Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.179
+[2026-06-17T04:30:58.076Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.179","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-06-17T04:30:58.077Z] [DEBUG] log [GatewayPrefs] Emitted PreferencesUpdated with 3 versions
+[2026-06-17T04:30:59.774Z] [DEBUG] log [SharedTask] get preferences: starting new task
+[2026-06-17T04:30:59.779Z] [DEBUG] log [GatewayPrefs] getPreferences completed successfully with 4 providers (persisted=true)
+[2026-06-17T04:30:59.857Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-06-17T04:31:00.007Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.179
+[2026-06-17T04:31:00.007Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.179","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-06-17T04:31:00.008Z] [DEBUG] log [GatewayPrefs] Emitted PreferencesUpdated with 3 versions
+[2026-06-17T04:32:35.421Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-bc7387cb-43736
+[2026-06-17T04:32:35.422Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-06-17T04:32:49.574Z] [DEBUG] log [SharedTask] get preferences: starting new task
+[2026-06-17T04:32:49.579Z] [DEBUG] log [GatewayPrefs] getPreferences completed successfully with 4 providers (persisted=true)
+[2026-06-17T04:32:49.657Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-06-17T04:32:49.800Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.179
+[2026-06-17T04:32:49.800Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.179","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-06-17T04:32:49.801Z] [DEBUG] log [GatewayPrefs] Emitted PreferencesUpdated with 3 versions
+[2026-06-17T04:33:52.862Z] [INFO] log Domain reload signal received from client editor-43736-wdseq9
+[2026-06-17T04:33:52.862Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-06-17T04:33:52.862Z] [DEBUG] acp.queue.pause depth=0
+[2026-06-17T04:33:53.257Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-06-17T04:33:53.257Z] [DEBUG] acp.queue.pause depth=0
+[2026-06-17T04:33:53.258Z] [INFO] log Client disconnected - blocking and caching for recovery
+[2026-06-17T04:33:53.258Z] [WARN] connection.lost clientId=null
+[2026-06-17T04:33:53.258Z] [WARN] log Client disconnected - sessions will persist until auto-shutdown, reason: Client disconnected
+[2026-06-17T04:33:53.259Z] [INFO] log Auto-shutdown timer started due to client disconnection
+[2026-06-17T04:33:58.604Z] [DEBUG] log Relay->Editor communication is unblocked
+[2026-06-17T04:33:58.604Z] [INFO] log Unity client connected with ID: editor-43736-czjs5x (relay 1.0.12-build.96)
+[2026-06-17T04:33:58.605Z] [INFO] connection.established clientId=editor-43736-czjs5x port=9001
+[2026-06-17T04:33:58.710Z] [INFO] log HTTP request | POST /mcp/server-status
+[2026-06-17T04:33:58.711Z] [INFO] log Server status check | Server: unity-mcp | Running: yes
+[2026-06-17T04:33:58.874Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-bc7387cb-43736
+[2026-06-17T04:33:58.877Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-06-17T04:34:14.989Z] [DEBUG] log [SharedTask] get preferences: starting new task
+[2026-06-17T04:34:15.077Z] [DEBUG] log [GatewayPrefs] getPreferences completed successfully with 4 providers (persisted=true)
+[2026-06-17T04:34:15.158Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-06-17T04:34:15.184Z] [DEBUG] message.received type=gateway/providers_request
+[2026-06-17T04:34:15.203Z] [DEBUG] log [cursor] getCursorPostInstall: loginExec command="agent"
+[2026-06-17T04:34:15.287Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-06-17T04:34:15.319Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.179
+[2026-06-17T04:34:15.319Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.179","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-06-17T04:34:15.320Z] [DEBUG] log [GatewayPrefs] Emitted PreferencesUpdated with 3 versions
+[2026-06-17T04:34:15.422Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.179
+[2026-06-17T04:34:15.422Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.179","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-06-17T04:34:15.422Z] [DEBUG] log Sent provider versions: 3 providers
+[2026-06-17T04:35:02.543Z] [INFO] log Session start request received from client editor-43736-czjs5x (protocol: assistant)
+[2026-06-17T04:35:02.544Z] [INFO] log Cloud session create: wss://api-beta-v2.prd.azure.muse.unity.com/v1/assistant/ws
+[2026-06-17T04:35:02.544Z] [INFO] assistant.session.create conversationId= cloudBackendUri=wss://api-beta-v2.prd.azure.muse.unity.com/v1/assistant/ws
+[2026-06-17T04:35:02.545Z] [INFO] log createCloudSession: after cleanup, sessionSequenceId=0
+[2026-06-17T04:35:02.545Z] [INFO] log Creating new cloud session (seqId=1)
+[2026-06-17T04:35:02.545Z] [DEBUG] log Target endpoint: wss://api-beta-v2.prd.azure.muse.unity.com/v1/assistant/ws
+[2026-06-17T04:35:02.546Z] [DEBUG] log Using headers: ["Authorization","org-id","project-id","analytics-session-id","analytics-session-count","analytics-user-id","version-editor","version-package","version-api-specification"]
+[2026-06-17T04:35:02.546Z] [INFO] log Opening WebSocket connection to cloud: wss://api-beta-v2.prd.azure.muse.unity.com/v1/assistant/ws
+[2026-06-17T04:35:03.617Z] [INFO] log Cloud session connected successfully
+[2026-06-17T04:35:03.617Z] [DEBUG] log Cloud->Relay:  {"$type":"DISCUSSION_INITIALIZATION_V1","conversation_id":"4154c6a7-dbf9-4780-803f-aa62497932d7","chat_timeout_seconds":300,"max_message_size_bytes":34000}
+[2026-06-17T04:35:03.618Z] [DEBUG] assistant.message.received size=155
+[2026-06-17T04:35:03.618Z] [INFO] log New conversation started - clearing session state
+[2026-06-17T04:35:03.618Z] [DEBUG] log Cloud->Relay:  {"$type":"CAPABILITIES_REQUEST_V1"}
+[2026-06-17T04:35:03.619Z] [DEBUG] assistant.message.received size=35
+[2026-06-17T04:35:03.641Z] [DEBUG] message.received type=CAPABILITIES_RESPONSE_V1
+[2026-06-17T04:35:03.642Z] [DEBUG] log Forwarding to cloud - length: 103584
+[2026-06-17T04:35:03.696Z] [DEBUG] message.received type=CHAT_REQUEST_V1
+[2026-06-17T04:35:03.697Z] [DEBUG] log Forwarding to cloud - length: 119
+[2026-06-17T04:35:04.019Z] [DEBUG] log Cloud->Relay:  {"$type":"SKILLS_REQUEST_V1"}
+[2026-06-17T04:35:04.019Z] [DEBUG] assistant.message.received size=29
+[2026-06-17T04:35:04.028Z] [DEBUG] message.received type=SKILLS_RESPONSE_V1
+[2026-06-17T04:35:04.029Z] [DEBUG] log Forwarding to cloud - length: 1616
+[2026-06-17T04:35:04.199Z] [DEBUG] log Cloud->Relay:  {"$type":"CHAT_ACKNOWLEDGMENT_V1","message_id":"faada655-d1a1-4336-bd3b-fcb0844ac880","timestamp":1781670904405,"markdown":"Read and summarize the console log errors","attached_context_metadata":[]}
+[2026-06-17T04:35:04.200Z] [DEBUG] assistant.message.received size=198
+[2026-06-17T04:35:04.432Z] [DEBUG] log Cloud->Relay:  {"$type":"FUNCTION_CALL_REQUEST_V1","call_id":"5c7a29b5-fb6e-4d98-ad2b-d22f03341447","function_id":"Unity.GetUserGuidelines","function_parameters":{}}
+[2026-06-17T04:35:04.432Z] [DEBUG] assistant.message.received size=150
+[2026-06-17T04:35:04.446Z] [DEBUG] log Function call response received for 5c7a29b5-fb6e-4d98-ad2b-d22f03341447 - clearing pending state
+[2026-06-17T04:35:04.447Z] [DEBUG] message.received type=FUNCTION_CALL_RESPONSE_V1
+[2026-06-17T04:35:04.447Z] [DEBUG] log Forwarding to cloud - length: 122
+[2026-06-17T04:35:04.613Z] [DEBUG] log Cloud->Relay:  {"$type":"FUNCTION_CALL_REQUEST_V1","call_id":"907ec2ef-ed0b-44c1-8a37-e226fb26d343","function_id":"Unity.GetSceneInfo","function_parameters":{}}
+[2026-06-17T04:35:04.614Z] [DEBUG] assistant.message.received size=145
+[2026-06-17T04:35:04.618Z] [DEBUG] log Function call response received for 907ec2ef-ed0b-44c1-8a37-e226fb26d343 - clearing pending state
+[2026-06-17T04:35:04.619Z] [DEBUG] message.received type=FUNCTION_CALL_RESPONSE_V1
+[2026-06-17T04:35:04.619Z] [DEBUG] log Forwarding to cloud - length: 212
+[2026-06-17T04:35:04.784Z] [DEBUG] log Cloud->Relay:  {"$type":"FUNCTION_CALL_REQUEST_V1","call_id":"ee901eaf-3a9b-4a1f-acf1-6a0e42e0025e","function_id":"Unity.GetStaticProjectSettingsTool","function_parameters":{}}
+[2026-06-17T04:35:04.784Z] [DEBUG] assistant.message.received size=161
+[2026-06-17T04:35:04.789Z] [DEBUG] log Function call response received for ee901eaf-3a9b-4a1f-acf1-6a0e42e0025e - clearing pending state
+[2026-06-17T04:35:04.789Z] [DEBUG] message.received type=FUNCTION_CALL_RESPONSE_V1
+[2026-06-17T04:35:04.789Z] [DEBUG] log Forwarding to cloud - length: 566
+[2026-06-17T04:35:04.963Z] [DEBUG] log Cloud->Relay:  {"$type":"FUNCTION_CALL_REQUEST_V1","call_id":"a25af60f-a043-463f-a690-24bba6cc0357","function_id":"Unity.GetUnityDependenciesTool","function_parameters":{}}
+[2026-06-17T04:35:04.963Z] [DEBUG] assistant.message.received size=157
+[2026-06-17T04:35:06.653Z] [DEBUG] log Function call response received for a25af60f-a043-463f-a690-24bba6cc0357 - clearing pending state
+[2026-06-17T04:35:06.653Z] [DEBUG] message.received type=FUNCTION_CALL_RESPONSE_V1
+[2026-06-17T04:35:06.653Z] [DEBUG] log Forwarding to cloud - length: 2804
+[2026-06-17T04:35:06.827Z] [DEBUG] log Cloud->Relay:  {"$type":"FUNCTION_CALL_REQUEST_V1","call_id":"78d83fb7-3f48-4300-a0ef-0de38f962842","function_id":"Unity.GetProjectOverview","function_parameters":{}}
+[2026-06-17T04:35:06.828Z] [DEBUG] assistant.message.received size=151
+[2026-06-17T04:35:06.830Z] [DEBUG] log Function call response received for 78d83fb7-3f48-4300-a0ef-0de38f962842 - clearing pending state
+[2026-06-17T04:35:06.830Z] [DEBUG] message.received type=FUNCTION_CALL_RESPONSE_V1
+[2026-06-17T04:35:06.831Z] [DEBUG] log Forwarding to cloud - length: 122
+[2026-06-17T04:35:10.075Z] [DEBUG] log Cloud->Relay:  {"$type":"CHAT_RESPONSE_V1","message_id":"23a74cb4-3ab2-457b-a380-8eb975f3529e","last_message":false,"markdown":"<THOUGHT>{\"content\": \"**Analyzing Console Logs**\\n\\nI've identified the tools avai...
+[2026-06-17T04:35:10.075Z] [DEBUG] assistant.message.received size=535
+[2026-06-17T04:35:10.109Z] [DEBUG] log Cloud->Relay:  {"$type":"FUNCTION_CALL_REQUEST_V1","call_id":"359c6453-d7ac-4fa0-a8dd-a79b81fb1e73","function_id":"Unity.GetConsoleLogs","function_parameters":{"maxEntries":50,"logTypes":"error","includeStackTrace":...
+[2026-06-17T04:35:10.110Z] [DEBUG] assistant.message.received size=206
+[2026-06-17T04:35:10.110Z] [DEBUG] log Cloud->Relay:  {"$type":"CHAT_RESPONSE_V1","message_id":"23a74cb4-3ab2-457b-a380-8eb975f3529e","last_message":false,"markdown":"<TOOL_CALL>{\"tool_id\": \"Unity.GetConsoleLogs\", \"call_id\": \"359c6453-d7ac-4fa0-a8...
+[2026-06-17T04:35:10.111Z] [DEBUG] assistant.message.received size=409
+[2026-06-17T04:35:10.160Z] [DEBUG] log Function call response received for 359c6453-d7ac-4fa0-a8dd-a79b81fb1e73 - clearing pending state
+[2026-06-17T04:35:10.160Z] [DEBUG] message.received type=FUNCTION_CALL_RESPONSE_V1
+[2026-06-17T04:35:10.160Z] [DEBUG] log Forwarding to cloud - length: 4443
+[2026-06-17T04:35:10.335Z] [DEBUG] log Cloud->Relay:  {"$type":"CHAT_RESPONSE_V1","message_id":"23a74cb4-3ab2-457b-a380-8eb975f3529e","last_message":false,"markdown":"<TOOL_RESULT>{\"tool_id\": \"Unity.GetConsoleLogs\", \"call_id\": \"359c6453-d7ac-4fa0-...
+[2026-06-17T04:35:10.335Z] [DEBUG] assistant.message.received size=9817
+[2026-06-17T04:35:12.933Z] [DEBUG] log Cloud->Relay:  {"$type":"CHAT_RESPONSE_V1","message_id":"23a74cb4-3ab2-457b-a380-8eb975f3529e","last_message":false,"markdown":"<THOUGHT>{\"content\": \"**Fixing Transport Issue**\\n\\nI've identified a critical net...
+[2026-06-17T04:35:12.934Z] [DEBUG] assistant.message.received size=492
+[2026-06-17T04:35:13.087Z] [DEBUG] log Cloud->Relay:  {"$type":"CHAT_RESPONSE_V1","message_id":"23a74cb4-3ab2-457b-a380-8eb975f3529e","last_message":false,"markdown":"Based on the console logs, there are **3 errors** from two separate issues:\n\n### 1","...
+[2026-06-17T04:35:13.087Z] [DEBUG] assistant.message.received size=264
+[2026-06-17T04:35:13.208Z] [DEBUG] log Cloud->Relay:  {"$type":"CHAT_RESPONSE_V1","message_id":"23a74cb4-3ab2-457b-a380-8eb975f3529e","last_message":false,"markdown":". Unity Netcode for GameObjects Configuration Issue\n* **Error 1:** `[Netcode] No trans...
+[2026-06-17T04:35:13.208Z] [DEBUG] assistant.message.received size=280
+[2026-06-17T04:35:13.316Z] [DEBUG] log Cloud->Relay:  {"$type":"CHAT_RESPONSE_V1","message_id":"23a74cb4-3ab2-457b-a380-8eb975f3529e","last_message":false,"markdown":" selected!` (at `21:34:01`)\n* **Error 2:** `NullReferenceException: Object reference",...
+[2026-06-17T04:35:13.317Z] [DEBUG] assistant.message.received size=265
+[2026-06-17T04:35:13.431Z] [DEBUG] log Cloud->Relay:  {"$type":"CHAT_RESPONSE_V1","message_id":"23a74cb4-3ab2-457b-a380-8eb975f3529e","last_message":false,"markdown":" not set to an instance of an object` inside `NetworkManager.StartHost` (at `21:34:01",...
+[2026-06-17T04:35:13.431Z] [DEBUG] assistant.message.received size=265
+[2026-06-17T04:35:13.553Z] [DEBUG] log Cloud->Relay:  {"$type":"CHAT_RESPONSE_V1","message_id":"23a74cb4-3ab2-457b-a380-8eb975f3529e","last_message":false,"markdown":"`)\n* **Cause:** Both of these errors were triggered by `NetworkManagerUI.StartHost()` ...
+[2026-06-17T04:35:13.553Z] [DEBUG] assistant.message.received size=286
+[2026-06-17T04:35:13.798Z] [DEBUG] log Cloud->Relay:  {"$type":"CHAT_RESPONSE_V1","message_id":"23a74cb4-3ab2-457b-a380-8eb975f3529e","last_message":false,"markdown":"Network/NetworkManagerUI.cs:26`. The `NetworkManager` in your scene does not have a Net...
+[2026-06-17T04:35:13.798Z] [DEBUG] assistant.message.received size=271
+[2026-06-17T04:35:13.829Z] [DEBUG] log Cloud->Relay:  {"$type":"CHAT_RESPONSE_V1","message_id":"23a74cb4-3ab2-457b-a380-8eb975f3529e","last_message":false,"markdown":" Transport component (such as `UnityTransport`) assigned or added to it.\n* **Fix:** Se...
+[2026-06-17T04:35:13.830Z] [DEBUG] assistant.message.received size=291
+[2026-06-17T04:35:13.950Z] [DEBUG] log Cloud->Relay:  {"$type":"CHAT_RESPONSE_V1","message_id":"23a74cb4-3ab2-457b-a380-8eb975f3529e","last_message":false,"markdown":" the `NetworkManager` component, ensure a transport component (like `UnityTransport`) i...
+[2026-06-17T04:35:13.951Z] [DEBUG] assistant.message.received size=290
+[2026-06-17T04:35:14.058Z] [DEBUG] log Cloud->Relay:  {"$type":"CHAT_RESPONSE_V1","message_id":"23a74cb4-3ab2-457b-a380-8eb975f3529e","last_message":false,"markdown":" it is referenced in the `NetworkManager`'s **NetworkTransport** field.\n\n---\n\n### 2...
+[2026-06-17T04:35:14.058Z] [DEBUG] assistant.message.received size=274
+[2026-06-17T04:35:14.166Z] [DEBUG] log Cloud->Relay:  {"$type":"CHAT_RESPONSE_V1","message_id":"23a74cb4-3ab2-457b-a380-8eb975f3529e","last_message":false,"markdown":" AI Assistant Connection Issue\n* **Error 3:** `An error has occurred in AI Assistant. ...
+[2026-06-17T04:35:14.166Z] [DEBUG] assistant.message.received size=285
+[2026-06-17T04:35:14.294Z] [DEBUG] log Cloud->Relay:  {"$type":"CHAT_RESPONSE_V1","message_id":"23a74cb4-3ab2-457b-a380-8eb975f3529e","last_message":false,"markdown":" refreshing conversations from the server.` (at `21:34:16`)\n* **Cause:** The","context...
+[2026-06-17T04:35:14.295Z] [DEBUG] assistant.message.received size=257
+[2026-06-17T04:35:14.573Z] [DEBUG] log Cloud->Relay:  {"$type":"CHAT_RESPONSE_V1","message_id":"23a74cb4-3ab2-457b-a380-8eb975f3529e","last_message":false,"markdown":" Unity AI Assistant package (`com.unity.ai.assistant`) failed to fetch conversation upd...
+[2026-06-17T04:35:14.573Z] [DEBUG] assistant.message.received size=305
+[2026-06-17T04:35:14.573Z] [DEBUG] log Cloud->Relay:  {"$type":"CHAT_RESPONSE_V1","message_id":"23a74cb4-3ab2-457b-a380-8eb975f3529e","last_message":false,"markdown":".\n* **Fix:** Check your internet connection, or try restarting the editor/refreshing t...
+[2026-06-17T04:35:14.574Z] [DEBUG] assistant.message.received size=289
+[2026-06-17T04:35:14.670Z] [DEBUG] log Cloud->Relay:  {"$type":"CHAT_RESPONSE_V1","message_id":"23a74cb4-3ab2-457b-a380-8eb975f3529e","last_message":true,"markdown":"","context_usage_used_tokens":2075,"context_usage_max_tokens":512000}
+[2026-06-17T04:35:14.670Z] [DEBUG] assistant.message.received size=181
+[2026-06-17T04:35:14.670Z] [DEBUG] log Final chat response received - clearing session state
+[2026-06-17T04:36:54.460Z] [INFO] log Session end request received from client editor-43736-czjs5x (protocol: assistant)
+[2026-06-17T04:36:54.461Z] [INFO] log Cleaning up cloud session (sessionSequenceId: 1 → 2)
+[2026-06-17T04:36:54.461Z] [INFO] assistant.session.end
+[2026-06-17T04:36:54.462Z] [INFO] log Cloud WS close event: seqId=1, current sessionSequenceId=2, code=1000
+[2026-06-17T04:36:54.462Z] [INFO] log Ignoring stale close event (seqId=1, current=2), code=1000
+[2026-06-17T04:37:07.083Z] [INFO] log Domain reload signal received from client editor-43736-czjs5x
+[2026-06-17T04:37:07.083Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-06-17T04:37:07.084Z] [DEBUG] acp.queue.pause depth=0
+[2026-06-17T04:37:07.482Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-06-17T04:37:07.483Z] [DEBUG] acp.queue.pause depth=0
+[2026-06-17T04:37:07.483Z] [INFO] log Client disconnected - blocking and caching for recovery
+[2026-06-17T04:37:07.483Z] [WARN] connection.lost clientId=null
+[2026-06-17T04:37:07.483Z] [WARN] log Client disconnected - sessions will persist until auto-shutdown, reason: Client disconnected
+[2026-06-17T04:37:07.484Z] [INFO] log Auto-shutdown timer started due to client disconnection
+[2026-06-17T04:37:13.695Z] [DEBUG] log Relay->Editor communication is unblocked
+[2026-06-17T04:37:13.695Z] [INFO] log Unity client connected with ID: editor-43736-nivk2t (relay 1.0.12-build.96)
+[2026-06-17T04:37:13.695Z] [INFO] connection.established clientId=editor-43736-nivk2t port=9001
+[2026-06-17T04:37:13.785Z] [INFO] log HTTP request | POST /mcp/server-status
+[2026-06-17T04:37:13.786Z] [INFO] log Server status check | Server: unity-mcp | Running: yes
+[2026-06-17T04:37:14.088Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-bc7387cb-43736
+[2026-06-17T04:37:14.089Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-06-17T04:38:10.671Z] [INFO] log Domain reload signal received from client editor-43736-nivk2t
+[2026-06-17T04:38:10.671Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-06-17T04:38:10.671Z] [DEBUG] acp.queue.pause depth=0
+[2026-06-17T04:38:11.028Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-06-17T04:38:11.028Z] [DEBUG] acp.queue.pause depth=0
+[2026-06-17T04:38:11.028Z] [INFO] log Client disconnected - blocking and caching for recovery
+[2026-06-17T04:38:11.029Z] [WARN] connection.lost clientId=null
+[2026-06-17T04:38:11.029Z] [WARN] log Client disconnected - sessions will persist until auto-shutdown, reason: Client disconnected
+[2026-06-17T04:38:11.029Z] [INFO] log Auto-shutdown timer started due to client disconnection
+[2026-06-17T04:38:16.574Z] [DEBUG] log Relay->Editor communication is unblocked
+[2026-06-17T04:38:16.574Z] [INFO] log Unity client connected with ID: editor-43736-8so5j1 (relay 1.0.12-build.96)
+[2026-06-17T04:38:16.574Z] [INFO] connection.established clientId=editor-43736-8so5j1 port=9001
+[2026-06-17T04:38:16.642Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-bc7387cb-43736
+[2026-06-17T04:38:16.643Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-06-17T04:38:16.866Z] [INFO] log HTTP request | POST /mcp/server-status
+[2026-06-17T04:38:16.866Z] [INFO] log Server status check | Server: unity-mcp | Running: yes
+[2026-06-17T04:38:51.408Z] [INFO] log Domain reload signal received from client editor-43736-8so5j1
+[2026-06-17T04:38:51.408Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-06-17T04:38:51.408Z] [DEBUG] acp.queue.pause depth=0
+[2026-06-17T04:38:51.798Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-06-17T04:38:51.798Z] [DEBUG] acp.queue.pause depth=0
+[2026-06-17T04:38:51.798Z] [INFO] log Client disconnected - blocking and caching for recovery
+[2026-06-17T04:38:51.799Z] [WARN] connection.lost clientId=null
+[2026-06-17T04:38:51.799Z] [WARN] log Client disconnected - sessions will persist until auto-shutdown, reason: Client disconnected
+[2026-06-17T04:38:51.799Z] [INFO] log Auto-shutdown timer started due to client disconnection
+[2026-06-17T04:38:57.474Z] [DEBUG] log Relay->Editor communication is unblocked
+[2026-06-17T04:38:57.475Z] [INFO] log Unity client connected with ID: editor-43736-pz31uh (relay 1.0.12-build.96)
+[2026-06-17T04:38:57.475Z] [INFO] connection.established clientId=editor-43736-pz31uh port=9001
+[2026-06-17T04:38:57.571Z] [INFO] log HTTP request | POST /mcp/server-status
+[2026-06-17T04:38:57.572Z] [INFO] log Server status check | Server: unity-mcp | Running: yes
+[2026-06-17T04:38:57.904Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-bc7387cb-43736
+[2026-06-17T04:38:57.905Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-06-17T04:44:10.416Z] [INFO] log Domain reload signal received from client editor-43736-pz31uh
+[2026-06-17T04:44:10.417Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-06-17T04:44:10.417Z] [DEBUG] acp.queue.pause depth=0
+[2026-06-17T04:44:10.824Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-06-17T04:44:10.824Z] [DEBUG] acp.queue.pause depth=0
+[2026-06-17T04:44:10.825Z] [INFO] log Client disconnected - blocking and caching for recovery
+[2026-06-17T04:44:10.825Z] [WARN] connection.lost clientId=null
+[2026-06-17T04:44:10.825Z] [WARN] log Client disconnected - sessions will persist until auto-shutdown, reason: Client disconnected
+[2026-06-17T04:44:10.826Z] [INFO] log Auto-shutdown timer started due to client disconnection
+[2026-06-17T04:44:16.635Z] [DEBUG] log Relay->Editor communication is unblocked
+[2026-06-17T04:44:16.635Z] [INFO] log Unity client connected with ID: editor-43736-5blq5d (relay 1.0.12-build.96)
+[2026-06-17T04:44:16.636Z] [INFO] connection.established clientId=editor-43736-5blq5d port=9001
+[2026-06-17T04:44:16.898Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-bc7387cb-43736
+[2026-06-17T04:44:16.899Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-06-17T04:44:16.915Z] [INFO] log HTTP request | POST /mcp/server-status
+[2026-06-17T04:44:16.916Z] [INFO] log Server status check | Server: unity-mcp | Running: yes
+[2026-06-17T04:45:06.041Z] [INFO] log Shutdown request received from client editor-43736-5blq5d
+[2026-06-17T04:45:06.041Z] [INFO] log Unity client requested immediate shutdown - shutting down now, reason: Shutdown requested by client
+[2026-06-17T04:45:06.042Z] [INFO] log Shutdown: Initiating graceful shutdown: Shutdown requested by client
