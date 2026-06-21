@@ -12,6 +12,8 @@ public class PlayerSpawner : MonoBehaviour
     [SerializeField] private Transform[] spawnPoints;
 
     private readonly Dictionary<ulong, GameObject> spawnedPlayers = new();
+    private readonly HashSet<int> usedColorIndices = new();
+    private readonly Dictionary<ulong, int> clientColorIndices = new();
     private int spawnCount;
 
     private void Start()
@@ -53,6 +55,11 @@ public class PlayerSpawner : MonoBehaviour
             if (netObj != null && netObj.IsSpawned) { netObj.Despawn(true); }
             spawnedPlayers.Remove(clientId);
         }
+        if (clientColorIndices.TryGetValue(clientId, out int idx))
+        {
+            usedColorIndices.Remove(idx);
+            clientColorIndices.Remove(clientId);
+        }
     }
 
     private void SpawnPlayer(ulong clientId)
@@ -70,5 +77,11 @@ public class PlayerSpawner : MonoBehaviour
         NetworkObject netObj = player.GetComponent<NetworkObject>();
         netObj.SpawnAsPlayerObject(clientId, destroyWithScene: true);
         spawnedPlayers[clientId] = player;
+
+        int colorIndex = PlayerColorSync.NextColorIndex(usedColorIndices);
+        usedColorIndices.Add(colorIndex);
+        clientColorIndices[clientId] = colorIndex;
+        PlayerColorSync colorSync = player.GetComponent<PlayerColorSync>();
+        if (colorSync != null) { colorSync.AssignColorIndex(colorIndex); }
     }
 }

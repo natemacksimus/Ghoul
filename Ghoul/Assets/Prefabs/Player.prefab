@@ -18,6 +18,8 @@ GameObject:
   - component: {fileID: 5470232605422747917}
   - component: {fileID: 3789973815809224083}
   - component: {fileID: 7888967688895080731}
+  - component: {fileID: 8973740989953611613}
+  - component: {fileID: 6610035847858885361}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -232,7 +234,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 1788500327, guid: 9b14d4392de53654ea2e8fc2593dd0b3, type: 3}
+  m_Sprite: {fileID: -198168926, guid: 9b14d4392de53654ea2e8fc2593dd0b3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -389,3 +391,33 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
+--- !u!114 &8973740989953611613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3921641995449094960}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c26196b5272d1674eb38f32d44d91821, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerColorSync
+  ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &6610035847858885361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3921641995449094960}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0021d3662b24d6d47bfd20e672ba9845, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
+  attackDuration: 0.15
+  attackCooldown: 0.6
+  attackDamage: 20
+  attackKnockback: {x: 30, y: 30}
+  attackKnockbackTime: 0.35

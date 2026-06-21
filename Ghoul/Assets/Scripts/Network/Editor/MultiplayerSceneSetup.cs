@@ -34,8 +34,10 @@ public static class MultiplayerSceneSetup
         }
 
         // --- 1. Build the Player prefab ---
-        if (scenePlayer.GetComponent<NetworkObject>() == null)        { scenePlayer.AddComponent<NetworkObject>(); }
+        if (scenePlayer.GetComponent<NetworkObject>() == null)          { scenePlayer.AddComponent<NetworkObject>(); }
         if (scenePlayer.GetComponent<ClientNetworkTransform>() == null) { scenePlayer.AddComponent<ClientNetworkTransform>(); }
+        if (scenePlayer.GetComponent<PlayerColorSync>() == null)        { scenePlayer.AddComponent<PlayerColorSync>(); }
+        if (scenePlayer.GetComponent<PlayerAttack>() == null)           { scenePlayer.AddComponent<PlayerAttack>(); }
 
         if (!AssetDatabase.IsValidFolder("Assets/Prefabs")) { AssetDatabase.CreateFolder("Assets", "Prefabs"); }
 
@@ -186,16 +188,47 @@ public static class MultiplayerSceneSetup
         canvasGO.AddComponent<CanvasScaler>();
         canvasGO.AddComponent<GraphicRaycaster>();
 
-        // Semi-transparent panel
+        // Semi-transparent panel — taller to fit the join-code input field
         GameObject panel = RectChild("ButtonPanel", canvasGO);
         Image panelImg = panel.AddComponent<Image>();
         panelImg.color = new Color(0f, 0f, 0f, 0.55f);
-        SizeAt(panel, new Vector2(200f, 172f), Vector2.zero);
+        SizeAt(panel, new Vector2(220f, 220f), Vector2.zero);
+
+        // Join-code input field (client types the host's code here)
+        GameObject inputGO = RectChild("JoinCodeInput", panel);
+        InputField inputField = inputGO.AddComponent<InputField>();
+        Image inputImg = inputGO.AddComponent<Image>();
+        inputImg.color = new Color(1f, 1f, 1f, 0.9f);
+        SizeAt(inputGO, new Vector2(180f, 32f), new Vector2(0f, 80f));
+
+        GameObject inputTextGO = new GameObject("Text");
+        inputTextGO.transform.SetParent(inputGO.transform, false);
+        RectTransform inputTextRT = inputTextGO.AddComponent<RectTransform>();
+        inputTextRT.anchorMin = Vector2.zero; inputTextRT.anchorMax = Vector2.one;
+        inputTextRT.offsetMin = new Vector2(4f, 0f); inputTextRT.offsetMax = new Vector2(-4f, 0f);
+        Text inputText = inputTextGO.AddComponent<Text>();
+        inputText.font = BuiltinFont();
+        inputText.fontSize = 16;
+        inputText.color = Color.black;
+        inputField.textComponent = inputText;
+
+        GameObject placeholderGO = new GameObject("Placeholder");
+        placeholderGO.transform.SetParent(inputGO.transform, false);
+        RectTransform phRT = placeholderGO.AddComponent<RectTransform>();
+        phRT.anchorMin = Vector2.zero; phRT.anchorMax = Vector2.one;
+        phRT.offsetMin = new Vector2(4f, 0f); phRT.offsetMax = new Vector2(-4f, 0f);
+        Text placeholder = placeholderGO.AddComponent<Text>();
+        placeholder.font = BuiltinFont();
+        placeholder.fontSize = 16;
+        placeholder.fontStyle = FontStyle.Italic;
+        placeholder.color = new Color(0.5f, 0.5f, 0.5f, 1f);
+        placeholder.text = "Join code...";
+        inputField.placeholder = placeholder;
 
         // Three buttons
-        GameObject hostGO   = MakeButton("Host",   panel, new Vector2(0f,  60f));
-        GameObject clientGO = MakeButton("Client", panel, new Vector2(0f,   8f));
-        GameObject serverGO = MakeButton("Server", panel, new Vector2(0f, -44f));
+        GameObject hostGO   = MakeButton("Host",   panel, new Vector2(0f,  38f));
+        GameObject clientGO = MakeButton("Client", panel, new Vector2(0f, -16f));
+        GameObject serverGO = MakeButton("Server", panel, new Vector2(0f, -70f));
 
         // Status label above the panel
         GameObject statusGO = RectChild("StatusText", canvasGO);
@@ -204,7 +237,7 @@ public static class MultiplayerSceneSetup
         status.fontSize = 14;
         status.alignment = TextAnchor.MiddleCenter;
         status.color = Color.white;
-        SizeAt(statusGO, new Vector2(400f, 28f), new Vector2(0f, 110f));
+        SizeAt(statusGO, new Vector2(400f, 50f), new Vector2(0f, 140f));
 
         // Wire NetworkManagerUI
         NetworkManagerUI nmUI = canvasGO.AddComponent<NetworkManagerUI>();
@@ -212,6 +245,7 @@ public static class MultiplayerSceneSetup
         soUI.FindProperty("hostButton").objectReferenceValue   = hostGO.GetComponent<Button>();
         soUI.FindProperty("clientButton").objectReferenceValue = clientGO.GetComponent<Button>();
         soUI.FindProperty("serverButton").objectReferenceValue = serverGO.GetComponent<Button>();
+        soUI.FindProperty("joinCodeInput").objectReferenceValue = inputField;
         soUI.FindProperty("buttonPanel").objectReferenceValue  = panel;
         soUI.FindProperty("statusText").objectReferenceValue   = status;
         soUI.ApplyModifiedProperties();
@@ -268,5 +302,21 @@ public static class MultiplayerSceneSetup
         Font f = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
         if (f == null) { f = Resources.GetBuiltinResource<Font>("Arial.ttf"); }
         return f;
+    }
+
+    // Run via Tools > Multiplayer > Update Player Prefab
+    // Adds PlayerColorSync and PlayerAttack to the existing Player.prefab without
+    // re-running the full scene setup.
+    [MenuItem("Tools/Multiplayer/Update Player Prefab")]
+    public static void UpdatePlayerPrefab()
+    {
+        const string prefabPath = "Assets/Prefabs/Player.prefab";
+        using (PrefabUtility.EditPrefabContentsScope scope = new PrefabUtility.EditPrefabContentsScope(prefabPath))
+        {
+            GameObject root = scope.prefabContentsRoot;
+            if (root.GetComponent<PlayerColorSync>() == null) { root.AddComponent<PlayerColorSync>(); }
+            if (root.GetComponent<PlayerAttack>() == null)    { root.AddComponent<PlayerAttack>(); }
+        }
+        Debug.Log("[MultiplayerSetup] Player prefab updated — PlayerColorSync and PlayerAttack added.");
     }
 }

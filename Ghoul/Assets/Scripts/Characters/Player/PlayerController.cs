@@ -83,6 +83,7 @@ public class PlayerController : EntityController
     public PlayerSounds sounds;
 
     private PlayerStats playerStats;
+    private PlayerAttack playerAttack;
     //private PlayerInventory playerInventory;
     //[SerializeField] private CinemachineVirtualCamera virtualCamera;
     //private CinemachineFramingTransposer transposer;
@@ -118,6 +119,7 @@ public class PlayerController : EntityController
         controller2D = GetComponent<Controller2D>();
         animator = GetComponent<Animator>();
         playerStats = GetComponent<PlayerStats>();
+        playerAttack = GetComponent<PlayerAttack>();
 
 
         //GameObject virtualCameraObject = GameObject.FindGameObjectWithTag("Cinemachine Camera");
@@ -182,6 +184,11 @@ public class PlayerController : EntityController
 
 
         SetDirectionalInput(directionalInput);
+
+        if (playerAttack != null && playerAttack.IsAttackPending && directionalInput != Vector2.zero)
+        {
+            playerAttack.FirePendingAttack(directionalInput);
+        }
 
         if (directionalInput.x != 0)
         {
@@ -416,91 +423,8 @@ public class PlayerController : EntityController
     public void UseItem(InputAction.CallbackContext context)
     {
         if (disableInput) { return; }
-        //if (playerInventory == null) { return; }
         DisableInputIfMenuOpen();
-
-
-        //InventoryType invType = playerInventory.CheckItemToUse();
-
-        //Item currentItem = playerInventory.GetCurrentHighlightedItem();
-
-        //if (currentItem == null) { return; }
-
-
-        //if (context.interaction is HoldInteraction)
-        //{
-        //    // Hold button to use weapon / item alternate
-
-        //    // Get current damage
-        //    playerStats.UpdateCurrentDamageAndKnockback();
-
-        //    if (attackRateTimer <= 0 && !isAttacking)
-        //    {
-        //        // Spend hunger to attack
-        //        if (invType == InventoryType.WEAPON) 
-        //        { 
-        //            playerStats.ChangeHunger(-attackingStrongHungerCost);
-        //            isAttacking = true;
-        //        }
-
-        //        // Save x velocity when attack started
-        //        lastXVelocity = previousXVelocity;
-
-        //        // Get highlighted item's animation clip and play clip
-        //        if (currentItem.altUseItemClip != null)
-        //        {
-        //            string clipName = currentItem.altUseItemClip.name;
-        //            if (clipName != null) { animator.Play(clipName); }
-        //        }
-
-        //        // Try use item
-        //        bool successfulUse = playerInventory.UseItem();
-        //        //Debug.Log("successfulUse: " + successfulUse);
-
-        //        // if successful, use item's ability
-        //        if (successfulUse) { currentItem.UseItemAltAbility(this); }
-
-        //        // reset attack timer
-        //        attackRateTimer = playerStats.AttackRate;
-        //    }
-        //}
-        //else
-        //{
-        //    // Press button to use weapon / item
-
-        //    // Get current damage
-        //    playerStats.UpdateCurrentDamageAndKnockback();
-
-        //    if (attackRateTimer <= 0 && !isAttacking)
-        //    {
-        //        // Spend hunger to attack if using a weapon
-        //        if (invType == InventoryType.WEAPON) 
-        //        { 
-        //            playerStats.ChangeHunger(-attackingHungerCost);
-        //            isAttacking = true;
-        //        }
-
-        //        // Save x velocity when attack started
-        //        lastXVelocity = previousXVelocity;
-
-        //        //Debug.Log("5.currentItem.useItemClip: " + currentItem.useItemClip);
-        //        // Get highlighted item's animation clip and play clip
-        //        if (currentItem.useItemClip != null)
-        //        {
-        //            string clipName = currentItem.useItemClip.name;
-        //            if (clipName != null) { animator.Play(clipName); }
-        //        }
-
-        //        // Try use item
-        //        bool successfulUse = playerInventory.UseItem();
-
-        //        // if successful, use item's ability
-        //        if (successfulUse) { currentItem.UseItemAbility(this); }
-
-        //        // reset attack timer
-        //        attackRateTimer = playerStats.AttackRate;
-        //    }
-        //}
+        if (playerAttack != null) { playerAttack.BeginAttack(); }
     }
 
     private void DisableInputIfMenuOpen()
