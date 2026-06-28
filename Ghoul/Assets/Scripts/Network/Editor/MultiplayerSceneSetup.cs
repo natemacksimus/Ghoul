@@ -188,27 +188,41 @@ public static class MultiplayerSceneSetup
         canvasGO.AddComponent<CanvasScaler>();
         canvasGO.AddComponent<GraphicRaycaster>();
 
-        // Semi-transparent panel — taller to fit the join-code input field
+        // Outer panel — stays visible until a client/server session starts.
         GameObject panel = RectChild("ButtonPanel", canvasGO);
         Image panelImg = panel.AddComponent<Image>();
-        panelImg.color = new Color(0f, 0f, 0f, 0.55f);
-        SizeAt(panel, new Vector2(220f, 220f), Vector2.zero);
+        panelImg.color = new Color(0f, 0f, 0f, 0.72f);
+        SizeAt(panel, new Vector2(230f, 300f), Vector2.zero);
 
-        // Join-code input field (client types the host's code here)
-        GameObject inputGO = RectChild("JoinCodeInput", panel);
+        // ── lobbyView: everything visible before a session is started ──────────
+        GameObject lobbyView = RectChild("LobbyView", panel);
+        SizeAt(lobbyView, new Vector2(230f, 300f), Vector2.zero);
+
+        // Label telling the client where to type the join code
+        GameObject inputLabelGO = RectChild("JoinCodeInputLabel", lobbyView);
+        Text inputLabel = inputLabelGO.AddComponent<Text>();
+        inputLabel.font = BuiltinFont();
+        inputLabel.fontSize = 12;
+        inputLabel.alignment = TextAnchor.MiddleCenter;
+        inputLabel.color = new Color(0.75f, 0.75f, 0.75f, 1f);
+        inputLabel.text = "To join, enter the host's code:";
+        SizeAt(inputLabelGO, new Vector2(200f, 20f), new Vector2(0f, 118f));
+
+        // Join-code input field
+        GameObject inputGO = RectChild("JoinCodeInput", lobbyView);
         InputField inputField = inputGO.AddComponent<InputField>();
         Image inputImg = inputGO.AddComponent<Image>();
         inputImg.color = new Color(1f, 1f, 1f, 0.9f);
-        SizeAt(inputGO, new Vector2(180f, 32f), new Vector2(0f, 80f));
+        SizeAt(inputGO, new Vector2(190f, 32f), new Vector2(0f, 90f));
 
         GameObject inputTextGO = new GameObject("Text");
         inputTextGO.transform.SetParent(inputGO.transform, false);
         RectTransform inputTextRT = inputTextGO.AddComponent<RectTransform>();
         inputTextRT.anchorMin = Vector2.zero; inputTextRT.anchorMax = Vector2.one;
-        inputTextRT.offsetMin = new Vector2(4f, 0f); inputTextRT.offsetMax = new Vector2(-4f, 0f);
+        inputTextRT.offsetMin = new Vector2(6f, 0f); inputTextRT.offsetMax = new Vector2(-6f, 0f);
         Text inputText = inputTextGO.AddComponent<Text>();
         inputText.font = BuiltinFont();
-        inputText.fontSize = 16;
+        inputText.fontSize = 18;
         inputText.color = Color.black;
         inputField.textComponent = inputText;
 
@@ -216,38 +230,82 @@ public static class MultiplayerSceneSetup
         placeholderGO.transform.SetParent(inputGO.transform, false);
         RectTransform phRT = placeholderGO.AddComponent<RectTransform>();
         phRT.anchorMin = Vector2.zero; phRT.anchorMax = Vector2.one;
-        phRT.offsetMin = new Vector2(4f, 0f); phRT.offsetMax = new Vector2(-4f, 0f);
+        phRT.offsetMin = new Vector2(6f, 0f); phRT.offsetMax = new Vector2(-6f, 0f);
         Text placeholder = placeholderGO.AddComponent<Text>();
         placeholder.font = BuiltinFont();
-        placeholder.fontSize = 16;
+        placeholder.fontSize = 18;
         placeholder.fontStyle = FontStyle.Italic;
-        placeholder.color = new Color(0.5f, 0.5f, 0.5f, 1f);
-        placeholder.text = "Join code...";
+        placeholder.color = new Color(0.55f, 0.55f, 0.55f, 1f);
+        placeholder.text = "XXXXXX";
         inputField.placeholder = placeholder;
 
         // Three buttons
-        GameObject hostGO   = MakeButton("Host",   panel, new Vector2(0f,  38f));
-        GameObject clientGO = MakeButton("Client", panel, new Vector2(0f, -16f));
-        GameObject serverGO = MakeButton("Server", panel, new Vector2(0f, -70f));
+        GameObject hostGO   = MakeButton("Host",   lobbyView, new Vector2(0f,  44f));
+        GameObject clientGO = MakeButton("Client", lobbyView, new Vector2(0f, -14f));
+        GameObject serverGO = MakeButton("Server", lobbyView, new Vector2(0f, -72f));
 
-        // Status label above the panel
+        // ── codeDisplay: shown after hosting; high-contrast panel with the code ─
+        GameObject codeDisplay = RectChild("CodeDisplay", panel);
+        Image codeDisplayImg = codeDisplay.AddComponent<Image>();
+        codeDisplayImg.color = new Color(0.08f, 0.15f, 0.3f, 1f);   // dark navy
+        SizeAt(codeDisplay, new Vector2(230f, 300f), Vector2.zero);
+
+        GameObject codeTitleGO = RectChild("CodeTitle", codeDisplay);
+        Text codeTitle = codeTitleGO.AddComponent<Text>();
+        codeTitle.font = BuiltinFont();
+        codeTitle.fontSize = 15;
+        codeTitle.alignment = TextAnchor.MiddleCenter;
+        codeTitle.color = new Color(0.7f, 0.85f, 1f, 1f);
+        codeTitle.text = "Session started!";
+        SizeAt(codeTitleGO, new Vector2(210f, 28f), new Vector2(0f, 90f));
+
+        GameObject codeSubGO = RectChild("CodeSubtitle", codeDisplay);
+        Text codeSub = codeSubGO.AddComponent<Text>();
+        codeSub.font = BuiltinFont();
+        codeSub.fontSize = 13;
+        codeSub.alignment = TextAnchor.MiddleCenter;
+        codeSub.color = new Color(0.65f, 0.65f, 0.65f, 1f);
+        codeSub.text = "Share this code with friends:";
+        SizeAt(codeSubGO, new Vector2(210f, 22f), new Vector2(0f, 55f));
+
+        // The actual join code — large, white, easy to read
+        GameObject codeValueGO = RectChild("JoinCodeText", codeDisplay);
+        Image codeValueBg = codeValueGO.AddComponent<Image>();
+        codeValueBg.color = new Color(1f, 1f, 1f, 0.1f);   // subtle highlight behind the code
+        Text codeValue = new GameObject("Text").AddComponent<Text>();
+        codeValue.transform.SetParent(codeValueGO.transform, false);
+        RectTransform codeValueTextRT = codeValue.GetComponent<RectTransform>();
+        codeValueTextRT.anchorMin = Vector2.zero; codeValueTextRT.anchorMax = Vector2.one;
+        codeValueTextRT.sizeDelta = Vector2.zero;
+        codeValue.font = BuiltinFont();
+        codeValue.fontSize = 36;
+        codeValue.fontStyle = FontStyle.Bold;
+        codeValue.alignment = TextAnchor.MiddleCenter;
+        codeValue.color = Color.white;
+        codeValue.text = "------";
+        SizeAt(codeValueGO, new Vector2(200f, 56f), new Vector2(0f, 5f));
+
+        // Status text outside the panel — errors and connection messages only.
         GameObject statusGO = RectChild("StatusText", canvasGO);
         Text status = statusGO.AddComponent<Text>();
         status.font = BuiltinFont();
-        status.fontSize = 14;
+        status.fontSize = 13;
         status.alignment = TextAnchor.MiddleCenter;
-        status.color = Color.white;
-        SizeAt(statusGO, new Vector2(400f, 50f), new Vector2(0f, 140f));
+        status.color = new Color(1f, 0.4f, 0.4f, 1f);   // red tint so errors stand out
+        SizeAt(statusGO, new Vector2(260f, 50f), new Vector2(0f, 170f));
 
         // Wire NetworkManagerUI
         NetworkManagerUI nmUI = canvasGO.AddComponent<NetworkManagerUI>();
         SerializedObject soUI = new SerializedObject(nmUI);
-        soUI.FindProperty("hostButton").objectReferenceValue   = hostGO.GetComponent<Button>();
-        soUI.FindProperty("clientButton").objectReferenceValue = clientGO.GetComponent<Button>();
-        soUI.FindProperty("serverButton").objectReferenceValue = serverGO.GetComponent<Button>();
+        soUI.FindProperty("hostButton").objectReferenceValue    = hostGO.GetComponent<Button>();
+        soUI.FindProperty("clientButton").objectReferenceValue  = clientGO.GetComponent<Button>();
+        soUI.FindProperty("serverButton").objectReferenceValue  = serverGO.GetComponent<Button>();
         soUI.FindProperty("joinCodeInput").objectReferenceValue = inputField;
-        soUI.FindProperty("buttonPanel").objectReferenceValue  = panel;
-        soUI.FindProperty("statusText").objectReferenceValue   = status;
+        soUI.FindProperty("buttonPanel").objectReferenceValue   = panel;
+        soUI.FindProperty("lobbyView").objectReferenceValue     = lobbyView;
+        soUI.FindProperty("codeDisplay").objectReferenceValue   = codeDisplay;
+        soUI.FindProperty("joinCodeText").objectReferenceValue  = codeValue;
+        soUI.FindProperty("statusText").objectReferenceValue    = status;
         soUI.ApplyModifiedProperties();
     }
 

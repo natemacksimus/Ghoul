@@ -9,13 +9,17 @@ using UnityEngine.UI;
 
 // Lobby UI with Unity Multiplayer Services (com.unity.services.multiplayer) Relay support.
 //
-// Canvas layout required:
-//   buttonPanel      — parent panel shown before a session starts
-//     hostButton     — creates a Relay session and displays the join code
-//     clientButton   — joins using the code typed in joinCodeInput
-//     serverButton   — local server (LAN / editor testing only, no Relay)
-//     joinCodeInput  — InputField the client types the host's join code into
-//   statusText       — Text shown below the panel (join code, errors, etc.)
+// Canvas layout (built by Tools > Multiplayer > Setup Scene):
+//   buttonPanel            — outer panel, always visible until a client session starts
+//     lobbyView            — group containing input + buttons, hidden after hosting
+//       joinCodeInputLabel — instructs the client to type a code here
+//       joinCodeInput      — InputField the client types the host's join code into
+//       hostButton         — creates a Relay session
+//       clientButton       — joins using the code in joinCodeInput
+//       serverButton       — local server (LAN / editor testing only)
+//     codeDisplay          — shown after hosting; high-contrast background + join code
+//       joinCodeText       — the 6-character code to share
+//   statusText             — error / connecting messages outside the panel
 //
 // Max players is configurable via maxPlayers in the Inspector.
 public class NetworkManagerUI : MonoBehaviour
@@ -25,19 +29,30 @@ public class NetworkManagerUI : MonoBehaviour
     [SerializeField] private Button serverButton;
     [SerializeField] private InputField joinCodeInput;
     [SerializeField] private GameObject buttonPanel;
+    [SerializeField] private GameObject lobbyView;
+    [SerializeField] private GameObject codeDisplay;
+    [SerializeField] private Text joinCodeText;
     [SerializeField] private Text statusText;
     [SerializeField] private int maxPlayers = 4;
 
     private void Awake()
     {
+        // Fall back to finding by name if the inspector references weren't wired.
+        if (lobbyView == null && buttonPanel != null)
+            lobbyView = buttonPanel.transform.Find("LobbyView")?.gameObject;
+        if (codeDisplay == null && buttonPanel != null)
+            codeDisplay = buttonPanel.transform.Find("CodeDisplay")?.gameObject;
+
+        if (lobbyView != null)   { lobbyView.SetActive(true); }
+        if (codeDisplay != null) { codeDisplay.SetActive(false); }
+
         if (hostButton != null)   { hostButton.onClick.AddListener(() => _ = StartHostWithRelay()); }
         if (clientButton != null) { clientButton.onClick.AddListener(() => _ = StartClientWithRelay()); }
         if (serverButton != null) { serverButton.onClick.AddListener(StartServer); }
     }
 
     // -------------------------------------------------------------------------
-    // Relay host — MultiplayerService creates the Relay allocation and returns
-    // a join code; we then start NGO as host.
+    // Relay host — session is created, lobby swaps to a high-contrast code display.
     // -------------------------------------------------------------------------
 
     private async Task StartHostWithRelay()
@@ -51,7 +66,12 @@ public class NetworkManagerUI : MonoBehaviour
             ISession session = await MultiplayerService.Instance.CreateSessionAsync(options);
 
             NetworkManager.Singleton.StartHost();
-            HideButtons($"Join code:\n{session.Code}");
+
+            // Swap lobby view for the code display inside the same panel.
+            if (lobbyView != null)   { lobbyView.SetActive(false); }
+            if (codeDisplay != null) { codeDisplay.SetActive(true); }
+            if (joinCodeText != null){ joinCodeText.text = session.Code; }
+            SetStatus(string.Empty);
         }
         catch (Exception e)
         {
@@ -60,8 +80,7 @@ public class NetworkManagerUI : MonoBehaviour
     }
 
     // -------------------------------------------------------------------------
-    // Relay client — MultiplayerService resolves the join code to a Relay
-    // allocation; we then start NGO as a client.
+    // Relay client — resolves the join code and starts NGO as a client.
     // -------------------------------------------------------------------------
 
     private async Task StartClientWithRelay()
@@ -77,7 +96,8 @@ public class NetworkManagerUI : MonoBehaviour
             await MultiplayerService.Instance.JoinSessionByCodeAsync(code);
 
             NetworkManager.Singleton.StartClient();
-            HideButtons("Connecting...");
+            if (buttonPanel != null) { buttonPanel.SetActive(false); }
+            SetStatus("Connected!");
         }
         catch (SessionException e)
         {
@@ -96,7 +116,8 @@ public class NetworkManagerUI : MonoBehaviour
     private void StartServer()
     {
         NetworkManager.Singleton.StartServer();
-        HideButtons("Server running...");
+        if (buttonPanel != null) { buttonPanel.SetActive(false); }
+        SetStatus("Server running...");
     }
 
     // -------------------------------------------------------------------------
@@ -109,12 +130,6 @@ public class NetworkManagerUI : MonoBehaviour
         await UnityServices.InitializeAsync();
         if (!AuthenticationService.Instance.IsSignedIn)
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
-    }
-
-    private void HideButtons(string status)
-    {
-        if (buttonPanel != null) { buttonPanel.SetActive(false); }
-        SetStatus(status);
     }
 
     private void SetStatus(string msg)
