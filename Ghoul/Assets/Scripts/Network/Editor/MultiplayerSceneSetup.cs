@@ -38,6 +38,7 @@ public static class MultiplayerSceneSetup
         if (scenePlayer.GetComponent<ClientNetworkTransform>() == null) { scenePlayer.AddComponent<ClientNetworkTransform>(); }
         if (scenePlayer.GetComponent<PlayerColorSync>() == null)        { scenePlayer.AddComponent<PlayerColorSync>(); }
         if (scenePlayer.GetComponent<PlayerAttack>() == null)           { scenePlayer.AddComponent<PlayerAttack>(); }
+        if (scenePlayer.GetComponent<PlayerHealthBar>() == null)        { scenePlayer.AddComponent<PlayerHealthBar>(); }
 
         if (!AssetDatabase.IsValidFolder("Assets/Prefabs")) { AssetDatabase.CreateFolder("Assets", "Prefabs"); }
 
@@ -372,9 +373,10 @@ public static class MultiplayerSceneSetup
         using (PrefabUtility.EditPrefabContentsScope scope = new PrefabUtility.EditPrefabContentsScope(prefabPath))
         {
             GameObject root = scope.prefabContentsRoot;
-            if (root.GetComponent<PlayerColorSync>() == null) { root.AddComponent<PlayerColorSync>(); }
-            if (root.GetComponent<PlayerAttack>() == null)    { root.AddComponent<PlayerAttack>(); }
+            if (root.GetComponent<PlayerColorSync>() == null)    { root.AddComponent<PlayerColorSync>(); }
+            if (root.GetComponent<PlayerAttack>() == null)        { root.AddComponent<PlayerAttack>(); }
+            if (root.GetComponent<PlayerHealthBar>() == null)     { root.AddComponent<PlayerHealthBar>(); }
         }
-        Debug.Log("[MultiplayerSetup] Player prefab updated — PlayerColorSync and PlayerAttack added.");
+        Debug.Log("[MultiplayerSetup] Player prefab updated — PlayerColorSync, PlayerAttack, and PlayerHealthBar added.");
     }
 }

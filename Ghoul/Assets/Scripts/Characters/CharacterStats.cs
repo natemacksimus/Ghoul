@@ -14,6 +14,9 @@ public abstract class CharacterStats : NetworkBehaviour, IDamageable
     [SerializeField] protected float maxHealth = 100;
     [SerializeField] protected float currentHealth = 0;
 
+    public float MaxHealth => maxHealth;
+    public float CurrentHealth => currentHealth;
+
     [SerializeField] protected float currentSpeed = 5;
     public float CurrentSpeed { get => currentSpeed; set => currentSpeed = value; }
 
@@ -37,6 +40,8 @@ public abstract class CharacterStats : NetworkBehaviour, IDamageable
 
     [SerializeField] protected AudioClip weaponHitSound;
     public AudioClip WeaponHitSound { get => weaponHitSound; set => weaponHitSound = value; }
+
+    public event System.Action<float, float> HealthChanged;
 
     // Server-authoritative health visible to all clients.
     private NetworkVariable<float> netHealth = new NetworkVariable<float>(
@@ -74,6 +79,7 @@ public abstract class CharacterStats : NetworkBehaviour, IDamageable
     private void OnNetHealthChanged(float prev, float next)
     {
         currentHealth = next;
+        HealthChanged?.Invoke(currentHealth, maxHealth);
         if (next <= 0f && prev > 0f)
         {
             if (animator != null) { animator.SetTrigger("die"); }
@@ -152,6 +158,7 @@ public abstract class CharacterStats : NetworkBehaviour, IDamageable
         {
             if (animator != null) { animator.SetTrigger("damaged"); }
         }
+        HealthChanged?.Invoke(currentHealth, maxHealth);
     }
 
     public virtual void Knockback(Vector2 knockbackReceived, float knockbackTimeReceived, int attackDir)
