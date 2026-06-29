@@ -26,8 +26,9 @@ public class PlayerController : EntityController
     [SerializeField] private float lookUpAmt = 0.8f;
     [SerializeField] private float lookDownAmt = 0.15f;
 
-    [SerializeField] private float fallAmountMax = 5f;
+    [SerializeField] private float fallAmountMax = 40f;  // terminal fall velocity; keep >= maxJumpYVelocity so it never clips the jump arc (otherwise the descent floats at a constant speed instead of being parabolic)
     [SerializeField] private float gravity = -10f;
+    [SerializeField] private float fallGravityMultiplier = 1.5f;  // extra gravity applied once falling, so the character drops faster than it rises (classic platformer feel)
     [SerializeField] private float coyoteTime = 0.05f;
     [SerializeField] private float jumpBuffer = 0.05f;
     [SerializeField] private float jumpBufferTimer = 0f;
@@ -614,7 +615,9 @@ public class PlayerController : EntityController
 
         if (!onLadder)
         {
-            moveAmount.y += gravity;
+            // Apply stronger gravity on the way down so the fall is faster than the rise.
+            float gravityThisStep = moveAmount.y < 0f ? gravity * fallGravityMultiplier : gravity;
+            moveAmount.y += gravityThisStep;
         }
         else
         {
@@ -622,9 +625,9 @@ public class PlayerController : EntityController
             moveAmount.y = directionalInput.y * (playerStats.CurrentSpeed);
         }
 
-        //cap Y velocity
-        float yMoveSign = moveAmount.y > 1 ? 1 : -1;
-        if (moveAmount.y < 0 && Mathf.Abs(moveAmount.y) > fallAmountMax) { moveAmount.y = fallAmountMax * yMoveSign; }
+        // Clamp the fall to terminal velocity only. fallAmountMax must stay above the
+        // jump launch speed so a normal jump completes its parabola before this kicks in.
+        if (moveAmount.y < -fallAmountMax) { moveAmount.y = -fallAmountMax; }
     }
 
     private void Move()

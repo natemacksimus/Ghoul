@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 8973740989953611613}
   - component: {fileID: 6610035847858885361}
   - component: {fileID: 4743262705519157201}
+  - component: {fileID: 3676855205728146097}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -55,7 +56,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1114080148
+  GlobalObjectIdHash: 2740168362
   InScenePlacedSourceGlobalObjectIdHash: 2740168362
   DeferredDespawnTick: 0
   Ownership: 1
@@ -114,8 +115,9 @@ MonoBehaviour:
   accelerationTurning: 0.1
   lookUpAmt: 0.8
   lookDownAmt: 0.15
-  fallAmountMax: 10
-  gravity: -6
+  fallAmountMax: 40
+  gravity: -3
+  fallGravityMultiplier: 1.5
   coyoteTime: 0.05
   jumpBuffer: 0.05
   jumpBufferTimer: 0
@@ -126,7 +128,7 @@ MonoBehaviour:
   heightDropFromMax: -3.6399984
   landingAnimThreshold: 5
   isAirborne: 0
-  maxJumpYVelocity: 50
+  maxJumpYVelocity: 35
   minJumpYVelocity: 5
   addJumpXVelocity: 0
   maxAddJumpXVelocity: 0
@@ -435,3 +437,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealthBar
   offset: {x: 0, y: 0.75, z: 0}
+--- !u!114 &3676855205728146097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3921641995449094960}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b37be7aa85bf0984488618cb20b3a63b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCinemachineTarget
+  ShowTopMostFoldoutHeaderGroup: 1

@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "WebSearch"
+      "WebSearch",
+      "mcp__unity-mcp__Unity_GetConsoleLogs"
     ]
   }
 }
