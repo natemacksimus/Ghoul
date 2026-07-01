@@ -217,7 +217,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 12006, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: ConsoleWindow
+  m_Name: ProjectBrowser
   m_EditorClassIdentifier: 
   m_Children: []
   m_Position:
@@ -226,14 +226,14 @@ MonoBehaviour:
     y: 0
     width: 188.5
     height: 754
-  m_MinSize: {x: 102, y: 126}
-  m_MaxSize: {x: 4002, y: 4026}
-  m_ActualView: {fileID: 22}
+  m_MinSize: {x: 232, y: 276}
+  m_MaxSize: {x: 10002, y: 10026}
+  m_ActualView: {fileID: 21}
   m_Panes:
   - {fileID: 21}
   - {fileID: 22}
-  m_Selected: 1
-  m_LastSelected: 0
+  m_Selected: 0
+  m_LastSelected: 1
 --- !u!114 &10
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -2905,8 +2905,7 @@ MonoBehaviour:
     m_ShowAllHits: 0
     m_SkipHidden: 0
     m_SearchArea: 1
-    m_Folders:
-    - Assets/Prefabs
+    m_Folders: []
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -2930,6 +2929,7 @@ MonoBehaviour:
     - m_Data: 0
     - m_Data: 65482
     - m_Data: 69066
+    - m_Data: 69188
     - m_Data: 69190
     - m_Data: 69192
     - m_Data: 69194
@@ -2970,14 +2970,14 @@ MonoBehaviour:
       m_ResourceFile: 
   m_AssetTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs:
-    - m_Data: 68996
+    m_SelectedIDs: []
     m_LastClickedID:
-      m_Data: 68996
+      m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
     - m_Data: 65482
     - m_Data: 69066
+    - m_Data: 69188
     - m_Data: 69190
     - m_Data: 69192
     - m_Data: 69194
@@ -2991,11 +2991,10 @@ MonoBehaviour:
     - m_Data: 69210
     - m_Data: 69212
     - m_Data: 69214
-    - m_Data: 69696
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: WorldSetup
-      m_OriginalName: WorldSetup
+      m_Name: Player
+      m_OriginalName: Player
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
@@ -3003,7 +3002,7 @@ MonoBehaviour:
         width: 0
         height: 0
       m_UserData:
-        m_Data: 64746
+        m_Data: 68996
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
       m_OriginalEventType: 0
@@ -3018,9 +3017,8 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs:
-    - m_Data: 68996
-    m_LastClickedInstanceID: 68996
+    m_SelectedInstanceIDs: []
+    m_LastClickedInstanceID: 0
     m_HadKeyboardFocusLastEvent: 0
     m_ExpandedInstanceIDs: []
     m_RenameOverlay:
@@ -3135,37 +3133,29 @@ MonoBehaviour:
       m_LastClickedID:
         m_Data: 0
       m_ExpandedIDs:
-      - m_Data: -25562
-      - m_Data: -23370
-      - m_Data: -23126
-      - m_Data: -22166
-      - m_Data: -22094
-      - m_Data: -22018
-      - m_Data: -19016
-      - m_Data: -18660
-      - m_Data: -17294
-      - m_Data: -17050
-      - m_Data: -16692
-      - m_Data: -12428
-      - m_Data: -11226
-      - m_Data: -8860
-      - m_Data: -8512
-      - m_Data: -7594
-      - m_Data: -7564
-      - m_Data: -7530
-      - m_Data: -6484
-      - m_Data: -6126
-      - m_Data: -5090
-      - m_Data: -4732
-      - m_Data: -3584
-      - m_Data: -3216
+      - m_Data: -22634
+      - m_Data: -20442
+      - m_Data: -20198
+      - m_Data: -19238
+      - m_Data: -19166
+      - m_Data: -19090
+      - m_Data: -15846
+      - m_Data: -13652
+      - m_Data: -13408
+      - m_Data: -12490
+      - m_Data: -12460
+      - m_Data: -12426
+      - m_Data: -11550
+      - m_Data: -11348
+      - m_Data: -9934
+      - m_Data: -8248
+      - m_Data: -7134
+      - m_Data: -4904
+      - m_Data: -4654
+      - m_Data: -3736
+      - m_Data: -3706
+      - m_Data: -3672
       - m_Data: -1332
-      - m_Data: 79448
-      - m_Data: 79456
-      - m_Data: 79464
-      - m_Data: 79574
-      - m_Data: 79582
-      - m_Data: 79688
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 

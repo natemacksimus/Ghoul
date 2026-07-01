@@ -107,6 +107,10 @@ MonoBehaviour:
   knockbackTimer: 0
   isKnockbacked: 0
   knockbackReduceFactor: 0.1
+  directionalKnockback: 0
+  knockbackVelocity: {x: 0, y: 0}
+  knockbackBouncesRemaining: 0
+  knockbackBounciness: 1
   dodgeCooldownSet: 1
   dodgeCooldownTimer: 0
   accelerationTimeAirborne: 0.2
@@ -421,11 +425,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
   attackCooldown: 0.6
   attackDamage: 20
-  hitboxDistance: 4
+  hitboxDistance: 3
   hitboxSpeed: 20
   hitboxSizeScale: 0.5
-  knockbackPower: 30
-  knockbackTime: 0.35
+  knockbackPower: 10
+  knockbackTime: 0.25
   knockbackBounces: 1
   knockbackBounciness: 1
 --- !u!114 &4743262705519157201
