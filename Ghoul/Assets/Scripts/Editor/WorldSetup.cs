@@ -182,11 +182,22 @@ public static class WorldSetup
         GameObject exitGO = MakeButton("ExitWorldButton", canvasGO, "Exit World", out Button exitButton, out _);
         Anchor(exitGO, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(150f, 40f), new Vector2(-85f, -28f));
 
+        // Full-screen "Reconnecting…" overlay, hidden until a client drops its
+        // connection (WorldSessionController toggles it during reconnect attempts).
+        GameObject overlayGO = RectChild("ReconnectingOverlay", canvasGO);
+        overlayGO.AddComponent<Image>().color = new Color(0f, 0f, 0f, 0.75f);
+        Stretch(overlayGO, 0f);
+        GameObject overlayLabelGO = MakeText("ReconnectingLabel", overlayGO, "Reconnecting…", 28, TextAnchor.MiddleCenter);
+        Stretch(overlayLabelGO, 0f);
+        overlayGO.SetActive(false);
+
         GameObject controllerGO = new GameObject("WorldSessionController");
         WorldSessionController controller = controllerGO.AddComponent<WorldSessionController>();
         SerializedObject soCtrl = new SerializedObject(controller);
         soCtrl.FindProperty("joinCodeText").objectReferenceValue = codeGO.GetComponent<Text>();
         soCtrl.FindProperty("exitButton").objectReferenceValue = exitButton;
+        SetProp(soCtrl, "reconnectingOverlay", overlayGO);
+        SetProp(soCtrl, "reconnectingLabel", overlayLabelGO.GetComponent<Text>());
         soCtrl.ApplyModifiedProperties();
 
         EditorSceneManager.SaveScene(scene, WorldScenePath);
@@ -306,12 +317,12 @@ public static class WorldSetup
             slotLabels[i] = labelGO.GetComponent<Text>();
 
             GameObject primaryGO = MakeButton($"Slot{i}Primary", row, "Create", out Button primaryBtn, out Text primaryLabel);
-            Anchor(primaryGO, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(110f, 40f), new Vector2(-145f, 0f));
+            Anchor(primaryGO, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(110f, 40f), new Vector2(-170f, 0f));
             slotPrimary[i] = primaryBtn;
             slotPrimaryLabels[i] = primaryLabel;
 
             GameObject deleteGO = MakeButton($"Slot{i}Delete", row, "Delete", out Button deleteBtn, out _);
-            Anchor(deleteGO, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(90f, 40f), new Vector2(-30f, 0f));
+            Anchor(deleteGO, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(90f, 40f), new Vector2(-60f, 0f));
             deleteGO.GetComponent<Image>().color = new Color(0.6f, 0.2f, 0.2f);
             slotDelete[i] = deleteBtn;
         }

@@ -197,6 +197,51 @@ public abstract class CharacterStats : NetworkBehaviour, IDamageable
         if (characterController != null) { characterController.ApplyKnockback(force, knockbackTime); }
     }
 
+    // Directional knockback for the redesigned PlayerAttack hitbox: the hitbox passes the
+    // direction it is travelling, a scalar power, and the number of surface bounces to
+    // allow. Routed to the receiver's owning client (client-authority) exactly like
+    // Knockback above, so the bounce physics simulate on the owner and sync via
+    // ClientNetworkTransform.
+    public void KnockbackDirectional(Vector2 direction, float power, float knockbackTimeReceived, int bounces, float bounciness)
+    {
+        Vector2 dir = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
+        Vector2 raw = dir * power;
+        // Apply per-axis knockback resistance to the magnitude (direction preserved when
+        // resistance is zero, as it is for players).
+        float fx = Mathf.Sign(raw.x) * Mathf.Max(0f, Mathf.Abs(raw.x) - knockbackResistance.x);
+        float fy = Mathf.Sign(raw.y) * Mathf.Max(0f, Mathf.Abs(raw.y) - knockbackResistance.y);
+        Vector2 velocity = new Vector2(fx, fy);
+
+        if (!IsSpawned)
+        {
+            if (characterController != null) { characterController.ApplyDirectionalKnockback(velocity, knockbackTimeReceived, bounces, bounciness); }
+            return;
+        }
+        if (IsServer) { SendDirectionalKnockbackToOwner(velocity, knockbackTimeReceived, bounces, bounciness); }
+        else { KnockbackDirectionalServerRpc(velocity, knockbackTimeReceived, bounces, bounciness); }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void KnockbackDirectionalServerRpc(Vector2 velocity, float knockbackTime, int bounces, float bounciness)
+    {
+        SendDirectionalKnockbackToOwner(velocity, knockbackTime, bounces, bounciness);
+    }
+
+    private void SendDirectionalKnockbackToOwner(Vector2 velocity, float knockbackTime, int bounces, float bounciness)
+    {
+        ClientRpcParams rpcParams = new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { OwnerClientId } }
+        };
+        ApplyDirectionalKnockbackClientRpc(velocity, knockbackTime, bounces, bounciness, rpcParams);
+    }
+
+    [ClientRpc]
+    private void ApplyDirectionalKnockbackClientRpc(Vector2 velocity, float knockbackTime, int bounces, float bounciness, ClientRpcParams rpcParams = default)
+    {
+        if (characterController != null) { characterController.ApplyDirectionalKnockback(velocity, knockbackTime, bounces, bounciness); }
+    }
+
     // Triggered in animation clips
     public void PlayWeaponSwing()
     {

@@ -186,11 +186,6 @@ public class PlayerController : EntityController
 
         SetDirectionalInput(directionalInput);
 
-        if (playerAttack != null && playerAttack.IsAttackPending && directionalInput != Vector2.zero)
-        {
-            playerAttack.FirePendingAttack(directionalInput);
-        }
-
         if (directionalInput.x != 0)
         {
             //Debug.Log("dirX: " + directionalInput.x);
@@ -425,7 +420,13 @@ public class PlayerController : EntityController
     {
         if (disableInput) { return; }
         DisableInputIfMenuOpen();
-        if (playerAttack != null) { playerAttack.BeginAttack(); }
+        if (playerAttack != null)
+        {
+            // Fire in the direction held at press time, or the last held direction if
+            // no direction is currently pressed.
+            Vector2 attackDir = directionalInput != Vector2.zero ? directionalInput : lastDirInput;
+            playerAttack.Attack(attackDir);
+        }
     }
 
     private void DisableInputIfMenuOpen()
@@ -613,21 +614,27 @@ public class PlayerController : EntityController
             //moveAmount.x = horzVelocity;
         }
 
-        if (!onLadder)
+        // While being flung by a directional knockback, the knockback owns moveAmount
+        // (both axes) so the flight stays straight and reflects cleanly — skip gravity
+        // and the terminal-velocity clamp entirely.
+        if (!directionalKnockback)
         {
-            // Apply stronger gravity on the way down so the fall is faster than the rise.
-            float gravityThisStep = moveAmount.y < 0f ? gravity * fallGravityMultiplier : gravity;
-            moveAmount.y += gravityThisStep;
-        }
-        else
-        {
-            //moveAmount.y = directionalInput.y * (playerStats.speed + speedAdjustment);
-            moveAmount.y = directionalInput.y * (playerStats.CurrentSpeed);
-        }
+            if (!onLadder)
+            {
+                // Apply stronger gravity on the way down so the fall is faster than the rise.
+                float gravityThisStep = moveAmount.y < 0f ? gravity * fallGravityMultiplier : gravity;
+                moveAmount.y += gravityThisStep;
+            }
+            else
+            {
+                //moveAmount.y = directionalInput.y * (playerStats.speed + speedAdjustment);
+                moveAmount.y = directionalInput.y * (playerStats.CurrentSpeed);
+            }
 
-        // Clamp the fall to terminal velocity only. fallAmountMax must stay above the
-        // jump launch speed so a normal jump completes its parabola before this kicks in.
-        if (moveAmount.y < -fallAmountMax) { moveAmount.y = -fallAmountMax; }
+            // Clamp the fall to terminal velocity only. fallAmountMax must stay above the
+            // jump launch speed so a normal jump completes its parabola before this kicks in.
+            if (moveAmount.y < -fallAmountMax) { moveAmount.y = -fallAmountMax; }
+        }
     }
 
     private void Move()
@@ -650,7 +657,9 @@ public class PlayerController : EntityController
         // Move
         controller2D.Move(moveAmount * Time.deltaTime, directionalInput, false, jumpPressed);
 
-        if (controller2D.collisions.above || controller2D.collisions.below)
+        // Don't zero vertical velocity on floor/ceiling contact during a directional
+        // knockback — the reflection logic reads and flips that velocity next frame.
+        if (!directionalKnockback && (controller2D.collisions.above || controller2D.collisions.below))
         {
             moveAmount.y = 0;
         }

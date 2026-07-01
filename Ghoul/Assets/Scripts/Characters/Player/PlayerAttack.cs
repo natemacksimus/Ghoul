@@ -2,22 +2,40 @@ using System.Collections;
 using UnityEngine;
 using Unity.Netcode;
 
+// Spawns a square hitbox that originates at the player's position and travels in the
+// attack direction for a configurable distance. The direction is chosen at the moment
+// the attack button is pressed (see PlayerController.UseItem): the currently held
+// direction, or the last held direction if none is pressed. On contact the hitbox knocks
+// the target back along its travel direction (AttackHitboxLogic).
 public class PlayerAttack : MonoBehaviour
 {
-    [SerializeField] private float attackDuration = 0.25f;
+    [Header("Attack")]
     [SerializeField] private float attackCooldown = 0.6f;
     [SerializeField] private float attackDamage = 20f;
-    [SerializeField] private Vector2 attackKnockback = new Vector2(8f, 5f);
-    [SerializeField] private float attackKnockbackTime = 0.35f;
+
+    [Header("Hitbox travel")]
+    [Tooltip("How far the hitbox travels from the player, in world units.")]
+    [SerializeField] private float hitboxDistance = 4f;
+    [Tooltip("Hitbox travel speed, in world units per second.")]
+    [SerializeField] private float hitboxSpeed = 20f;
+    [Tooltip("Hitbox size as a fraction of the player's collider size.")]
+    [SerializeField] private float hitboxSizeScale = 0.5f;
+
+    [Header("Knockback")]
+    [Tooltip("Knockback speed applied to a hit target, in world units per second.")]
+    [SerializeField] private float knockbackPower = 30f;
+    [SerializeField] private float knockbackTime = 0.35f;
+    [Tooltip("How many times a knocked-back target reflects off surfaces before recovering.")]
+    [SerializeField] private int knockbackBounces = 1;
+    [Tooltip("Fraction of speed kept after each bounce (1 = no energy loss, 0 = stops on impact).")]
+    [Range(0f, 1f)]
+    [SerializeField] private float knockbackBounciness = 1f;
 
     private float cooldownTimer;
-    private bool pendingAttack;
     private BoxCollider2D playerCollider;
     private EntityController entityController;
     private NetworkObject networkObject;
     private static Sprite squareSprite;
-
-    public bool IsAttackPending => pendingAttack;
 
     private bool IsOwner => networkObject != null && networkObject.IsOwner;
 
@@ -33,41 +51,29 @@ public class PlayerAttack : MonoBehaviour
         if (cooldownTimer > 0f) cooldownTimer -= Time.deltaTime;
     }
 
-    // Called when the attack button is pressed. Starts the cooldown and waits for
-    // the player to press a direction before firing.
-    public void BeginAttack()
+    // Called on attack-button press with the resolved attack direction (current input, or
+    // last input if none is held). Fires immediately if not on cooldown.
+    public void Attack(Vector2 direction)
     {
         if (!IsOwner) return;
         if (cooldownTimer > 0f) return;
         cooldownTimer = attackCooldown;
-        pendingAttack = true;
+
+        Vector2 dir = direction.sqrMagnitude > 0.0001f
+            ? direction.normalized
+            : (entityController != null && entityController.IsFacingRight ? Vector2.right : Vector2.left);
+
+        StartCoroutine(RunHitbox(dir));
     }
 
-    // Called by PlayerController once a non-zero directional input is detected.
-    public void FirePendingAttack(Vector2 dir)
+    private IEnumerator RunHitbox(Vector2 dir)
     {
-        pendingAttack = false;
-        StartCoroutine(SpawnAttackHitbox(dir));
-    }
-
-    private IEnumerator SpawnAttackHitbox(Vector2 dir)
-    {
-        if (dir == Vector2.zero)
-            dir = (entityController != null && entityController.IsFacingRight) ? Vector2.right : Vector2.left;
-
-        Vector2 playerSize = playerCollider != null ? playerCollider.bounds.size : Vector2.one;
-        Vector2 hitboxSize = playerSize * 0.5f;
-
-        Vector2 offset = new Vector2(
-            dir.x != 0f ? dir.x * (playerSize.x * 0.5f + hitboxSize.x * 0.5f) : 0f,
-            dir.y != 0f ? dir.y * (playerSize.y * 0.5f + hitboxSize.y * 0.5f) : 0f
-        );
-
-        Vector3 hitboxPos = (playerCollider != null ? playerCollider.bounds.center : transform.position)
-                            + (Vector3)offset;
+        Vector2 startCenter = playerCollider != null ? (Vector2)playerCollider.bounds.center : (Vector2)transform.position;
+        Vector2 playerSize = playerCollider != null ? (Vector2)playerCollider.bounds.size : Vector2.one;
+        Vector2 hitboxSize = playerSize * hitboxSizeScale;
 
         GameObject hitbox = new GameObject("AttackHitbox");
-        hitbox.transform.position = hitboxPos;
+        hitbox.transform.position = startCenter;
         hitbox.transform.localScale = new Vector3(hitboxSize.x, hitboxSize.y, 1f);
 
         SpriteRenderer sr = hitbox.AddComponent<SpriteRenderer>();
@@ -80,9 +86,18 @@ public class PlayerAttack : MonoBehaviour
         col.size = Vector2.one;
 
         AttackHitboxLogic logic = hitbox.AddComponent<AttackHitboxLogic>();
-        logic.Initialize(gameObject, attackDamage, attackKnockback, attackKnockbackTime, dir);
+        logic.Initialize(gameObject, attackDamage, knockbackPower, knockbackTime, knockbackBounces, knockbackBounciness, dir);
 
-        yield return new WaitForSeconds(attackDuration);
+        // Slide the hitbox outward from the player until it has covered hitboxDistance.
+        float traveled = 0f;
+        while (traveled < hitboxDistance && hitbox != null)
+        {
+            float step = hitboxSpeed * Time.deltaTime;
+            if (traveled + step > hitboxDistance) { step = hitboxDistance - traveled; }
+            hitbox.transform.position += (Vector3)(dir * step);
+            traveled += step;
+            yield return null;
+        }
 
         if (hitbox != null) Destroy(hitbox);
     }

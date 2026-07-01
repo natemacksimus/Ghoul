@@ -79,6 +79,17 @@ public abstract class EntityController : NetworkBehaviour, IKillable
 
     [SerializeField] private float knockbackReduceFactor = 0.1f;
 
+    // Directional knockback (used by the redesigned PlayerAttack hitbox). While active
+    // the character is flung along knockbackVelocity and reflects off surfaces (angle of
+    // reflection = angle of incidence) up to knockbackBouncesRemaining times. This runs
+    // in parallel with the legacy horizontal knockback above without disturbing it.
+    [ShowOnly][SerializeField] protected bool directionalKnockback = false;
+    public bool IsDirectionalKnockbackActive { get { return directionalKnockback; } }
+
+    [ShowOnly][SerializeField] protected Vector2 knockbackVelocity = Vector2.zero;
+    [ShowOnly][SerializeField] protected int knockbackBouncesRemaining = 0;
+    [ShowOnly][SerializeField] protected float knockbackBounciness = 1f;  // speed retained per bounce (0..1)
+
     // Syncs the owner's facing direction to all other clients.
     private NetworkVariable<bool> netFacingRight = new NetworkVariable<bool>(
         false,
@@ -142,7 +153,8 @@ public abstract class EntityController : NetworkBehaviour, IKillable
     }
     protected virtual void FixedUpdate()
     {
-        HandleKnockback();
+        if (directionalKnockback) { HandleDirectionalKnockback(); }
+        else { HandleKnockback(); }
 
         // Count up fallTime when character is in the air. (Jump resets fallTime)
         if (!controller2D.collisions.below) { airTime += Time.deltaTime; }
@@ -184,9 +196,71 @@ public abstract class EntityController : NetworkBehaviour, IKillable
         }
     }
 
+    // Drives a directional knockback for one physics step: reflects the velocity off any
+    // surface hit last frame (up to the allowed bounce count) then feeds the velocity to
+    // moveAmount so the normal Move() pipeline translates the character. PlayerController
+    // suppresses gravity/velocity-clamping while this is active so the flight stays
+    // straight between bounces and the reflection is clean.
+    private void HandleDirectionalKnockback()
+    {
+        if (knockbackTimer <= 0f) { EndDirectionalKnockback(); return; }
+        knockbackTimer -= Time.deltaTime;
+
+        // controller2D.collisions reflects last frame's Move. If we ran into a surface,
+        // bounce off it; once the configured bounces are spent, end the knockback.
+        Vector2 normal = GetCollisionNormal();
+        if (normal != Vector2.zero && Vector2.Dot(knockbackVelocity, normal) < 0f)
+        {
+            if (knockbackBouncesRemaining > 0)
+            {
+                // Reflect (angle out = angle in), then scale the speed by bounciness so
+                // each bounce can lose energy. A value of 1 keeps the speed unchanged.
+                knockbackVelocity = Vector2.Reflect(knockbackVelocity, normal) * knockbackBounciness;
+                knockbackBouncesRemaining--;
+            }
+            else
+            {
+                EndDirectionalKnockback();
+                return;
+            }
+        }
+
+        knockbackForce = knockbackVelocity;
+        moveAmount = knockbackVelocity;
+    }
+
+    // Builds a surface normal from the controller's last collision result. Slopes carry a
+    // real normal; axis-aligned walls/floors/ceilings derive one from the collision flags.
+    private Vector2 GetCollisionNormal()
+    {
+        if (controller2D == null) { return Vector2.zero; }
+        Controller2D.CollisionInfo c = controller2D.collisions;
+        if (c.slopeNormal != Vector2.zero) { return c.slopeNormal; }
+
+        Vector2 n = Vector2.zero;
+        if (c.below) { n += Vector2.up; }
+        if (c.above) { n += Vector2.down; }
+        if (c.left)  { n += Vector2.right; }
+        if (c.right) { n += Vector2.left; }
+        return n == Vector2.zero ? Vector2.zero : n.normalized;
+    }
+
+    private void EndDirectionalKnockback()
+    {
+        directionalKnockback = false;
+        knockbackVelocity = Vector2.zero;
+        knockbackBouncesRemaining = 0;
+        if (isKnockbacked)
+        {
+            lockFacingDir = false;
+            if (disableInput) { DisableInputOff(); }
+            isKnockbacked = false;
+        }
+    }
+
     public virtual void Kill()
     {
-        
+
     }
 
     public virtual void ApplyKnockback(Vector2 knockbackPower, float knockbackTime)
@@ -213,11 +287,32 @@ public abstract class EntityController : NetworkBehaviour, IKillable
         }
     }
 
+    // Entry point for the redesigned PlayerAttack knockback (routed here from
+    // CharacterStats on the receiver's owning client). velocity is the full 2D fling
+    // velocity; bounces is how many times it may reflect off surfaces.
+    public virtual void ApplyDirectionalKnockback(Vector2 velocity, float knockbackTime, int bounces, float bounciness)
+    {
+        if (invincible) { return; }
+
+        isKnockbacked = true;
+        lockFacingDir = true;
+        directionalKnockback = true;
+        knockbackVelocity = velocity;
+        knockbackBouncesRemaining = Mathf.Max(0, bounces);
+        knockbackBounciness = Mathf.Clamp01(bounciness);
+        knockbackTimer = knockbackTime;
+
+        DisableInputOn();
+
+        knockbackForce = velocity;
+        moveAmount = velocity;
+    }
+
     public virtual void Jump()
     {
         // implemented in derived class
 
-        
+
     }
 
     public virtual void Flip()

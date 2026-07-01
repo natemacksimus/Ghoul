@@ -419,11 +419,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0021d3662b24d6d47bfd20e672ba9845, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
-  attackDuration: 0.15
   attackCooldown: 0.6
   attackDamage: 20
-  attackKnockback: {x: 30, y: 30}
-  attackKnockbackTime: 0.35
+  hitboxDistance: 4
+  hitboxSpeed: 20
+  hitboxSizeScale: 0.5
+  knockbackPower: 30
+  knockbackTime: 0.35
+  knockbackBounces: 1
+  knockbackBounciness: 1
 --- !u!114 &4743262705519157201
 MonoBehaviour:
   m_ObjectHideFlags: 0
