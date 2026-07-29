@@ -4,6 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum InventoryType { WEAPON, ITEM, RESOURCE, PASSIVE, INGREDIENT, BLANK };
+
+// Which hand's inventory a world pickup is routed to when collected. Either resolves to
+// the Right hand (see PlayerInventory.TryPickup).
+public enum HandSlot { Right, Left, Either };
+
 public class Item : MonoBehaviour, IDamageable
 {
     //[SerializeField] private ItemDefinition itemDefinition;
@@ -19,6 +24,7 @@ public class Item : MonoBehaviour, IDamageable
     public Sprite itemIcon = null;
     public GameObject itemGameObject = null;
     public bool isPermanentItem = false; // if true, item cannot be dropped
+    public HandSlot handSlot = HandSlot.Either;  // which hand inventory this item is picked up into
 
     [Range(1, 999)] public int itemId = 0;
     [Range(0, 999)] public int itemQty = 0;
@@ -133,7 +139,7 @@ public class Item : MonoBehaviour, IDamageable
             if (playerController.ItemToPickup == null)
             {
                 playerController.ItemToPickup = this;
-                animator.SetBool("nearPlayer", true);
+                if (animator != null) { animator.SetBool("nearPlayer", true); }
 
                 // AutoCache items that enable autoCache, are not inventory (can't be put into inventory), and are resources.
                 if (autoCacheItem && !isInventory && inventoryType == InventoryType.RESOURCE) { playerController.ItemToPickup.CacheItem(); }
@@ -163,7 +169,7 @@ public class Item : MonoBehaviour, IDamageable
             if (playerController.ItemToPickup == this)
             {
                 playerController.ItemToPickup = null;
-                animator.SetBool("nearPlayer", false);
+                if (animator != null) { animator.SetBool("nearPlayer", false); }
             }
         }
 
@@ -210,6 +216,37 @@ public class Item : MonoBehaviour, IDamageable
         }
     }
 
+    // --- PlayerInventory integration ---------------------------------------------------
+    // Pulled into a hand inventory: silence the world pickup and hide the object without
+    // destroying it, so it can be dropped back into the world later (DropIntoWorld).
+    public void StoreInInventory()
+    {
+        interactable = false;
+        if (itemCollider != null) { itemCollider.enabled = false; }
+        isPickedUp = true;
+        PlayPickupSound();
+
+        if (playerController != null && playerController.ItemToPickup == this)
+        {
+            playerController.ItemToPickup = null;
+        }
+
+        if (sprite != null) { sprite.enabled = false; }
+        gameObject.SetActive(false);
+    }
+
+    // Returned to the world at position (cycled-out on a full pickup, or dropped by the
+    // player holding an inventory button). Re-enables the pickup so it can be collected again.
+    public void DropIntoWorld(Vector2 position)
+    {
+        transform.position = position;
+        gameObject.SetActive(true);
+        if (sprite != null) { sprite.enabled = true; }
+        if (itemCollider != null) { itemCollider.enabled = true; }
+        isPickedUp = false;
+        interactable = true;
+    }
+
     private void ProcessItemCollected()
     {
         //Debug.Log("Process Item Collected");
@@ -220,7 +257,7 @@ public class Item : MonoBehaviour, IDamageable
         isPickedUp = true;
         PlayPickupSound();
 
-        animator.SetTrigger("collected");
+        if (animator != null) { animator.SetTrigger("collected"); }
         //if (sprite != null) { sprite.enabled = false; }
 
         // clear ItemToPickup
@@ -234,7 +271,7 @@ public class Item : MonoBehaviour, IDamageable
 
     public void DestroyItem()
     {
-        animator.SetTrigger("collected");
+        if (animator != null) { animator.SetTrigger("collected"); }
         StartCoroutine(DestroyPickup());
     }
 
@@ -275,7 +312,7 @@ public class Item : MonoBehaviour, IDamageable
         if (!creatureCanPickup) { return; }
 
         isPickedUp = true;
-        animator.SetTrigger("collected");
+        if (animator != null) { animator.SetTrigger("collected"); }
         //if (sprite != null) { sprite.enabled = false; }
         PlayPickupSound();
 

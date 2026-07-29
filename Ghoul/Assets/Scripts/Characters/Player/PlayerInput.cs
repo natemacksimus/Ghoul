@@ -13,21 +13,15 @@ public class PlayerInput : MonoBehaviour
     #region PLAYER INPUT
     public InputSystem_Actions playerControls;
     private InputAction moveAction;
-    private InputAction attackAction;
-    private InputAction jumpAction;
+    private InputAction aimAction;
+    private InputAction useLeftHandAction;
+    private InputAction useRightHandAction;
     private InputAction inventoryLeftAction;
     private InputAction inventoryRightAction;
-    private InputAction pickupAction;
-    private InputAction dodgeAction;
+    private InputAction interactAction;
+    private InputAction skillAction;
     private InputAction menuAction;
-    private InputAction downAction;
-    private InputAction upAction;
     #endregion
-
-
-    // testing out delegate usage (use when we want the player to remap the controls via options menu)
-    //public delegate void PressJumpAction(InputAction.CallbackContext context);
-    //private PressJumpAction pressJumpHandler;
 
 
 
@@ -39,80 +33,75 @@ public class PlayerInput : MonoBehaviour
 
         playerControls.Player.Move.performed += MoveInput;
         playerControls.Player.Move.canceled += MoveInput;
-        playerControls.Player.Jump.performed += OnJumpInputDown;
-        playerControls.Player.Jump.canceled += OnJumpInputUp;
-        playerControls.Player.Attack.performed += UseItem;
-        //playerControls.Player.InventoryLeft.performed += InventoryLeft;
-        //playerControls.Player.InventoryRight.performed += InventoryRight;
-        //playerControls.Player.Pickup.performed += PickupItem;
-        //playerControls.Player.Dodge.performed += Dodge;
-        //playerControls.Player.Menu.performed += OpenMenu;
-        //playerControls.Player.DownPress.performed += DownPress;
-        //playerControls.Player.DownPress.canceled += LookReturn;
-        //playerControls.Player.UpPress.performed += UpPress;
-        //playerControls.Player.UpPress.canceled += LookReturn;
+        playerControls.Player.Aim.performed += AimInput;
+        playerControls.Player.Aim.canceled += AimInput;
+        playerControls.Player.UseLeftHand.performed += UseLeftHand;
+        playerControls.Player.UseRightHand.performed += UseRightHand;
+        playerControls.Player.InventoryLeftHand.started += InventoryLeft;
+        playerControls.Player.InventoryLeftHand.canceled += InventoryLeft;
+        playerControls.Player.InventoryRightHand.started += InventoryRight;
+        playerControls.Player.InventoryRightHand.canceled += InventoryRight;
+        playerControls.Player.Interact.performed += Interact;
+        playerControls.Player.Skill.performed += OnJumpInputDown;
+        playerControls.Player.Skill.canceled += OnJumpInputUp;
+        playerControls.Player.Pause.performed += OpenMenu;
 
     }
+
     private void OnEnable()
     {
         moveAction = playerControls.Player.Move;
-        jumpAction = playerControls.Player.Jump;
-        attackAction = playerControls.Player.Attack;
-        //inventoryLeftAction = playerControls.Player.InventoryLeft;
-        //inventoryRightAction = playerControls.Player.InventoryRight;
-        //pickupAction = playerControls.Player.Pickup;
-        //dodgeAction = playerControls.Player.Dodge;
-        //menuAction = playerControls.Player.Menu;
-        //downAction = playerControls.Player.DownPress;
-        //upAction = playerControls.Player.UpPress;
+        aimAction = playerControls.Player.Aim;
+        useLeftHandAction = playerControls.Player.UseLeftHand;
+        useRightHandAction = playerControls.Player.UseRightHand;
+        inventoryLeftAction = playerControls.Player.InventoryLeftHand;
+        inventoryRightAction = playerControls.Player.InventoryRightHand;
+        interactAction = playerControls.Player.Interact;
+        skillAction = playerControls.Player.Skill;
+        menuAction = playerControls.Player.Pause;
 
 
         moveAction.Enable();
-        jumpAction.Enable();
-        attackAction.Enable();
-        //inventoryLeftAction.Enable();
-        //inventoryRightAction.Enable();
-        //pickupAction.Enable();
-        //dodgeAction.Enable();
-        //menuAction.Enable();
-        //downAction.Enable();
-        //upAction.Enable();
+        aimAction.Enable();
+        useLeftHandAction.Enable();
+        useRightHandAction.Enable();
+        inventoryLeftAction.Enable();
+        inventoryRightAction.Enable();
+        interactAction.Enable();
+        skillAction.Enable();
+        menuAction.Enable();
     }
 
     private void OnDisable()
     {
         moveAction.Disable();
-        jumpAction.Disable();
-        attackAction.Disable();
-        //inventoryLeftAction.Disable();
-        //inventoryRightAction.Disable();
-        //pickupAction.Disable();
-        //dodgeAction.Disable();
-        //menuAction.Disable();
-        //downAction.Disable();
-        //upAction.Disable();
+        aimAction.Disable();
+        useLeftHandAction.Disable();
+        useRightHandAction.Disable();
+        inventoryLeftAction.Disable();
+        inventoryRightAction.Disable();
+        interactAction.Disable();
+        skillAction.Disable();
+        menuAction.Disable();
 
 
         playerControls.Player.Move.performed -= MoveInput;
         playerControls.Player.Move.canceled -= MoveInput;
-        playerControls.Player.Jump.performed -= OnJumpInputDown;
-        playerControls.Player.Jump.canceled -= OnJumpInputUp;
-        playerControls.Player.Attack.performed -= UseItem;
-        //playerControls.Player.InventoryLeft.performed -= InventoryLeft;
-        //playerControls.Player.InventoryRight.performed -= InventoryRight;
-        //playerControls.Player.Pickup.performed -= PickupItem;
-        //playerControls.Player.Dodge.performed -= Dodge;
-        //playerControls.Player.Menu.performed -= OpenMenu;
-        //playerControls.Player.DownPress.performed -= DownPress;
-        //playerControls.Player.DownPress.canceled -= LookReturn;
-        //playerControls.Player.UpPress.performed -= UpPress;
-        //playerControls.Player.UpPress.canceled -= LookReturn;
+        playerControls.Player.Aim.performed -= AimInput;
+        playerControls.Player.Aim.canceled -= AimInput;
+        playerControls.Player.UseLeftHand.performed -= UseLeftHand;
+        playerControls.Player.UseRightHand.performed -= UseRightHand;
+        playerControls.Player.InventoryLeftHand.started -= InventoryLeft;
+        playerControls.Player.InventoryLeftHand.canceled -= InventoryLeft;
+        playerControls.Player.InventoryRightHand.started -= InventoryRight;
+        playerControls.Player.InventoryRightHand.canceled -= InventoryRight;
+        playerControls.Player.Interact.performed -= Interact;
+        playerControls.Player.Skill.performed -= OnJumpInputDown;
+        playerControls.Player.Skill.canceled -= OnJumpInputUp;
+        playerControls.Player.Pause.performed -= OpenMenu;
+
     }
 
-    //private void Start()
-    //{
-    //    pressJumpHandler = ReassignButton;
-    //}
 
     private void MoveInput(InputAction.CallbackContext context)
     {
@@ -121,25 +110,25 @@ public class PlayerInput : MonoBehaviour
         playerController.MoveInput(moveAction);
     }
 
-    private void UpPress(InputAction.CallbackContext context)
+    private void AimInput(InputAction.CallbackContext context)
     {
         if (playerController == null) { return; }
 
-        playerController.UpPress(context);
+        playerController.AimInput(aimAction);
     }
 
-    private void LookReturn(InputAction.CallbackContext context)
+    private void UseLeftHand(InputAction.CallbackContext context)
     {
         if (playerController == null) { return; }
 
-        playerController.LookReturn();
+        playerController.UseLeftHand(context);
     }
 
-    private void DownPress(InputAction.CallbackContext context)
+    private void UseRightHand(InputAction.CallbackContext context)
     {
         if (playerController == null) { return; }
 
-        playerController.DownPress(context);
+        playerController.UseRightHand(context);
     }
 
     private void InventoryLeft(InputAction.CallbackContext context)
@@ -156,57 +145,11 @@ public class PlayerInput : MonoBehaviour
         playerController.InventoryRight(context);
     }
 
-    private void OpenMenu(InputAction.CallbackContext context)
+    private void Interact(InputAction.CallbackContext context)
     {
         if (playerController == null) { return; }
 
-        playerController.OpenMenu(context);
-    }
-
-    private void Dodge(InputAction.CallbackContext context)
-    {
-        if (playerController == null) { return; }
-
-        //playerController.Dodge(context);
-
-
-        //// testing out delegate usage
-        //if (!(pressJumpHandler == ReassignButton))
-        //{
-        //    Debug.Log("reassign 1: jump");
-        //    pressJumpHandler = ReassignButton;
-        //}
-        //else
-        //{
-        //    Debug.Log("reassign 2: use item");
-        //    pressJumpHandler = ReassignButton2;
-        //}
-    }
-
-    //// testing out delegate usage
-    //private void ReassignButton(InputAction.CallbackContext context)
-    //{
-    //    playerController.OnJumpInputDown(context);
-    //}
-    //// testing out delegate usage
-    //private void ReassignButton2(InputAction.CallbackContext context)
-    //{
-    //    playerController.UseItem(context);
-    //}
-
-
-    private void PickupItem(InputAction.CallbackContext context)
-    {
-        if (playerController == null) { return; }
-
-        playerController.PickupItem(context);
-    }
-
-    private void UseItem(InputAction.CallbackContext context)
-    {
-        if (playerController == null) { return; }
-
-        playerController.UseItem(context);
+        playerController.Interact(context);
     }
 
     private void OnJumpInputDown(InputAction.CallbackContext context)
@@ -214,9 +157,6 @@ public class PlayerInput : MonoBehaviour
         if (playerController == null) { return; }
 
         playerController.OnJumpInputDown(context);
-
-        // testing out delegate usage
-        //if (pressJumpHandler != null) { pressJumpHandler(context); }
     }
 
     private void OnJumpInputUp(InputAction.CallbackContext context)
@@ -225,4 +165,12 @@ public class PlayerInput : MonoBehaviour
 
         playerController.OnJumpInputUp(context);
     }
+
+    private void OpenMenu(InputAction.CallbackContext context)
+    {
+        if (playerController == null) { return; }
+
+        playerController.OpenMenu(context);
+    }
+
 }

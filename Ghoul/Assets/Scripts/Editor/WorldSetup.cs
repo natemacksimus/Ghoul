@@ -327,6 +327,12 @@ public static class WorldSetup
             slotDelete[i] = deleteBtn;
         }
 
+        // Quit button — directly below slot 5 (the last slot row).
+        float quitY = -120f - SaveSystem.SlotCount * 56f;
+        GameObject quitGO = MakeButton("QuitButton", canvasGO, "Quit Game", out Button quitButton, out _);
+        Anchor(quitGO, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(520f, 44f), new Vector2(0f, quitY));
+        quitGO.GetComponent<Image>().color = new Color(0.4f, 0.4f, 0.45f);
+
         // Join panel
         GameObject joinLabel = MakeText("JoinLabel", canvasGO, "Join a friend's world:", 14, TextAnchor.MiddleCenter);
         Anchor(joinLabel, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(300f, 20f), new Vector2(0f, 120f));
@@ -364,6 +370,7 @@ public static class WorldSetup
         SetArray(so, "slotDeleteButtons", slotDelete);
         SetProp(so, "joinCodeInput", joinInput);
         SetProp(so, "joinButton", joinButton);
+        SetProp(so, "quitButton", quitButton);
         SetProp(so, "codeDisplay", codeDisplay);
         SetProp(so, "codeText", codeText.GetComponent<Text>());
         SetProp(so, "statusText", statusGO.GetComponent<Text>());

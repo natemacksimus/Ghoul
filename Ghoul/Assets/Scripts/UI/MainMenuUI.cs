@@ -26,6 +26,9 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private InputField joinCodeInput;
     [SerializeField] private Button joinButton;
 
+    [Header("Quit")]
+    [SerializeField] private Button quitButton;
+
     [Header("Feedback")]
     [SerializeField] private GameObject codeDisplay;
     [SerializeField] private Text codeText;
@@ -43,7 +46,24 @@ public class MainMenuUI : MonoBehaviour
             joinButton.onClick.RemoveAllListeners();
             joinButton.onClick.AddListener(() => _ = JoinWorld());
         }
+        if (quitButton != null)
+        {
+            quitButton.onClick.RemoveAllListeners();
+            quitButton.onClick.AddListener(QuitGame);
+        }
         RefreshSlots();
+    }
+
+    // -------------------------------------------------------------------------
+    // Quit the application
+    // -------------------------------------------------------------------------
+
+    private void QuitGame()
+    {
+        Application.Quit();
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
     }
 
     // -------------------------------------------------------------------------

@@ -8,6 +8,7 @@ using Unity.Netcode;
 //using LevelManagement;
 //using Cinemachine;
 
+[RequireComponent(typeof(PlayerInventory))]
 public class PlayerController : EntityController
 {
     [SerializeField] private float dodgeCooldownSet = 1f;
@@ -16,6 +17,24 @@ public class PlayerController : EntityController
     private Vector2 directionalInput;
     private Vector2 lastDirInput = Vector2.right;
     private float directionX = 1; // isFacingRight
+
+    // Raw analog aim vectors used to steer hand attacks: the left stick (Move) aims the
+    // right hand, the right stick (Aim) aims the left hand. Kept unrounded so an attack
+    // can travel at any angle, not just up/down/forward. lastMoveDir/lastAimDir hold the
+    // most recent non-zero direction so a use with the stick centered still has a heading.
+    private Vector2 moveVectorRaw;
+    private Vector2 aimVectorRaw;
+    private Vector2 lastMoveDir = Vector2.right;
+    private Vector2 lastAimDir = Vector2.right;
+    [SerializeField] private float stickDeadzoneSqr = 0.04f;  // (0.2 magnitude)^2
+
+    // Inventory buttons cycle on a tap and drop the active item on a hold.
+    [SerializeField] private float inventoryDropHoldTime = 0.4f;
+    private float invRightHoldStart;
+    private float invLeftHoldStart;
+
+    private PlayerInventory playerInventory;
+    [SerializeField] private PauseMenu pauseMenu;
 
     private float velocityXSmoothing;
     [SerializeField] private float accelerationTimeAirborne = 0.2f;  // smoothing transition when moving left to right or vice versa
@@ -121,6 +140,7 @@ public class PlayerController : EntityController
         animator = GetComponent<Animator>();
         playerStats = GetComponent<PlayerStats>();
         playerAttack = GetComponent<PlayerAttack>();
+        playerInventory = GetComponent<PlayerInventory>();
 
 
         //GameObject virtualCameraObject = GameObject.FindGameObjectWithTag("Cinemachine Camera");
@@ -212,8 +232,12 @@ public class PlayerController : EntityController
     }
 
     public void MoveInput(InputAction moveAction)
-    {      
+    {
         Vector2 moveInput = moveAction.ReadValue<Vector2>();
+
+        // Keep the raw (unrounded) left-stick vector for right-hand attack aiming.
+        moveVectorRaw = moveInput;
+        if (moveInput.sqrMagnitude > stickDeadzoneSqr) { lastMoveDir = moveInput; }
 
         // movementSprite is for the ship's fire sprite when moving horizontally
         if (movementSprite != null) 
@@ -295,56 +319,46 @@ public class PlayerController : EntityController
 
     }
 
+    // Wired to InventoryLeftHand started+canceled: a tap cycles the left hand, a hold drops
+    // its active item.
     public void InventoryLeft(InputAction.CallbackContext context)
     {
         if (disableInput) { return; }
         DisableInputIfMenuOpen();
 
-
-        if (context.interaction is HoldInteraction)
-        {
-
-        }
-        else
-        {
-            // Shift highlighted inventory slot right
-            //playerInventory.ChangeHighlightedSlot(-1);
-            playerStats.UpdateCurrentDamageAndKnockback();
-        }
+        HandleInventoryButton(context, Hand.Left, ref invLeftHoldStart);
     }
 
+    // Wired to InventoryRightHand started+canceled: a tap cycles the right hand, a hold
+    // drops its active item.
     public void InventoryRight(InputAction.CallbackContext context)
     {
         if (disableInput) { return; }
         DisableInputIfMenuOpen();
 
+        HandleInventoryButton(context, Hand.Right, ref invRightHoldStart);
+    }
 
-        if (context.interaction is HoldInteraction)
+    private void HandleInventoryButton(InputAction.CallbackContext context, Hand hand, ref float holdStart)
+    {
+        if (playerInventory == null) { return; }
+
+        if (context.phase == InputActionPhase.Started)
         {
-
+            holdStart = Time.unscaledTime;
         }
-        else
+        else if (context.phase == InputActionPhase.Canceled)
         {
-            // Shift highlighted inventory slot right
-            //playerInventory.ChangeHighlightedSlot(1);
-            playerStats.UpdateCurrentDamageAndKnockback();
+            float held = Time.unscaledTime - holdStart;
+            if (held >= inventoryDropHoldTime) { playerInventory.DropActive(hand); }
+            else { playerInventory.Cycle(hand); }
         }
     }
 
     public void OpenMenu(InputAction.CallbackContext context)
     {
-        // Call the pause menu
-        //Debug.Log("currentMenu: " + MenuManager.Instance.CurrentMenu);
-
-        //if (MenuManager.Instance.CurrentMenu == GameMenu.Instance) 
-        //{ 
-        //    GameMenu.Instance.OnPausePressed(); 
-        //}
-        //else
-        //{
-        //    //Menu.OnBackPressed();
-        //    MenuManager.Instance.CurrentMenu.OnBackPressed();
-        //}
+        if (pauseMenu == null) { pauseMenu = FindObjectOfType<PauseMenu>(); }
+        if (pauseMenu != null) { pauseMenu.Toggle(); }
     }
 
     public void Dodge(InputAction.CallbackContext context)
@@ -416,16 +430,65 @@ public class PlayerController : EntityController
         }
     }
 
-    public void UseItem(InputAction.CallbackContext context)
+    // Stores the raw right-stick vector used to aim left-hand attacks/items.
+    public void AimInput(InputAction aimAction)
+    {
+        aimVectorRaw = aimAction.ReadValue<Vector2>();
+        if (aimVectorRaw.sqrMagnitude > stickDeadzoneSqr) { lastAimDir = aimVectorRaw; }
+    }
+
+    // Right hand: aimed by the left stick (Move). Uses the right-hand active item.
+    public void UseRightHand(InputAction.CallbackContext context)
     {
         if (disableInput) { return; }
         DisableInputIfMenuOpen();
-        if (playerAttack != null)
+
+        Vector2 dir = moveVectorRaw.sqrMagnitude > stickDeadzoneSqr ? moveVectorRaw : lastMoveDir;
+        UseHand(Hand.Right, dir);
+    }
+
+    // Left hand: aimed by the right stick (Aim). Uses the left-hand active item.
+    public void UseLeftHand(InputAction.CallbackContext context)
+    {
+        if (disableInput) { return; }
+        DisableInputIfMenuOpen();
+
+        Vector2 dir = aimVectorRaw.sqrMagnitude > stickDeadzoneSqr ? aimVectorRaw : lastAimDir;
+        UseHand(Hand.Left, dir);
+    }
+
+    // A non-weapon active item runs its own ability; a weapon (or an empty hand) swings an
+    // attack in the aimed direction.
+    private void UseHand(Hand hand, Vector2 direction)
+    {
+        Item active = playerInventory != null ? playerInventory.GetActive(hand) : null;
+
+        if (active != null && active.inventoryType != InventoryType.WEAPON)
         {
-            // Fire in the direction held at press time, or the last held direction if
-            // no direction is currently pressed.
-            Vector2 attackDir = directionalInput != Vector2.zero ? directionalInput : lastDirInput;
-            playerAttack.Attack(attackDir);
+            active.UseItemAbility(this);
+            return;
+        }
+
+        if (playerAttack != null) { playerAttack.Attack(direction); }
+    }
+
+    // Hold-to-pick-up (the Interact action has a Hold interaction): collect a nearby
+    // weapon/item into its hand inventory, otherwise interact with the closest object.
+    public void Interact(InputAction.CallbackContext context)
+    {
+        if (disableInput) { return; }
+        DisableInputIfMenuOpen();
+
+        if (itemToPickup != null && playerInventory != null)
+        {
+            playerInventory.TryPickup(itemToPickup);
+            itemToPickup = null;
+            return;
+        }
+
+        if (objectToInteract != null)
+        {
+            objectToInteract.InteractWithObject();
         }
     }
 

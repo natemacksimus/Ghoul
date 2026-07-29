@@ -2676,3 +2676,767 @@
 [2026-07-01T05:05:24.207Z] [INFO] log Shutdown request received from client editor-39440-twekkz
 [2026-07-01T05:05:24.209Z] [INFO] log Unity client requested immediate shutdown - shutting down now, reason: Shutdown requested by client
 [2026-07-01T05:05:24.210Z] [INFO] log Shutdown: Initiating graceful shutdown: Shutdown requested by client
+[2026-07-04T17:10:00.705Z] [INFO] relay.startup port=9001 mcpClientPort=9002 editorPid=9080
+[2026-07-04T17:10:00.706Z] [INFO] log Starting relay server...
+[2026-07-04T17:10:00.706Z] [INFO] log === RELAY SERVER STARTED === (unity-ai-relay v1.0.12-build.96)
+[2026-07-04T17:10:00.706Z] [INFO] log Command line arguments: ["bun","B:/~BUN/root/relay_win.exe","--relay","--port","9001","--mcp-client-port","9002","--editor-pid","9080","--shutdown-delay","180","--log-dir","C:\\Github\\Ghoul\\Ghoul\\Logs"]
+[2026-07-04T17:10:00.707Z] [INFO] log Parsed config: {"port":9001,"mcpClientPort":9002,"editorPid":"9080","shutdownDelaySeconds":180}
+[2026-07-04T17:10:00.707Z] [INFO] log Initializing relay components...
+[2026-07-04T17:10:00.708Z] [INFO] log Creating RelayEditor...
+[2026-07-04T17:10:00.715Z] [INFO] log WebSocket server started
+[2026-07-04T17:10:00.719Z] [INFO] log Relay server initialization completed
+[2026-07-04T17:10:00.719Z] [INFO] log MCP Client initialized at port: 9002
+[2026-07-04T17:10:00.725Z] [WARN] log [shell-env] Shell environment did not contain a PATH variable
+[2026-07-04T17:10:00.737Z] [INFO] log Unity MCP Relay server started | Port: 9002 | Endpoints: /mcp/start-server, /mcp/stop-server, /mcp/server-status, /mcp/call-tool
+[2026-07-04T17:10:01.247Z] [INFO] log Unity client connected with ID: editor-9080-sgm58q (relay 1.0.12-build.96)
+[2026-07-04T17:10:01.247Z] [INFO] connection.established clientId=editor-9080-sgm58q port=9001
+[2026-07-04T17:10:01.518Z] [INFO] log HTTP request | POST /mcp/server-status
+[2026-07-04T17:10:01.519Z] [INFO] log Server status check | Server: unity-mcp | Running: no
+[2026-07-04T17:10:01.539Z] [INFO] log HTTP request | POST /mcp/start-server
+[2026-07-04T17:10:01.539Z] [INFO] log Starting MCP server | Name: unity-mcp | Transport: stdio | Command: C:\Users\mackn\.unity/relay\relay_win.exe
+[2026-07-04T17:10:01.541Z] [INFO] log Starting MCP server | Name: unity-mcp | ID: mcp-1
+[2026-07-04T17:10:01.541Z] [INFO] log Creating stdio transport | Command: C:\Users\mackn\.unity/relay\relay_win.exe
+[2026-07-04T17:10:01.541Z] [INFO] log Stdio transport config | Command: C:\Users\mackn\.unity/relay\relay_win.exe --mcp | Env vars: 1
+[2026-07-04T17:10:01.542Z] [INFO] log Stdio transport ready | Command: C:\Users\mackn\.unity/relay\relay_win.exe | Args: 1 | Env: 44 vars
+[2026-07-04T17:10:01.756Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] mcp.startup workingDir=C:\Github\Ghoul\Ghoul
+[2026-07-04T17:10:01.758Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log === MCP SERVER STARTED ===
+[INFO ] [Unity Mcp Server] log PID=22964 execPath=C:\Users\mackn\.unity\relay\relay_win.exe
+[INFO ] [Unity Mcp Server] log argv: ["bun","B:/~BUN/root/relay_win.exe","--mcp"]
+[INFO ] [Unity Mcp Server] log Working directory: C:\Github\Ghoul\Ghoul
+[INFO ] [Unity Mcp Server] log Approval token: {"fromEnv":false}
+[INFO ] [Unity Mcp Server] log Project path: (not specified)
+[INFO ] [Unity Mcp Server] log Instance ID: (not specified)
+[INFO ] [Unity Mcp Server] log MCP server initializing...
+[INFO ] [Unity Mcp Server] log Initializing unity-mcp-server v1.0.0
+[2026-07-04T17:10:01.766Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Unity MCP Server started
+[2026-07-04T17:10:01.815Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Client connected: unity-relay-client 1.0.0
+[2026-07-04T17:10:01.823Z] [INFO] log MCP server connected | Name: unity-mcp
+[2026-07-04T17:10:01.938Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-9080
+[2026-07-04T17:10:01.939Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[2026-07-04T17:10:01.944Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-04T17:10:01.955Z] [INFO] log MCP server initialized | Name: unity-mcp | Tools: 7
+[2026-07-04T17:10:01.956Z] [INFO] log MCP server started successfully | Server: mcp-1 | Tools: 7 | Duration: 415ms
+[2026-07-04T17:30:41.017Z] [INFO] log Domain reload signal received from client editor-9080-sgm58q
+[2026-07-04T17:30:41.021Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-04T17:30:41.023Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-04T17:30:42.222Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-04T17:30:42.225Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-04T17:30:42.226Z] [INFO] log Client disconnected - blocking and caching for recovery
+[2026-07-04T17:30:42.227Z] [WARN] connection.lost clientId=null
+[2026-07-04T17:30:42.228Z] [WARN] log Client disconnected - sessions will persist until auto-shutdown, reason: Client disconnected
+[2026-07-04T17:30:42.232Z] [INFO] log Auto-shutdown timer started due to client disconnection
+[2026-07-04T17:30:47.826Z] [DEBUG] log Relay->Editor communication is unblocked
+[2026-07-04T17:30:47.827Z] [INFO] log Unity client connected with ID: editor-9080-6j8w9t (relay 1.0.12-build.96)
+[2026-07-04T17:30:47.827Z] [INFO] connection.established clientId=editor-9080-6j8w9t port=9001
+[2026-07-04T17:30:48.021Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-9080
+[2026-07-04T17:30:48.022Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-04T17:30:48.914Z] [INFO] log HTTP request | POST /mcp/server-status
+[2026-07-04T17:30:48.915Z] [INFO] log Server status check | Server: unity-mcp | Running: yes
+[2026-07-06T09:41:03.237Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-9080
+[2026-07-06T09:41:03.278Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-09T03:42:32.667Z] [DEBUG] log [SharedTask] get preferences: starting new task
+[2026-07-09T03:42:33.222Z] [DEBUG] log [RelayBus] Retry 1/10 for 'persistence.load' after 50ms
+[2026-07-09T03:42:33.658Z] [WARN] log [RelayBus] Response for unknown request 'bus-1' on channel 'persistence.load'
+[2026-07-09T03:42:33.694Z] [DEBUG] message.received type=gateway/providers_request
+[2026-07-09T03:42:33.722Z] [DEBUG] log [cursor] getCursorPostInstall: loginExec command="agent"
+[2026-07-09T03:42:33.820Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-07-09T03:42:33.864Z] [DEBUG] log [RelayBus] Retry 2/10 for 'persistence.load' after 100ms
+[2026-07-09T03:42:33.937Z] [WARN] log [RelayBus] Response for unknown request 'bus-2' on channel 'persistence.load'
+[2026-07-09T03:42:34.174Z] [DEBUG] log [GatewayPrefs] getPreferences completed successfully with 4 providers (persisted=true)
+[2026-07-09T03:42:34.226Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-07-09T03:42:35.226Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.204
+[2026-07-09T03:42:35.227Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.204","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-07-09T03:42:35.227Z] [DEBUG] log Sent provider versions: 3 providers
+[2026-07-09T03:42:35.232Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.204
+[2026-07-09T03:42:35.234Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.204","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-07-09T03:42:35.235Z] [DEBUG] log [GatewayPrefs] Emitted PreferencesUpdated with 3 versions
+[2026-07-09T04:05:48.450Z] [INFO] log Domain reload signal received from client editor-9080-6j8w9t
+[2026-07-09T04:05:48.461Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-09T04:05:48.461Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-09T04:05:49.524Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-09T04:05:49.527Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-09T04:05:49.528Z] [INFO] log Client disconnected - blocking and caching for recovery
+[2026-07-09T04:05:49.529Z] [WARN] connection.lost clientId=null
+[2026-07-09T04:05:49.529Z] [WARN] log Client disconnected - sessions will persist until auto-shutdown, reason: Client disconnected
+[2026-07-09T04:05:49.531Z] [INFO] log Auto-shutdown timer started due to client disconnection
+[2026-07-09T04:06:07.513Z] [DEBUG] log Relay->Editor communication is unblocked
+[2026-07-09T04:06:07.515Z] [INFO] log Unity client connected with ID: editor-9080-z3y1ar (relay 1.0.12-build.96)
+[2026-07-09T04:06:07.515Z] [INFO] connection.established clientId=editor-9080-z3y1ar port=9001
+[2026-07-09T04:06:07.914Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-9080
+[2026-07-09T04:06:07.922Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-09T04:06:08.446Z] [INFO] log HTTP request | POST /mcp/server-status
+[2026-07-09T04:06:08.447Z] [INFO] log Server status check | Server: unity-mcp | Running: yes
+[2026-07-09T04:06:08.624Z] [INFO] log Domain reload signal received from client editor-9080-z3y1ar
+[2026-07-09T04:06:08.625Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-09T04:06:08.625Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-09T04:06:09.179Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-09T04:06:09.180Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-09T04:06:09.180Z] [WARN] connection.lost clientId=null
+[2026-07-09T04:06:09.180Z] [INFO] log Client disconnected - blocking and caching for recovery
+[2026-07-09T04:06:09.181Z] [WARN] log Client disconnected - sessions will persist until auto-shutdown, reason: Client disconnected
+[2026-07-09T04:06:09.181Z] [INFO] log Auto-shutdown timer started due to client disconnection
+[2026-07-09T04:06:15.196Z] [DEBUG] log Relay->Editor communication is unblocked
+[2026-07-09T04:06:15.196Z] [INFO] log Unity client connected with ID: editor-9080-tnhqqb (relay 1.0.12-build.96)
+[2026-07-09T04:06:15.196Z] [INFO] connection.established clientId=editor-9080-tnhqqb port=9001
+[2026-07-09T04:06:15.317Z] [INFO] log HTTP request | POST /mcp/server-status
+[2026-07-09T04:06:15.318Z] [INFO] log Server status check | Server: unity-mcp | Running: yes
+[2026-07-09T04:06:15.626Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-9080
+[2026-07-09T04:06:15.628Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-09T19:38:47.816Z] [INFO] log Shutdown request received from client editor-9080-tnhqqb
+[2026-07-09T19:38:47.861Z] [INFO] log Unity client requested immediate shutdown - shutting down now, reason: Shutdown requested by client
+[2026-07-09T19:38:47.872Z] [INFO] log Shutdown: Initiating graceful shutdown: Shutdown requested by client
+[2026-07-28T21:55:41.273Z] [INFO] relay.startup port=9001 mcpClientPort=9002 editorPid=17280
+[2026-07-28T21:55:41.276Z] [INFO] log Starting relay server...
+[2026-07-28T21:55:41.276Z] [INFO] log Parsed config: {"port":9001,"mcpClientPort":9002,"editorPid":"17280","shutdownDelaySeconds":180}
+[2026-07-28T21:55:41.276Z] [INFO] log Command line arguments: ["bun","B:/~BUN/root/relay_win.exe","--relay","--port","9001","--mcp-client-port","9002","--editor-pid","17280","--shutdown-delay","180","--log-dir","C:\\Github\\Ghoul\\Ghoul\\Logs"]
+[2026-07-28T21:55:41.276Z] [INFO] log === RELAY SERVER STARTED === (unity-ai-relay v1.0.12-build.96)
+[2026-07-28T21:55:41.277Z] [INFO] log Initializing relay components...
+[2026-07-28T21:55:41.277Z] [INFO] log Creating RelayEditor...
+[2026-07-28T21:55:41.292Z] [INFO] log WebSocket server started
+[2026-07-28T21:55:41.292Z] [INFO] log Relay server initialization completed
+[2026-07-28T21:55:41.293Z] [INFO] log MCP Client initialized at port: 9002
+[2026-07-28T21:55:41.297Z] [WARN] log [shell-env] Shell environment did not contain a PATH variable
+[2026-07-28T21:55:41.311Z] [INFO] log Unity MCP Relay server started | Port: 9002 | Endpoints: /mcp/start-server, /mcp/stop-server, /mcp/server-status, /mcp/call-tool
+[2026-07-28T21:55:41.585Z] [INFO] log Unity client connected with ID: editor-17280-r2tzqg (relay 1.0.12-build.96)
+[2026-07-28T21:55:41.585Z] [INFO] connection.established clientId=editor-17280-r2tzqg port=9001
+[2026-07-28T21:55:41.889Z] [INFO] log HTTP request | POST /mcp/server-status
+[2026-07-28T21:55:41.889Z] [INFO] log Server status check | Server: unity-mcp | Running: no
+[2026-07-28T21:55:41.946Z] [INFO] log HTTP request | POST /mcp/start-server
+[2026-07-28T21:55:41.946Z] [INFO] log Starting MCP server | Name: unity-mcp | Transport: stdio | Command: C:\Users\mackn\.unity/relay\relay_win.exe
+[2026-07-28T21:55:41.947Z] [INFO] log Starting MCP server | Name: unity-mcp | ID: mcp-1
+[2026-07-28T21:55:41.947Z] [INFO] log Creating stdio transport | Command: C:\Users\mackn\.unity/relay\relay_win.exe
+[2026-07-28T21:55:41.948Z] [INFO] log Stdio transport config | Command: C:\Users\mackn\.unity/relay\relay_win.exe --mcp | Env vars: 1
+[2026-07-28T21:55:41.948Z] [INFO] log Stdio transport ready | Command: C:\Users\mackn\.unity/relay\relay_win.exe | Args: 1 | Env: 44 vars
+[2026-07-28T21:55:42.137Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] mcp.startup workingDir=C:\Github\Ghoul\Ghoul
+[2026-07-28T21:55:42.138Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log === MCP SERVER STARTED ===
+[INFO ] [Unity Mcp Server] log PID=7212 execPath=C:\Users\mackn\.unity\relay\relay_win.exe
+[INFO ] [Unity Mcp Server] log argv: ["bun","B:/~BUN/root/relay_win.exe","--mcp"]
+[INFO ] [Unity Mcp Server] log Working directory: C:\Github\Ghoul\Ghoul
+[INFO ] [Unity Mcp Server] log Approval token: {"fromEnv":false}
+[INFO ] [Unity Mcp Server] log Project path: (not specified)
+[INFO ] [Unity Mcp Server] log Instance ID: (not specified)
+[INFO ] [Unity Mcp Server] log MCP server initializing...
+[INFO ] [Unity Mcp Server] log Initializing unity-mcp-server v1.0.0
+[2026-07-28T21:55:42.149Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Unity MCP Server started
+[2026-07-28T21:55:42.192Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Client connected: unity-relay-client 1.0.0
+[2026-07-28T21:55:42.199Z] [INFO] log MCP server connected | Name: unity-mcp
+[2026-07-28T21:55:42.332Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-17280
+[2026-07-28T21:55:42.336Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[2026-07-28T21:55:42.336Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-28T21:55:42.344Z] [INFO] log MCP server initialized | Name: unity-mcp | Tools: 7
+[2026-07-28T21:55:42.345Z] [INFO] log MCP server started successfully | Server: mcp-1 | Tools: 7 | Duration: 398ms
+[2026-07-28T22:01:02.179Z] [INFO] log Domain reload signal received from client editor-17280-r2tzqg
+[2026-07-28T22:01:02.181Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-28T22:01:02.181Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-28T22:01:02.925Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-28T22:01:02.926Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-28T22:01:02.927Z] [INFO] log Client disconnected - blocking and caching for recovery
+[2026-07-28T22:01:02.929Z] [WARN] connection.lost clientId=null
+[2026-07-28T22:01:02.931Z] [WARN] log Client disconnected - sessions will persist until auto-shutdown, reason: Client disconnected
+[2026-07-28T22:01:02.933Z] [INFO] log Auto-shutdown timer started due to client disconnection
+[2026-07-28T22:01:07.676Z] [DEBUG] log Relay->Editor communication is unblocked
+[2026-07-28T22:01:07.676Z] [INFO] log Unity client connected with ID: editor-17280-y5ax7m (relay 1.0.12-build.96)
+[2026-07-28T22:01:07.676Z] [INFO] connection.established clientId=editor-17280-y5ax7m port=9001
+[2026-07-28T22:01:08.194Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-17280
+[2026-07-28T22:01:08.195Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-28T22:01:08.606Z] [INFO] log HTTP request | POST /mcp/server-status
+[2026-07-28T22:01:08.607Z] [INFO] log Server status check | Server: unity-mcp | Running: yes
+[2026-07-28T23:14:28.361Z] [INFO] log Domain reload signal received from client editor-17280-y5ax7m
+[2026-07-28T23:14:28.362Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-28T23:14:28.362Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-28T23:14:29.209Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-28T23:14:29.209Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-28T23:14:29.210Z] [INFO] log Client disconnected - blocking and caching for recovery
+[2026-07-28T23:14:29.210Z] [WARN] connection.lost clientId=null
+[2026-07-28T23:14:29.211Z] [WARN] log Client disconnected - sessions will persist until auto-shutdown, reason: Client disconnected
+[2026-07-28T23:14:29.211Z] [INFO] log Auto-shutdown timer started due to client disconnection
+[2026-07-28T23:14:35.641Z] [DEBUG] log Relay->Editor communication is unblocked
+[2026-07-28T23:14:35.642Z] [INFO] log Unity client connected with ID: editor-17280-3pvbbf (relay 1.0.12-build.96)
+[2026-07-28T23:14:35.643Z] [INFO] connection.established clientId=editor-17280-3pvbbf port=9001
+[2026-07-28T23:14:35.910Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-17280
+[2026-07-28T23:14:35.912Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-28T23:14:36.774Z] [INFO] log HTTP request | POST /mcp/server-status
+[2026-07-28T23:14:36.775Z] [INFO] log Server status check | Server: unity-mcp | Running: yes
+[2026-07-28T23:14:49.397Z] [INFO] log Domain reload signal received from client editor-17280-3pvbbf
+[2026-07-28T23:14:49.398Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-28T23:14:49.400Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-28T23:14:50.268Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-28T23:14:50.269Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-28T23:14:50.270Z] [INFO] log Client disconnected - blocking and caching for recovery
+[2026-07-28T23:14:50.271Z] [WARN] connection.lost clientId=null
+[2026-07-28T23:14:50.272Z] [WARN] log Client disconnected - sessions will persist until auto-shutdown, reason: Client disconnected
+[2026-07-28T23:14:50.273Z] [INFO] log Auto-shutdown timer started due to client disconnection
+[2026-07-28T23:14:56.426Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-17280
+[2026-07-28T23:14:56.429Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-28T23:15:24.219Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-17280
+[2026-07-28T23:15:24.222Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-28T23:17:27.273Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-17280
+[2026-07-28T23:17:27.274Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-28T23:17:50.282Z] [INFO] log Auto-shutdown timer fired after 180s inactivity, shutting down: Dedicated client disconnected
+[2026-07-28T23:17:50.283Z] [INFO] log Shutdown: Initiating graceful shutdown: Dedicated client disconnected
+[2026-07-28T23:52:52.843Z] [INFO] relay.startup port=9001 mcpClientPort=9002 editorPid=17280
+[2026-07-28T23:52:52.844Z] [INFO] log Starting relay server...
+[2026-07-28T23:52:52.843Z] [INFO] log === RELAY SERVER STARTED === (unity-ai-relay v1.0.12-build.96)
+[2026-07-28T23:52:52.844Z] [INFO] log Command line arguments: ["bun","B:/~BUN/root/relay_win.exe","--relay","--port","9001","--mcp-client-port","9002","--editor-pid","17280","--shutdown-delay","180","--log-dir","C:\\Github\\Ghoul\\Ghoul\\Logs"]
+[2026-07-28T23:52:52.844Z] [INFO] log Parsed config: {"port":9001,"mcpClientPort":9002,"editorPid":"17280","shutdownDelaySeconds":180}
+[2026-07-28T23:52:52.845Z] [INFO] log Creating RelayEditor...
+[2026-07-28T23:52:52.845Z] [INFO] log Initializing relay components...
+[2026-07-28T23:52:52.850Z] [INFO] log WebSocket server started
+[2026-07-28T23:52:52.851Z] [INFO] log Relay server initialization completed
+[2026-07-28T23:52:52.854Z] [INFO] log MCP Client initialized at port: 9002
+[2026-07-28T23:52:52.858Z] [WARN] log [shell-env] Shell environment did not contain a PATH variable
+[2026-07-28T23:52:52.874Z] [INFO] log Unity MCP Relay server started | Port: 9002 | Endpoints: /mcp/start-server, /mcp/stop-server, /mcp/server-status, /mcp/call-tool
+[2026-07-28T23:52:53.380Z] [INFO] log Unity client connected with ID: editor-17280-8m441k (relay 1.0.12-build.96)
+[2026-07-28T23:52:53.380Z] [INFO] connection.established clientId=editor-17280-8m441k port=9001
+[2026-07-28T23:52:53.454Z] [INFO] log HTTP request | POST /mcp/server-status
+[2026-07-28T23:52:53.454Z] [INFO] log Server status check | Server: unity-mcp | Running: no
+[2026-07-28T23:52:53.524Z] [INFO] log HTTP request | POST /mcp/start-server
+[2026-07-28T23:52:53.524Z] [INFO] log Starting MCP server | Name: unity-mcp | Transport: stdio | Command: C:\Users\mackn\.unity/relay\relay_win.exe
+[2026-07-28T23:52:53.525Z] [INFO] log Starting MCP server | Name: unity-mcp | ID: mcp-1
+[2026-07-28T23:52:53.525Z] [INFO] log Creating stdio transport | Command: C:\Users\mackn\.unity/relay\relay_win.exe
+[2026-07-28T23:52:53.526Z] [INFO] log Stdio transport config | Command: C:\Users\mackn\.unity/relay\relay_win.exe --mcp | Env vars: 1
+[2026-07-28T23:52:53.526Z] [INFO] log Stdio transport ready | Command: C:\Users\mackn\.unity/relay\relay_win.exe | Args: 1 | Env: 44 vars
+[2026-07-28T23:52:53.724Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] mcp.startup workingDir=C:\Github\Ghoul\Ghoul
+[2026-07-28T23:52:53.725Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log === MCP SERVER STARTED ===
+[INFO ] [Unity Mcp Server] log PID=14324 execPath=C:\Users\mackn\.unity\relay\relay_win.exe
+[INFO ] [Unity Mcp Server] log argv: ["bun","B:/~BUN/root/relay_win.exe","--mcp"]
+[INFO ] [Unity Mcp Server] log Working directory: C:\Github\Ghoul\Ghoul
+[INFO ] [Unity Mcp Server] log Approval token: {"fromEnv":false}
+[INFO ] [Unity Mcp Server] log Project path: (not specified)
+[INFO ] [Unity Mcp Server] log Instance ID: (not specified)
+[INFO ] [Unity Mcp Server] log MCP server initializing...
+[INFO ] [Unity Mcp Server] log Initializing unity-mcp-server v1.0.0
+[2026-07-28T23:52:53.732Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Unity MCP Server started
+[2026-07-28T23:52:53.756Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Client connected: unity-relay-client 1.0.0
+[2026-07-28T23:52:53.771Z] [INFO] log MCP server connected | Name: unity-mcp
+[2026-07-28T23:52:53.878Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-17280
+[2026-07-28T23:52:53.881Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-28T23:52:53.893Z] [INFO] log MCP server initialized | Name: unity-mcp | Tools: 7
+[2026-07-28T23:52:53.893Z] [INFO] log MCP server started successfully | Server: mcp-1 | Tools: 7 | Duration: 368ms
+[2026-07-29T03:05:58.214Z] [INFO] log Domain reload signal received from client editor-17280-8m441k
+[2026-07-29T03:05:58.216Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-29T03:05:58.217Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-29T03:05:59.437Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-29T03:05:59.438Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-29T03:05:59.439Z] [INFO] log Client disconnected - blocking and caching for recovery
+[2026-07-29T03:05:59.440Z] [WARN] connection.lost clientId=null
+[2026-07-29T03:05:59.441Z] [WARN] log Client disconnected - sessions will persist until auto-shutdown, reason: Client disconnected
+[2026-07-29T03:05:59.443Z] [INFO] log Auto-shutdown timer started due to client disconnection
+[2026-07-29T03:06:04.679Z] [DEBUG] log Relay->Editor communication is unblocked
+[2026-07-29T03:06:04.680Z] [INFO] log Unity client connected with ID: editor-17280-z1kocm (relay 1.0.12-build.96)
+[2026-07-29T03:06:04.680Z] [INFO] connection.established clientId=editor-17280-z1kocm port=9001
+[2026-07-29T03:06:05.195Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-17280
+[2026-07-29T03:06:05.196Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-29T03:06:05.569Z] [INFO] log HTTP request | POST /mcp/server-status
+[2026-07-29T03:06:05.570Z] [INFO] log Server status check | Server: unity-mcp | Running: yes
+[2026-07-29T03:07:19.526Z] [DEBUG] log [SharedTask] get preferences: starting new task
+[2026-07-29T03:07:19.546Z] [DEBUG] log [GatewayPrefs] getPreferences completed successfully with 4 providers (persisted=true)
+[2026-07-29T03:07:19.608Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-07-29T03:07:19.821Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.220
+[2026-07-29T03:07:19.822Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.220","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-07-29T03:07:19.822Z] [DEBUG] log [GatewayPrefs] Emitted PreferencesUpdated with 3 versions
+[2026-07-29T03:10:29.455Z] [INFO] log HTTP request | POST /mcp/stop-server
+[2026-07-29T03:10:29.457Z] [INFO] log Stopping MCP server | Name: unity-mcp | ID: mcp-1
+[2026-07-29T03:10:29.457Z] [INFO] log Cleaning up server | Name: unity-mcp
+[2026-07-29T03:10:29.463Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Shutting down Unity MCP Server...
+[2026-07-29T03:10:29.479Z] [INFO] log MCP server disconnected | Name: unity-mcp
+[2026-07-29T03:10:29.479Z] [INFO] log Cleaning up server | Name: unity-mcp
+[2026-07-29T03:10:29.480Z] [INFO] log Server stopped successfully | Server: mcp-1 | Was running: true
+[2026-07-29T03:10:29.491Z] [INFO] log HTTP request | POST /mcp/server-status
+[2026-07-29T03:10:29.492Z] [INFO] log Server status check | Server: unity-mcp | Running: no
+[2026-07-29T03:10:29.499Z] [INFO] log HTTP request | POST /mcp/start-server
+[2026-07-29T03:10:29.500Z] [INFO] log Starting MCP server | Name: unity-mcp | Transport: stdio | Command: C:\Users\mackn\.unity/relay\relay_win.exe
+[2026-07-29T03:10:29.500Z] [INFO] log Starting MCP server | Name: unity-mcp | ID: mcp-2
+[2026-07-29T03:10:29.500Z] [INFO] log Creating stdio transport | Command: C:\Users\mackn\.unity/relay\relay_win.exe
+[2026-07-29T03:10:29.501Z] [INFO] log Stdio transport config | Command: C:\Users\mackn\.unity/relay\relay_win.exe --mcp | Env vars: 1
+[2026-07-29T03:10:29.502Z] [INFO] log Stdio transport ready | Command: C:\Users\mackn\.unity/relay\relay_win.exe | Args: 1 | Env: 44 vars
+[2026-07-29T03:10:29.645Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] mcp.startup workingDir=C:\Github\Ghoul\Ghoul
+[2026-07-29T03:10:29.646Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log === MCP SERVER STARTED ===
+[INFO ] [Unity Mcp Server] log PID=43776 execPath=C:\Users\mackn\.unity\relay\relay_win.exe
+[INFO ] [Unity Mcp Server] log argv: ["bun","B:/~BUN/root/relay_win.exe","--mcp"]
+[INFO ] [Unity Mcp Server] log Working directory: C:\Github\Ghoul\Ghoul
+[INFO ] [Unity Mcp Server] log Approval token: {"fromEnv":false}
+[INFO ] [Unity Mcp Server] log Project path: (not specified)
+[INFO ] [Unity Mcp Server] log Instance ID: (not specified)
+[INFO ] [Unity Mcp Server] log MCP server initializing...
+[INFO ] [Unity Mcp Server] log Initializing unity-mcp-server v1.0.0
+[2026-07-29T03:10:29.651Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Unity MCP Server started
+[2026-07-29T03:10:29.673Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Client connected: unity-relay-client 1.0.0
+[2026-07-29T03:10:29.676Z] [INFO] log MCP server connected | Name: unity-mcp
+[2026-07-29T03:10:29.774Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-17280
+[2026-07-29T03:10:29.784Z] [INFO] log MCP server initialized | Name: unity-mcp | Tools: 7
+[2026-07-29T03:10:29.786Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-29T03:10:29.785Z] [INFO] log MCP server started successfully | Server: mcp-2 | Tools: 7 | Duration: 285ms
+[2026-07-29T03:11:15.448Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-17280
+[2026-07-29T03:11:15.450Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-29T03:14:31.415Z] [DEBUG] message.received type=gateway/providers_request
+[2026-07-29T03:14:31.425Z] [DEBUG] log [cursor] getCursorPostInstall: loginExec command="agent"
+[2026-07-29T03:14:31.472Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-07-29T03:14:31.685Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.220
+[2026-07-29T03:14:31.685Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.220","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-07-29T03:14:31.686Z] [DEBUG] log Sent provider versions: 3 providers
+[2026-07-29T03:15:09.993Z] [DEBUG] log [SharedTask] get preferences: starting new task
+[2026-07-29T03:15:09.997Z] [DEBUG] log [GatewayPrefs] getPreferences completed successfully with 4 providers (persisted=true)
+[2026-07-29T03:15:10.047Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-07-29T03:15:10.218Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.220
+[2026-07-29T03:15:10.219Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.220","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-07-29T03:15:10.220Z] [DEBUG] log [GatewayPrefs] Emitted PreferencesUpdated with 3 versions
+[2026-07-29T03:15:25.732Z] [INFO] log Shutdown request received from client editor-17280-z1kocm
+[2026-07-29T03:15:25.734Z] [INFO] log Unity client requested immediate shutdown - shutting down now, reason: Shutdown requested by client
+[2026-07-29T03:15:25.735Z] [INFO] log Shutdown: Initiating graceful shutdown: Shutdown requested by client
+[2026-07-29T03:15:59.549Z] [INFO] relay.startup port=9001 mcpClientPort=9002 editorPid=27540
+[2026-07-29T03:15:59.550Z] [INFO] log Starting relay server...
+[2026-07-29T03:15:59.551Z] [INFO] log Command line arguments: ["bun","B:/~BUN/root/relay_win.exe","--relay","--port","9001","--mcp-client-port","9002","--editor-pid","27540","--shutdown-delay","180","--log-dir","C:\\Github\\Ghoul\\Ghoul\\Logs"]
+[2026-07-29T03:15:59.550Z] [INFO] log === RELAY SERVER STARTED === (unity-ai-relay v1.0.12-build.96)
+[2026-07-29T03:15:59.551Z] [INFO] log Parsed config: {"port":9001,"mcpClientPort":9002,"editorPid":"27540","shutdownDelaySeconds":180}
+[2026-07-29T03:15:59.552Z] [INFO] log Initializing relay components...
+[2026-07-29T03:15:59.552Z] [INFO] log Creating RelayEditor...
+[2026-07-29T03:15:59.556Z] [INFO] log WebSocket server started
+[2026-07-29T03:15:59.557Z] [INFO] log Relay server initialization completed
+[2026-07-29T03:15:59.557Z] [INFO] log MCP Client initialized at port: 9002
+[2026-07-29T03:15:59.565Z] [WARN] log [shell-env] Shell environment did not contain a PATH variable
+[2026-07-29T03:15:59.589Z] [INFO] log Unity MCP Relay server started | Port: 9002 | Endpoints: /mcp/start-server, /mcp/stop-server, /mcp/server-status, /mcp/call-tool
+[2026-07-29T03:16:00.109Z] [INFO] log Unity client connected with ID: editor-27540-63nenk (relay 1.0.12-build.96)
+[2026-07-29T03:16:00.109Z] [INFO] connection.established clientId=editor-27540-63nenk port=9001
+[2026-07-29T03:16:00.295Z] [INFO] log HTTP request | POST /mcp/server-status
+[2026-07-29T03:16:00.296Z] [INFO] log Server status check | Server: unity-mcp | Running: no
+[2026-07-29T03:16:00.318Z] [INFO] log HTTP request | POST /mcp/start-server
+[2026-07-29T03:16:00.318Z] [INFO] log Starting MCP server | Name: unity-mcp | Transport: stdio | Command: C:\Users\mackn\.unity/relay\relay_win.exe
+[2026-07-29T03:16:00.319Z] [INFO] log Starting MCP server | Name: unity-mcp | ID: mcp-1
+[2026-07-29T03:16:00.320Z] [INFO] log Creating stdio transport | Command: C:\Users\mackn\.unity/relay\relay_win.exe
+[2026-07-29T03:16:00.320Z] [INFO] log Stdio transport config | Command: C:\Users\mackn\.unity/relay\relay_win.exe --mcp | Env vars: 1
+[2026-07-29T03:16:00.321Z] [INFO] log Stdio transport ready | Command: C:\Users\mackn\.unity/relay\relay_win.exe | Args: 1 | Env: 44 vars
+[2026-07-29T03:16:00.473Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] mcp.startup workingDir=C:\Github\Ghoul\Ghoul
+[2026-07-29T03:16:00.474Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log === MCP SERVER STARTED ===
+[INFO ] [Unity Mcp Server] log PID=16656 execPath=C:\Users\mackn\.unity\relay\relay_win.exe
+[INFO ] [Unity Mcp Server] log argv: ["bun","B:/~BUN/root/relay_win.exe","--mcp"]
+[INFO ] [Unity Mcp Server] log Working directory: C:\Github\Ghoul\Ghoul
+[INFO ] [Unity Mcp Server] log Approval token: {"fromEnv":false}
+[INFO ] [Unity Mcp Server] log Project path: (not specified)
+[INFO ] [Unity Mcp Server] log Instance ID: (not specified)
+[INFO ] [Unity Mcp Server] log MCP server initializing...
+[INFO ] [Unity Mcp Server] log Initializing unity-mcp-server v1.0.0
+[2026-07-29T03:16:00.482Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Unity MCP Server started
+[2026-07-29T03:16:00.503Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Client connected: unity-relay-client 1.0.0
+[2026-07-29T03:16:00.509Z] [INFO] log MCP server connected | Name: unity-mcp
+[2026-07-29T03:16:00.604Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-27540
+[2026-07-29T03:16:00.616Z] [INFO] log MCP server initialized | Name: unity-mcp | Tools: 7
+[2026-07-29T03:16:00.617Z] [INFO] log MCP server started successfully | Server: mcp-1 | Tools: 7 | Duration: 298ms
+[2026-07-29T03:16:00.619Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-29T03:18:09.012Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-27540
+[INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[2026-07-29T03:18:09.013Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-29T03:18:18.594Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-27540
+[2026-07-29T03:18:18.596Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-29T03:18:50.219Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-27540
+[INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-29T03:19:17.626Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-27540
+[2026-07-29T03:19:17.629Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-29T03:19:45.373Z] [DEBUG] log [SharedTask] get preferences: starting new task
+[2026-07-29T03:19:45.389Z] [DEBUG] log [GatewayPrefs] getPreferences completed successfully with 4 providers (persisted=true)
+[2026-07-29T03:19:45.451Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-07-29T03:19:46.925Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.220
+[2026-07-29T03:19:46.926Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.220","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-07-29T03:19:46.927Z] [DEBUG] log [GatewayPrefs] Emitted PreferencesUpdated with 3 versions
+[2026-07-29T03:20:26.615Z] [DEBUG] log [SharedTask] get preferences: starting new task
+[2026-07-29T03:20:26.620Z] [DEBUG] log [GatewayPrefs] getPreferences completed successfully with 4 providers (persisted=true)
+[2026-07-29T03:20:26.675Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-07-29T03:20:26.848Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.220
+[2026-07-29T03:20:26.848Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.220","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-07-29T03:20:26.849Z] [DEBUG] log [GatewayPrefs] Emitted PreferencesUpdated with 3 versions
+[2026-07-29T03:21:31.916Z] [DEBUG] log [SharedTask] get preferences: starting new task
+[2026-07-29T03:21:31.920Z] [DEBUG] log [GatewayPrefs] getPreferences completed successfully with 4 providers (persisted=true)
+[2026-07-29T03:21:31.988Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-07-29T03:21:32.152Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.220
+[2026-07-29T03:21:32.153Z] [DEBUG] log [GatewayPrefs] Emitted PreferencesUpdated with 3 versions
+[2026-07-29T03:21:32.152Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.220","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-07-29T03:21:44.445Z] [INFO] log Shutdown request received from client editor-27540-63nenk
+[2026-07-29T03:21:44.446Z] [INFO] log Unity client requested immediate shutdown - shutting down now, reason: Shutdown requested by client
+[2026-07-29T03:21:44.446Z] [INFO] log Shutdown: Initiating graceful shutdown: Shutdown requested by client
+[2026-07-29T03:22:08.415Z] [INFO] relay.startup port=9001 mcpClientPort=9002 editorPid=36140
+[2026-07-29T03:22:08.416Z] [INFO] log Starting relay server...
+[2026-07-29T03:22:08.416Z] [INFO] log === RELAY SERVER STARTED === (unity-ai-relay v1.0.12-build.96)
+[2026-07-29T03:22:08.416Z] [INFO] log Command line arguments: ["bun","B:/~BUN/root/relay_win.exe","--relay","--port","9001","--mcp-client-port","9002","--editor-pid","36140","--shutdown-delay","180","--log-dir","C:\\Github\\Ghoul\\Ghoul\\Logs"]
+[2026-07-29T03:22:08.417Z] [INFO] log Parsed config: {"port":9001,"mcpClientPort":9002,"editorPid":"36140","shutdownDelaySeconds":180}
+[2026-07-29T03:22:08.417Z] [INFO] log Initializing relay components...
+[2026-07-29T03:22:08.418Z] [INFO] log Creating RelayEditor...
+[2026-07-29T03:22:08.421Z] [INFO] log WebSocket server started
+[2026-07-29T03:22:08.422Z] [INFO] log Relay server initialization completed
+[2026-07-29T03:22:08.423Z] [INFO] log MCP Client initialized at port: 9002
+[2026-07-29T03:22:08.431Z] [WARN] log [shell-env] Shell environment did not contain a PATH variable
+[2026-07-29T03:22:08.454Z] [INFO] log Unity MCP Relay server started | Port: 9002 | Endpoints: /mcp/start-server, /mcp/stop-server, /mcp/server-status, /mcp/call-tool
+[2026-07-29T03:22:08.960Z] [INFO] log Unity client connected with ID: editor-36140-gmg7ed (relay 1.0.12-build.96)
+[2026-07-29T03:22:08.961Z] [INFO] connection.established clientId=editor-36140-gmg7ed port=9001
+[2026-07-29T03:22:09.111Z] [INFO] log HTTP request | POST /mcp/server-status
+[2026-07-29T03:22:09.112Z] [INFO] log Server status check | Server: unity-mcp | Running: no
+[2026-07-29T03:22:09.124Z] [INFO] log HTTP request | POST /mcp/start-server
+[2026-07-29T03:22:09.125Z] [INFO] log Starting MCP server | Name: unity-mcp | Transport: stdio | Command: C:\Users\mackn\.unity/relay\relay_win.exe
+[2026-07-29T03:22:09.125Z] [INFO] log Starting MCP server | Name: unity-mcp | ID: mcp-1
+[2026-07-29T03:22:09.126Z] [INFO] log Creating stdio transport | Command: C:\Users\mackn\.unity/relay\relay_win.exe
+[2026-07-29T03:22:09.127Z] [INFO] log Stdio transport config | Command: C:\Users\mackn\.unity/relay\relay_win.exe --mcp | Env vars: 1
+[2026-07-29T03:22:09.127Z] [INFO] log Stdio transport ready | Command: C:\Users\mackn\.unity/relay\relay_win.exe | Args: 1 | Env: 44 vars
+[2026-07-29T03:22:09.261Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] mcp.startup workingDir=C:\Github\Ghoul\Ghoul
+[2026-07-29T03:22:09.262Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log === MCP SERVER STARTED ===
+[INFO ] [Unity Mcp Server] log PID=14376 execPath=C:\Users\mackn\.unity\relay\relay_win.exe
+[INFO ] [Unity Mcp Server] log argv: ["bun","B:/~BUN/root/relay_win.exe","--mcp"]
+[INFO ] [Unity Mcp Server] log Working directory: C:\Github\Ghoul\Ghoul
+[INFO ] [Unity Mcp Server] log Approval token: {"fromEnv":false}
+[INFO ] [Unity Mcp Server] log Project path: (not specified)
+[INFO ] [Unity Mcp Server] log Instance ID: (not specified)
+[INFO ] [Unity Mcp Server] log MCP server initializing...
+[INFO ] [Unity Mcp Server] log Initializing unity-mcp-server v1.0.0
+[2026-07-29T03:22:09.266Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Unity MCP Server started
+[2026-07-29T03:22:09.289Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Client connected: unity-relay-client 1.0.0
+[2026-07-29T03:22:09.293Z] [INFO] log MCP server connected | Name: unity-mcp
+[2026-07-29T03:22:09.387Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-36140
+[2026-07-29T03:22:09.389Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[2026-07-29T03:22:09.391Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-29T03:22:09.398Z] [INFO] log MCP server initialized | Name: unity-mcp | Tools: 7
+[2026-07-29T03:22:09.398Z] [INFO] log MCP server started successfully | Server: mcp-1 | Tools: 7 | Duration: 273ms
+[2026-07-29T03:23:05.796Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-36140
+[INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[2026-07-29T03:23:05.800Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-29T03:23:20.603Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-36140
+[INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[2026-07-29T03:23:20.606Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-29T03:23:23.350Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-36140
+[2026-07-29T03:23:23.354Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-29T03:23:29.409Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-36140
+[INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[2026-07-29T03:23:29.410Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-29T03:28:55.947Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-36140
+[2026-07-29T03:28:55.949Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-29T03:28:57.431Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-36140
+[INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[2026-07-29T03:28:57.432Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-29T03:31:55.447Z] [INFO] log Shutdown request received from client editor-36140-gmg7ed
+[2026-07-29T03:31:55.448Z] [INFO] log Unity client requested immediate shutdown - shutting down now, reason: Shutdown requested by client
+[2026-07-29T03:31:55.449Z] [INFO] log Shutdown: Initiating graceful shutdown: Shutdown requested by client
+[2026-07-29T03:35:10.364Z] [INFO] relay.startup port=9001 mcpClientPort=9002 editorPid=37620
+[2026-07-29T03:35:10.365Z] [INFO] log === RELAY SERVER STARTED === (unity-ai-relay v1.0.12-build.96)
+[2026-07-29T03:35:10.365Z] [INFO] log Starting relay server...
+[2026-07-29T03:35:10.366Z] [INFO] log Command line arguments: ["bun","B:/~BUN/root/relay_win.exe","--relay","--port","9001","--mcp-client-port","9002","--editor-pid","37620","--shutdown-delay","180","--log-dir","C:\\Github\\Ghoul\\Ghoul\\Logs"]
+[2026-07-29T03:35:10.366Z] [INFO] log Parsed config: {"port":9001,"mcpClientPort":9002,"editorPid":"37620","shutdownDelaySeconds":180}
+[2026-07-29T03:35:10.367Z] [INFO] log Initializing relay components...
+[2026-07-29T03:35:10.367Z] [INFO] log Creating RelayEditor...
+[2026-07-29T03:35:10.371Z] [INFO] log WebSocket server started
+[2026-07-29T03:35:10.372Z] [INFO] log Relay server initialization completed
+[2026-07-29T03:35:10.373Z] [INFO] log MCP Client initialized at port: 9002
+[2026-07-29T03:35:10.381Z] [WARN] log [shell-env] Shell environment did not contain a PATH variable
+[2026-07-29T03:35:10.402Z] [INFO] log Unity MCP Relay server started | Port: 9002 | Endpoints: /mcp/start-server, /mcp/stop-server, /mcp/server-status, /mcp/call-tool
+[2026-07-29T03:35:10.924Z] [INFO] log Unity client connected with ID: editor-37620-lm8krm (relay 1.0.12-build.96)
+[2026-07-29T03:35:10.925Z] [INFO] connection.established clientId=editor-37620-lm8krm port=9001
+[2026-07-29T03:35:11.172Z] [INFO] log HTTP request | POST /mcp/server-status
+[2026-07-29T03:35:11.173Z] [INFO] log Server status check | Server: unity-mcp | Running: no
+[2026-07-29T03:35:11.199Z] [INFO] log HTTP request | POST /mcp/start-server
+[2026-07-29T03:35:11.199Z] [INFO] log Starting MCP server | Name: unity-mcp | Transport: stdio | Command: C:\Users\mackn\.unity/relay\relay_win.exe
+[2026-07-29T03:35:11.200Z] [INFO] log Starting MCP server | Name: unity-mcp | ID: mcp-1
+[2026-07-29T03:35:11.200Z] [INFO] log Creating stdio transport | Command: C:\Users\mackn\.unity/relay\relay_win.exe
+[2026-07-29T03:35:11.201Z] [INFO] log Stdio transport config | Command: C:\Users\mackn\.unity/relay\relay_win.exe --mcp | Env vars: 1
+[2026-07-29T03:35:11.201Z] [INFO] log Stdio transport ready | Command: C:\Users\mackn\.unity/relay\relay_win.exe | Args: 1 | Env: 44 vars
+[2026-07-29T03:35:11.331Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] mcp.startup workingDir=C:\Github\Ghoul\Ghoul
+[2026-07-29T03:35:11.332Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log === MCP SERVER STARTED ===
+[INFO ] [Unity Mcp Server] log PID=35664 execPath=C:\Users\mackn\.unity\relay\relay_win.exe
+[INFO ] [Unity Mcp Server] log argv: ["bun","B:/~BUN/root/relay_win.exe","--mcp"]
+[INFO ] [Unity Mcp Server] log Working directory: C:\Github\Ghoul\Ghoul
+[INFO ] [Unity Mcp Server] log Approval token: {"fromEnv":false}
+[INFO ] [Unity Mcp Server] log Project path: (not specified)
+[INFO ] [Unity Mcp Server] log Instance ID: (not specified)
+[INFO ] [Unity Mcp Server] log MCP server initializing...
+[INFO ] [Unity Mcp Server] log Initializing unity-mcp-server v1.0.0
+[2026-07-29T03:35:11.336Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Unity MCP Server started
+[2026-07-29T03:35:11.355Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Client connected: unity-relay-client 1.0.0
+[2026-07-29T03:35:11.360Z] [INFO] log MCP server connected | Name: unity-mcp
+[2026-07-29T03:35:11.464Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-37620
+[2026-07-29T03:35:11.465Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[2026-07-29T03:35:11.467Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-29T03:35:11.472Z] [INFO] log MCP server initialized | Name: unity-mcp | Tools: 7
+[2026-07-29T03:35:11.473Z] [INFO] log MCP server started successfully | Server: mcp-1 | Tools: 7 | Duration: 273ms
+[2026-07-29T03:40:23.563Z] [DEBUG] log [SharedTask] get preferences: starting new task
+[2026-07-29T03:40:23.606Z] [DEBUG] log [GatewayPrefs] getPreferences completed successfully with 4 providers (persisted=true)
+[2026-07-29T03:40:23.668Z] [DEBUG] log [validate] Found Claude CLI in PATH: C:\Users\mackn\.local\bin\claude.exe
+[2026-07-29T03:40:23.842Z] [DEBUG] log [provider-version] Claude version from C:\Users\mackn\.local\bin\claude.exe: 2.1.220
+[2026-07-29T03:40:23.843Z] [DEBUG] log [provider-version] Fetched versions: [{"id":"claude-code","version":"2.1.220","isCustom":false},{"id":"codex","version":"0.9.5","isCustom":true},{"id":"gemini","isCustom":true}]
+[2026-07-29T03:40:23.844Z] [DEBUG] log [GatewayPrefs] Emitted PreferencesUpdated with 3 versions
+[2026-07-29T03:40:42.950Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-29T03:40:42.949Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-37620
+[INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[2026-07-29T03:57:19.967Z] [INFO] log Domain reload signal received from client editor-37620-lm8krm
+[2026-07-29T03:57:19.968Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-29T03:57:19.969Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-29T03:57:20.785Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-29T03:57:20.786Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-29T03:57:20.788Z] [INFO] log Client disconnected - blocking and caching for recovery
+[2026-07-29T03:57:20.789Z] [WARN] connection.lost clientId=null
+[2026-07-29T03:57:20.790Z] [WARN] log Client disconnected - sessions will persist until auto-shutdown, reason: Client disconnected
+[2026-07-29T03:57:20.792Z] [INFO] log Auto-shutdown timer started due to client disconnection
+[2026-07-29T03:57:26.431Z] [INFO] log Unity client connected with ID: editor-37620-bftrxz (relay 1.0.12-build.96)
+[2026-07-29T03:57:26.430Z] [DEBUG] log Relay->Editor communication is unblocked
+[2026-07-29T03:57:26.431Z] [INFO] connection.established clientId=editor-37620-bftrxz port=9001
+[2026-07-29T03:57:26.507Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-37620
+[2026-07-29T03:57:26.508Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-29T03:57:27.307Z] [INFO] log HTTP request | POST /mcp/server-status
+[2026-07-29T03:57:27.308Z] [INFO] log Server status check | Server: unity-mcp | Running: yes
+[2026-07-29T04:06:55.503Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-29T04:06:55.500Z] [INFO] log Domain reload signal received from client editor-37620-bftrxz
+[2026-07-29T04:06:55.502Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-29T04:06:56.158Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-29T04:06:56.161Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-29T04:06:56.163Z] [INFO] log Client disconnected - blocking and caching for recovery
+[2026-07-29T04:06:56.164Z] [WARN] connection.lost clientId=null
+[2026-07-29T04:06:56.164Z] [WARN] log Client disconnected - sessions will persist until auto-shutdown, reason: Client disconnected
+[2026-07-29T04:06:56.165Z] [INFO] log Auto-shutdown timer started due to client disconnection
+[2026-07-29T04:06:59.901Z] [DEBUG] log Relay->Editor communication is unblocked
+[2026-07-29T04:06:59.902Z] [INFO] log Unity client connected with ID: editor-37620-m5mn3z (relay 1.0.12-build.96)
+[2026-07-29T04:06:59.902Z] [INFO] connection.established clientId=editor-37620-m5mn3z port=9001
+[2026-07-29T04:07:00.467Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-37620
+[2026-07-29T04:07:00.468Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-29T04:07:00.613Z] [INFO] log HTTP request | POST /mcp/server-status
+[2026-07-29T04:07:00.614Z] [INFO] log Server status check | Server: unity-mcp | Running: yes
+[2026-07-29T04:07:00.740Z] [INFO] log Domain reload signal received from client editor-37620-m5mn3z
+[2026-07-29T04:07:00.740Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-29T04:07:00.741Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-29T04:07:01.287Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-29T04:07:01.288Z] [INFO] log Client disconnected - blocking and caching for recovery
+[2026-07-29T04:07:01.287Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-29T04:07:01.288Z] [WARN] connection.lost clientId=null
+[2026-07-29T04:07:01.289Z] [WARN] log Client disconnected - sessions will persist until auto-shutdown, reason: Client disconnected
+[2026-07-29T04:07:01.289Z] [INFO] log Auto-shutdown timer started due to client disconnection
+[2026-07-29T04:07:06.715Z] [DEBUG] log Relay->Editor communication is unblocked
+[2026-07-29T04:07:06.715Z] [INFO] log Unity client connected with ID: editor-37620-8kzl5w (relay 1.0.12-build.96)
+[2026-07-29T04:07:06.716Z] [INFO] connection.established clientId=editor-37620-8kzl5w port=9001
+[2026-07-29T04:07:06.819Z] [INFO] log HTTP request | POST /mcp/server-status
+[2026-07-29T04:07:06.820Z] [INFO] log Server status check | Server: unity-mcp | Running: yes
+[2026-07-29T04:07:07.239Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-37620
+[2026-07-29T04:07:07.240Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-29T04:08:57.758Z] [INFO] log Domain reload signal received from client editor-37620-8kzl5w
+[2026-07-29T04:08:57.759Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-29T04:08:57.760Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-29T04:08:58.398Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-29T04:08:58.401Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-29T04:08:58.401Z] [INFO] log Client disconnected - blocking and caching for recovery
+[2026-07-29T04:08:58.402Z] [WARN] connection.lost clientId=null
+[2026-07-29T04:08:58.403Z] [WARN] log Client disconnected - sessions will persist until auto-shutdown, reason: Client disconnected
+[2026-07-29T04:08:58.404Z] [INFO] log Auto-shutdown timer started due to client disconnection
+[2026-07-29T04:09:02.175Z] [DEBUG] log Relay->Editor communication is unblocked
+[2026-07-29T04:09:02.175Z] [INFO] log Unity client connected with ID: editor-37620-llnm6b (relay 1.0.12-build.96)
+[2026-07-29T04:09:02.176Z] [INFO] connection.established clientId=editor-37620-llnm6b port=9001
+[2026-07-29T04:09:02.715Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-37620
+[2026-07-29T04:09:02.717Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-29T04:09:03.058Z] [INFO] log HTTP request | POST /mcp/server-status
+[2026-07-29T04:09:03.058Z] [INFO] log Server status check | Server: unity-mcp | Running: yes
+[2026-07-29T04:09:03.194Z] [INFO] log Domain reload signal received from client editor-37620-llnm6b
+[2026-07-29T04:09:03.194Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-29T04:09:03.195Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-29T04:09:03.760Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-29T04:09:03.761Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-29T04:09:03.761Z] [INFO] log Client disconnected - blocking and caching for recovery
+[2026-07-29T04:09:03.761Z] [WARN] connection.lost clientId=null
+[2026-07-29T04:09:03.762Z] [WARN] log Client disconnected - sessions will persist until auto-shutdown, reason: Client disconnected
+[2026-07-29T04:09:03.762Z] [INFO] log Auto-shutdown timer started due to client disconnection
+[2026-07-29T04:09:08.212Z] [DEBUG] log Relay->Editor communication is unblocked
+[2026-07-29T04:09:08.213Z] [INFO] log Unity client connected with ID: editor-37620-tb3t7n (relay 1.0.12-build.96)
+[2026-07-29T04:09:08.213Z] [INFO] connection.established clientId=editor-37620-tb3t7n port=9001
+[2026-07-29T04:09:08.328Z] [INFO] log HTTP request | POST /mcp/server-status
+[2026-07-29T04:09:08.329Z] [INFO] log Server status check | Server: unity-mcp | Running: yes
+[2026-07-29T04:09:08.665Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-37620
+[2026-07-29T04:09:08.666Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-29T04:16:27.174Z] [INFO] log Domain reload signal received from client editor-37620-tb3t7n
+[2026-07-29T04:16:27.175Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-29T04:16:27.175Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-29T04:16:28.106Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-29T04:16:28.107Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-29T04:16:28.108Z] [INFO] log Client disconnected - blocking and caching for recovery
+[2026-07-29T04:16:28.108Z] [WARN] connection.lost clientId=null
+[2026-07-29T04:16:28.109Z] [WARN] log Client disconnected - sessions will persist until auto-shutdown, reason: Client disconnected
+[2026-07-29T04:16:28.109Z] [INFO] log Auto-shutdown timer started due to client disconnection
+[2026-07-29T04:16:36.700Z] [DEBUG] log Relay->Editor communication is unblocked
+[2026-07-29T04:16:36.701Z] [INFO] log Unity client connected with ID: editor-37620-g0jb9j (relay 1.0.12-build.96)
+[2026-07-29T04:16:36.701Z] [INFO] connection.established clientId=editor-37620-g0jb9j port=9001
+[2026-07-29T04:16:36.738Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-37620
+[2026-07-29T04:16:36.741Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-29T04:16:36.818Z] [INFO] log HTTP request | POST /mcp/server-status
+[2026-07-29T04:16:36.818Z] [INFO] log Server status check | Server: unity-mcp | Running: yes
+[2026-07-29T04:23:53.480Z] [INFO] log Domain reload signal received from client editor-37620-g0jb9j
+[2026-07-29T04:23:53.481Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-29T04:23:53.481Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-29T04:23:54.132Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-29T04:23:54.134Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-29T04:23:54.134Z] [INFO] log Client disconnected - blocking and caching for recovery
+[2026-07-29T04:23:54.135Z] [WARN] connection.lost clientId=null
+[2026-07-29T04:23:54.135Z] [WARN] log Client disconnected - sessions will persist until auto-shutdown, reason: Client disconnected
+[2026-07-29T04:23:54.136Z] [INFO] log Auto-shutdown timer started due to client disconnection
+[2026-07-29T04:23:57.911Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-37620
+[2026-07-29T04:23:57.912Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-29T04:26:54.155Z] [INFO] log Auto-shutdown timer fired after 180s inactivity, shutting down: Dedicated client disconnected
+[2026-07-29T04:26:54.156Z] [INFO] log Shutdown: Initiating graceful shutdown: Dedicated client disconnected
+[2026-07-29T04:34:15.541Z] [INFO] relay.startup port=9001 mcpClientPort=9002 editorPid=37620
+[2026-07-29T04:34:15.542Z] [INFO] log === RELAY SERVER STARTED === (unity-ai-relay v1.0.12-build.96)
+[2026-07-29T04:34:15.543Z] [INFO] log Starting relay server...
+[2026-07-29T04:34:15.543Z] [INFO] log Command line arguments: ["bun","B:/~BUN/root/relay_win.exe","--relay","--port","9001","--mcp-client-port","9002","--editor-pid","37620","--shutdown-delay","180","--log-dir","C:\\Github\\Ghoul\\Ghoul\\Logs"]
+[2026-07-29T04:34:15.544Z] [INFO] log Parsed config: {"port":9001,"mcpClientPort":9002,"editorPid":"37620","shutdownDelaySeconds":180}
+[2026-07-29T04:34:15.545Z] [INFO] log Initializing relay components...
+[2026-07-29T04:34:15.545Z] [INFO] log Creating RelayEditor...
+[2026-07-29T04:34:15.550Z] [INFO] log WebSocket server started
+[2026-07-29T04:34:15.551Z] [INFO] log Relay server initialization completed
+[2026-07-29T04:34:15.552Z] [INFO] log MCP Client initialized at port: 9002
+[2026-07-29T04:34:15.562Z] [WARN] log [shell-env] Shell environment did not contain a PATH variable
+[2026-07-29T04:34:15.575Z] [INFO] log Unity MCP Relay server started | Port: 9002 | Endpoints: /mcp/start-server, /mcp/stop-server, /mcp/server-status, /mcp/call-tool
+[2026-07-29T04:34:16.033Z] [INFO] log Unity client connected with ID: editor-37620-z9jtqx (relay 1.0.12-build.96)
+[2026-07-29T04:34:16.034Z] [INFO] connection.established clientId=editor-37620-z9jtqx port=9001
+[2026-07-29T04:34:16.483Z] [INFO] log HTTP request | POST /mcp/server-status
+[2026-07-29T04:34:16.484Z] [INFO] log Server status check | Server: unity-mcp | Running: no
+[2026-07-29T04:34:16.491Z] [INFO] log HTTP request | POST /mcp/start-server
+[2026-07-29T04:34:16.491Z] [INFO] log Starting MCP server | Name: unity-mcp | Transport: stdio | Command: C:\Users\mackn\.unity/relay\relay_win.exe
+[2026-07-29T04:34:16.492Z] [INFO] log Starting MCP server | Name: unity-mcp | ID: mcp-1
+[2026-07-29T04:34:16.493Z] [INFO] log Creating stdio transport | Command: C:\Users\mackn\.unity/relay\relay_win.exe
+[2026-07-29T04:34:16.493Z] [INFO] log Stdio transport config | Command: C:\Users\mackn\.unity/relay\relay_win.exe --mcp | Env vars: 1
+[2026-07-29T04:34:16.494Z] [INFO] log Stdio transport ready | Command: C:\Users\mackn\.unity/relay\relay_win.exe | Args: 1 | Env: 44 vars
+[2026-07-29T04:34:16.642Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] mcp.startup workingDir=C:\Github\Ghoul\Ghoul
+[2026-07-29T04:34:16.643Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log === MCP SERVER STARTED ===
+[INFO ] [Unity Mcp Server] log PID=43176 execPath=C:\Users\mackn\.unity\relay\relay_win.exe
+[INFO ] [Unity Mcp Server] log argv: ["bun","B:/~BUN/root/relay_win.exe","--mcp"]
+[INFO ] [Unity Mcp Server] log Working directory: C:\Github\Ghoul\Ghoul
+[INFO ] [Unity Mcp Server] log Approval token: {"fromEnv":false}
+[INFO ] [Unity Mcp Server] log Project path: (not specified)
+[INFO ] [Unity Mcp Server] log Instance ID: (not specified)
+[INFO ] [Unity Mcp Server] log MCP server initializing...
+[INFO ] [Unity Mcp Server] log Initializing unity-mcp-server v1.0.0
+[2026-07-29T04:34:16.650Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Unity MCP Server started
+[2026-07-29T04:34:16.677Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Client connected: unity-relay-client 1.0.0
+[2026-07-29T04:34:16.683Z] [INFO] log MCP server connected | Name: unity-mcp
+[2026-07-29T04:34:16.776Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-37620
+[2026-07-29T04:34:16.779Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-29T04:34:16.786Z] [INFO] log MCP server initialized | Name: unity-mcp | Tools: 7
+[2026-07-29T04:34:16.787Z] [INFO] log MCP server started successfully | Server: mcp-1 | Tools: 7 | Duration: 295ms
+[2026-07-29T04:44:20.894Z] [INFO] log Domain reload signal received from client editor-37620-z9jtqx
+[2026-07-29T04:44:20.895Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-29T04:44:20.896Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-29T04:44:21.620Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-29T04:44:21.621Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-29T04:44:21.624Z] [INFO] log Client disconnected - blocking and caching for recovery
+[2026-07-29T04:44:21.626Z] [WARN] connection.lost clientId=null
+[2026-07-29T04:44:21.628Z] [WARN] log Client disconnected - sessions will persist until auto-shutdown, reason: Client disconnected
+[2026-07-29T04:44:21.630Z] [INFO] log Auto-shutdown timer started due to client disconnection
+[2026-07-29T04:44:43.337Z] [DEBUG] log Relay->Editor communication is unblocked
+[2026-07-29T04:44:43.338Z] [INFO] log Unity client connected with ID: editor-37620-j4hxed (relay 1.0.12-build.96)
+[2026-07-29T04:44:43.339Z] [INFO] connection.established clientId=editor-37620-j4hxed port=9001
+[2026-07-29T04:44:43.684Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-37620
+[2026-07-29T04:44:43.686Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-29T04:44:44.175Z] [INFO] log HTTP request | POST /mcp/server-status
+[2026-07-29T04:44:44.175Z] [INFO] log Server status check | Server: unity-mcp | Running: yes
+[2026-07-29T04:44:44.334Z] [INFO] log Domain reload signal received from client editor-37620-j4hxed
+[2026-07-29T04:44:44.334Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-29T04:44:44.335Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-29T04:44:44.905Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-29T04:44:44.906Z] [INFO] log Client disconnected - blocking and caching for recovery
+[2026-07-29T04:44:44.906Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-29T04:44:44.906Z] [WARN] connection.lost clientId=null
+[2026-07-29T04:44:44.907Z] [WARN] log Client disconnected - sessions will persist until auto-shutdown, reason: Client disconnected
+[2026-07-29T04:44:44.907Z] [INFO] log Auto-shutdown timer started due to client disconnection
+[2026-07-29T04:44:50.020Z] [DEBUG] log Relay->Editor communication is unblocked
+[2026-07-29T04:44:50.021Z] [INFO] log Unity client connected with ID: editor-37620-fvc470 (relay 1.0.12-build.96)
+[2026-07-29T04:44:50.021Z] [INFO] connection.established clientId=editor-37620-fvc470 port=9001
+[2026-07-29T04:44:50.143Z] [INFO] log HTTP request | POST /mcp/server-status
+[2026-07-29T04:44:50.144Z] [INFO] log Server status check | Server: unity-mcp | Running: yes
+[2026-07-29T04:44:50.294Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-37620
+[2026-07-29T04:44:50.295Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-29T04:47:15.688Z] [INFO] log Domain reload signal received from client editor-37620-fvc470
+[2026-07-29T04:47:15.691Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-29T04:47:15.693Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-29T04:47:16.389Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-29T04:47:16.391Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-29T04:47:16.391Z] [INFO] log Client disconnected - blocking and caching for recovery
+[2026-07-29T04:47:16.392Z] [WARN] connection.lost clientId=null
+[2026-07-29T04:47:16.393Z] [WARN] log Client disconnected - sessions will persist until auto-shutdown, reason: Client disconnected
+[2026-07-29T04:47:16.394Z] [INFO] log Auto-shutdown timer started due to client disconnection
+[2026-07-29T04:47:20.527Z] [DEBUG] log Relay->Editor communication is unblocked
+[2026-07-29T04:47:20.528Z] [INFO] log Unity client connected with ID: editor-37620-vxvzbr (relay 1.0.12-build.96)
+[2026-07-29T04:47:20.528Z] [INFO] connection.established clientId=editor-37620-vxvzbr port=9001
+[2026-07-29T04:47:20.617Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-37620
+[2026-07-29T04:47:20.618Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-29T04:47:21.444Z] [INFO] log Server status check | Server: unity-mcp | Running: yes
+[2026-07-29T04:47:21.444Z] [INFO] log HTTP request | POST /mcp/server-status
+[2026-07-29T04:47:21.602Z] [INFO] log Domain reload signal received from client editor-37620-vxvzbr
+[2026-07-29T04:47:21.604Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-29T04:47:21.604Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-29T04:47:22.232Z] [DEBUG] log Relay->Editor communication is blocked
+[2026-07-29T04:47:22.233Z] [DEBUG] acp.queue.pause depth=0
+[2026-07-29T04:47:22.234Z] [INFO] log Client disconnected - blocking and caching for recovery
+[2026-07-29T04:47:22.234Z] [WARN] connection.lost clientId=null
+[2026-07-29T04:47:22.234Z] [WARN] log Client disconnected - sessions will persist until auto-shutdown, reason: Client disconnected
+[2026-07-29T04:47:22.235Z] [INFO] log Auto-shutdown timer started due to client disconnection
+[2026-07-29T04:47:26.896Z] [DEBUG] log Relay->Editor communication is unblocked
+[2026-07-29T04:47:26.897Z] [INFO] log Unity client connected with ID: editor-37620-8dany1 (relay 1.0.12-build.96)
+[2026-07-29T04:47:26.897Z] [INFO] connection.established clientId=editor-37620-8dany1 port=9001
+[2026-07-29T04:47:27.021Z] [INFO] log HTTP request | POST /mcp/server-status
+[2026-07-29T04:47:27.022Z] [INFO] log Server status check | Server: unity-mcp | Running: yes
+[2026-07-29T04:47:27.032Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] connection.established connectionType=Named Pipe path=\\.\pipe\unity-mcp-34c3c5d3-37620
+[2026-07-29T04:47:27.033Z] [ERROR] log [unity-mcp] stderr: [INFO ] [Unity Mcp Server] log Connection monitor: successfully connected to Unity
+[INFO ] [Unity Mcp Server] log Sending client info to Unity: {"name":"unity-relay-client","version":"1.0.0","title":"unity-relay-client"}
+[INFO ] [Unity Mcp Server] log Connected to Unity and discovered tools
+[2026-07-29T04:50:22.675Z] [INFO] log Shutdown request received from client editor-37620-8dany1
+[2026-07-29T04:50:22.675Z] [INFO] log Unity client requested immediate shutdown - shutting down now, reason: Shutdown requested by client
+[2026-07-29T04:50:22.676Z] [INFO] log Shutdown: Initiating graceful shutdown: Shutdown requested by client

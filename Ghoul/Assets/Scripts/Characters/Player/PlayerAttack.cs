@@ -4,8 +4,8 @@ using Unity.Netcode;
 
 // Spawns a square hitbox that originates at the player's position and travels in the
 // attack direction for a configurable distance. The direction is chosen at the moment
-// the attack button is pressed (see PlayerController.UseItem): the currently held
-// direction, or the last held direction if none is pressed. On contact the hitbox knocks
+// the attack button is pressed (see PlayerController.UseRightHand/UseLeftHand): the
+// aimed stick direction, or the last aimed direction if centered. On contact the hitbox knocks
 // the target back along its travel direction (AttackHitboxLogic).
 public class PlayerAttack : MonoBehaviour
 {

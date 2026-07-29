@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "WebSearch",
-      "mcp__unity-mcp__Unity_GetConsoleLogs"
+      "mcp__unity-mcp__Unity_GetConsoleLogs",
+      "mcp__unity-mcp__Unity_RunCommand",
+      "mcp__unity-mcp__Unity_Camera_Capture",
+      "mcp__unity-mcp__Unity_SceneView_Capture2DScene"
     ]
   }
 }

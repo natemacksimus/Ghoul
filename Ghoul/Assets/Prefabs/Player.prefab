@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 6610035847858885361}
   - component: {fileID: 4743262705519157201}
   - component: {fileID: 3676855205728146097}
+  - component: {fileID: 4998877665544332211}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -458,3 +459,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCinemachineTarget
   ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &4998877665544332211
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3921641995449094960}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f45478ccd28d7ab4d9d83f76ed080a98, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInventory
+  startingCapacity: 3
+  dropOffset: 0.6
+  rightHand:
+    capacity: 3
+    items: []
+    activeIndex: 0
+  leftHand:
+    capacity: 3
+    items: []
+    activeIndex: 0
