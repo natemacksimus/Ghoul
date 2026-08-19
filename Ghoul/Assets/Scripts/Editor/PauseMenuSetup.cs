@@ -19,7 +19,7 @@ public static class PauseMenuSetup
     [MenuItem("Tools/World/Setup Pause Menu")]
     public static void SetupPauseMenu()
     {
-        if (Object.FindObjectOfType<PauseMenu>() != null)
+        if (Object.FindAnyObjectByType<PauseMenu>() != null)
         {
             EditorUtility.DisplayDialog("Pause Menu Setup",
                 "A PauseMenu already exists in the active scene — nothing to do.", "OK");
@@ -27,7 +27,7 @@ public static class PauseMenuSetup
         }
 
         // EventSystem — required for any UI interaction (buttons added to the map later).
-        if (Object.FindObjectOfType<EventSystem>() == null)
+        if (Object.FindAnyObjectByType<EventSystem>() == null)
         {
             GameObject esGO = new GameObject("EventSystem");
             esGO.AddComponent<EventSystem>();

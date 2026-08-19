@@ -402,7 +402,7 @@ public static class WorldSetup
 
     private static void EnsureEventSystem()
     {
-        if (Object.FindObjectOfType<EventSystem>() != null) { return; }
+        if (Object.FindAnyObjectByType<EventSystem>() != null) { return; }
         GameObject es = new GameObject("EventSystem");
         es.AddComponent<EventSystem>();
         es.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();

@@ -55,7 +55,7 @@ public static class MultiplayerSceneSetup
         Object.DestroyImmediate(scenePlayer);
 
         // --- 2. NetworkManager ---
-        NetworkManager existingNM = Object.FindObjectOfType<NetworkManager>();
+        NetworkManager existingNM = Object.FindAnyObjectByType<NetworkManager>();
         if (existingNM == null)
         {
             GameObject nmGO = new GameObject("NetworkManager");
@@ -81,11 +81,11 @@ public static class MultiplayerSceneSetup
         sp2.transform.position = new Vector3(3f, 1f, 0f);
 
         // --- 4. PlayerSpawner ---
-        PlayerSpawner spawner = Object.FindObjectOfType<PlayerSpawner>();
+        PlayerSpawner spawner = Object.FindAnyObjectByType<PlayerSpawner>();
         if (spawner == null)
         {
             // Attach to the NetworkManager GO so it persists.
-            NetworkManager nm2 = Object.FindObjectOfType<NetworkManager>();
+            NetworkManager nm2 = Object.FindAnyObjectByType<NetworkManager>();
             spawner = nm2 != null ? nm2.gameObject.AddComponent<PlayerSpawner>() : new GameObject("PlayerSpawner").AddComponent<PlayerSpawner>();
         }
 
@@ -101,7 +101,7 @@ public static class MultiplayerSceneSetup
         RegisterNetworkPrefab(playerPrefab);
 
         // --- 6. Lobby UI ---
-        if (Object.FindObjectOfType<NetworkManagerUI>() == null) { BuildLobbyUI(); }
+        if (Object.FindAnyObjectByType<NetworkManagerUI>() == null) { BuildLobbyUI(); }
 
         EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
         Debug.Log("[MultiplayerSetup] Done — save the scene (Ctrl+S), then press Play and click Host.");
@@ -125,7 +125,7 @@ public static class MultiplayerSceneSetup
 
     private static void RegisterNetworkPrefab(GameObject prefab)
     {
-        NetworkManager nm = Object.FindObjectOfType<NetworkManager>();
+        NetworkManager nm = Object.FindAnyObjectByType<NetworkManager>();
         if (nm == null) { return; }
 
         // Try the NGO 2.x NetworkPrefabsList path, then fall back to the 1.x list path.
@@ -175,7 +175,7 @@ public static class MultiplayerSceneSetup
     {
         // EventSystem — required for all UI interaction.
         // The new Input System is already in this project, so use its UI module.
-        if (Object.FindObjectOfType<EventSystem>() == null)
+        if (Object.FindAnyObjectByType<EventSystem>() == null)
         {
             GameObject esGO = new GameObject("EventSystem");
             esGO.AddComponent<EventSystem>();

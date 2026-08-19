@@ -2040,6 +2040,7 @@ GameObject:
   - component: {fileID: 1025758154}
   - component: {fileID: 1025758153}
   - component: {fileID: 1025758152}
+  - component: {fileID: 1025758159}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -2150,7 +2151,7 @@ MonoBehaviour:
   ConnectionData:
     Address: 127.0.0.1
     Port: 7777
-    ServerListenAddress: 
+    ServerListenAddress: 127.0.0.1
   DebugSimulator:
     PacketDelayMS: 0
     PacketJitterMS: 0
@@ -2175,7 +2176,7 @@ MonoBehaviour:
     Prefabs:
       NetworkPrefabsLists:
       - {fileID: 11400000, guid: b3c6d97142b1b9f498f8b6de4f7aea2b, type: 2}
-    TickRate: 30
+    TickRate: 60
     ClientConnectionBufferTimeout: 10
     ConnectionApproval: 0
     ConnectionData: 
@@ -2212,6 +2213,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1025758159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1025758151}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 196ab3d6a6f84da4f91a7568a0f71f3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Rollback.RollbackSetup
+  player0NetworkObject: {fileID: 0}
+  player1NetworkObject: {fileID: 0}
+  playerTag: Player
+  pollInterval: 0.25
 --- !u!1 &1029334116
 GameObject:
   m_ObjectHideFlags: 0
