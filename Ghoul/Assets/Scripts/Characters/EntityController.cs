@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using Unity.Netcode;
 
-public abstract class EntityController : NetworkBehaviour, IKillable
+public abstract class EntityController : NetworkBehaviour, IKillable, ISnapshotable
 {
     [ShowOnly][SerializeField] protected Vector2 moveAmount;
 
@@ -135,9 +136,9 @@ public abstract class EntityController : NetworkBehaviour, IKillable
     {
         if (isFacingRight == facingRight) { return; }
         isFacingRight = facingRight;
-        Vector3 scale = transform.localScale;
-        scale.x *= -1;
-        transform.localScale = scale;
+        // ClientNetworkTransform.SyncScaleX carries the root sprite flip (localScale.x)
+        // in the same packet as position, so we must NOT also flip it here — that would
+        // double-flip the sprite. Only the UI child counter-flip needs to be applied.
         if (characterUI != null)
         {
             Vector3 uiScale = characterUI.transform.localScale;
@@ -163,7 +164,7 @@ public abstract class EntityController : NetworkBehaviour, IKillable
         //if (isResting) { moveAmount.x = 0; }
     }
 
-    private void HandleKnockback()
+    protected void HandleKnockback()
     {
         if (knockbackTimer > 0)
         {
@@ -201,7 +202,7 @@ public abstract class EntityController : NetworkBehaviour, IKillable
     // moveAmount so the normal Move() pipeline translates the character. PlayerController
     // suppresses gravity/velocity-clamping while this is active so the flight stays
     // straight between bounces and the reflection is clean.
-    private void HandleDirectionalKnockback()
+    protected void HandleDirectionalKnockback()
     {
         if (knockbackTimer <= 0f) { EndDirectionalKnockback(); return; }
         knockbackTimer -= Time.deltaTime;
@@ -458,5 +459,107 @@ public abstract class EntityController : NetworkBehaviour, IKillable
         public AudioClip[] hurtSound;
         public AudioClip wallClimbStart;
         public AudioClip wallClimbSlide;
+    }
+
+    // ── ISnapshotable ─────────────────────────────────────────────────────
+    // Serializes all gameplay-affecting fields. Subclasses call base.SaveState/
+    // LoadState and then write/read their own additional fields.
+
+    public virtual void SaveState(BinaryWriter w)
+    {
+        // Position (the single source of truth for where this character is)
+        w.Write(transform.position.x);
+        w.Write(transform.position.y);
+
+        // Velocity / movement
+        w.Write(moveAmount.x);
+        w.Write(moveAmount.y);
+        w.Write(previousYVelocity);
+        w.Write(previousXVelocity);
+        w.Write(lastXVelocity);
+
+        // Facing / state flags
+        w.Write(isFacingRight);
+        w.Write(lockFacingDir);
+        w.Write(disableInput);
+        w.Write(disableJump);
+        w.Write(isDead);
+        w.Write(invincible);
+        w.Write(isResting);
+        w.Write(isAttacking);
+        w.Write(isRunning);
+        w.Write(isDodging);
+        w.Write(zeroMoveX);
+        w.Write(continueMoveX);
+
+        // Legacy knockback
+        w.Write(knockbackForce.x);
+        w.Write(knockbackForce.y);
+        w.Write(knockbackTimer);
+        w.Write(isKnockbacked);
+
+        // Directional knockback
+        w.Write(directionalKnockback);
+        w.Write(knockbackVelocity.x);
+        w.Write(knockbackVelocity.y);
+        w.Write(knockbackBouncesRemaining);
+        w.Write(knockbackBounciness);
+
+        // Air tracking
+        w.Write(airTime);
+        w.Write(yValueAirMax);
+        w.Write(yValueAirMin);
+    }
+
+    public virtual void LoadState(BinaryReader r)
+    {
+        // Position
+        float px = r.ReadSingle(), py = r.ReadSingle();
+        transform.position = new Vector3(px, py, transform.position.z);
+
+        // Velocity
+        moveAmount        = new Vector2(r.ReadSingle(), r.ReadSingle());
+        previousYVelocity = r.ReadSingle();
+        previousXVelocity = r.ReadSingle();
+        lastXVelocity     = r.ReadSingle();
+
+        // Facing / flags
+        bool wasRight = isFacingRight;
+        isFacingRight = r.ReadBoolean();
+        lockFacingDir = r.ReadBoolean();
+        disableInput  = r.ReadBoolean();
+        disableJump   = r.ReadBoolean();
+        isDead        = r.ReadBoolean();
+        invincible    = r.ReadBoolean();
+        isResting     = r.ReadBoolean();
+        isAttacking   = r.ReadBoolean();
+        isRunning     = r.ReadBoolean();
+        isDodging     = r.ReadBoolean();
+        zeroMoveX     = r.ReadBoolean();
+        continueMoveX = r.ReadBoolean();
+
+        // Sync the sprite scale if facing direction was restored to a different value.
+        if (isFacingRight != wasRight)
+        {
+            Vector3 s = transform.localScale;
+            s.x *= -1f;
+            transform.localScale = s;
+        }
+
+        // Legacy knockback
+        knockbackForce = new Vector2(r.ReadSingle(), r.ReadSingle());
+        knockbackTimer = r.ReadSingle();
+        isKnockbacked  = r.ReadBoolean();
+
+        // Directional knockback
+        directionalKnockback      = r.ReadBoolean();
+        knockbackVelocity         = new Vector2(r.ReadSingle(), r.ReadSingle());
+        knockbackBouncesRemaining = r.ReadInt32();
+        knockbackBounciness       = r.ReadSingle();
+
+        // Air tracking
+        airTime      = r.ReadSingle();
+        yValueAirMax = r.ReadSingle();
+        yValueAirMin = r.ReadSingle();
     }
 }

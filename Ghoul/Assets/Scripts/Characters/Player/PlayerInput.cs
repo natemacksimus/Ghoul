@@ -4,11 +4,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
+using Rollback;
 
-public class PlayerInput : MonoBehaviour  
+public class PlayerInput : MonoBehaviour
 {
     [SerializeField] private PlayerController playerController;
     public PlayerController PlayerController { get => playerController; set => playerController = value; }
+
+    // When a rollback session is active, inputs are routed to InputCapture (on the same
+    // GameObject) instead of directly into PlayerController. RollbackSession drains
+    // InputCapture each FixedUpdate and feeds the packed input through SimulateFrame.
+    private InputCapture _capture;
+    private bool RollbackActive
+    {
+        get
+        {
+            if (RollbackSession.Instance == null || !RollbackSession.Instance.IsSessionActive) return false;
+            // InputCapture is added by RollbackSetup after Start() has run, so fetch lazily.
+            if (_capture == null) _capture = GetComponent<InputCapture>();
+            return true;
+        }
+    }
 
     #region PLAYER INPUT
     public InputSystem_Actions playerControls;
@@ -105,72 +121,76 @@ public class PlayerInput : MonoBehaviour
 
     private void MoveInput(InputAction.CallbackContext context)
     {
-        if (playerController == null) { return; }
-
+        Vector2 v = moveAction.ReadValue<Vector2>();
+        if (RollbackActive) { _capture?.OnMove(v); return; }
+        if (playerController == null) return;
         playerController.MoveInput(moveAction);
     }
 
     private void AimInput(InputAction.CallbackContext context)
     {
-        if (playerController == null) { return; }
-
+        Vector2 v = aimAction.ReadValue<Vector2>();
+        if (RollbackActive) { _capture?.OnAim(v); return; }
+        if (playerController == null) return;
         playerController.AimInput(aimAction);
     }
 
     private void UseLeftHand(InputAction.CallbackContext context)
     {
-        if (playerController == null) { return; }
-
-        playerController.UseLeftHand(context);
+        if (RollbackActive) { _capture?.OnUseLeft(); return; }
+        playerController?.UseLeftHand(context);
     }
 
     private void UseRightHand(InputAction.CallbackContext context)
     {
-        if (playerController == null) { return; }
-
-        playerController.UseRightHand(context);
+        if (RollbackActive) { _capture?.OnUseRight(); return; }
+        playerController?.UseRightHand(context);
     }
 
     private void InventoryLeft(InputAction.CallbackContext context)
     {
-        if (playerController == null) { return; }
-
-        playerController.InventoryLeft(context);
+        if (RollbackActive)
+        {
+            if (context.phase == InputActionPhase.Started)   _capture?.OnInvLeftStarted();
+            if (context.phase == InputActionPhase.Canceled)  _capture?.OnInvLeftCanceled();
+            return;
+        }
+        playerController?.InventoryLeft(context);
     }
 
     private void InventoryRight(InputAction.CallbackContext context)
     {
-        if (playerController == null) { return; }
-
-        playerController.InventoryRight(context);
+        if (RollbackActive)
+        {
+            if (context.phase == InputActionPhase.Started)  _capture?.OnInvRightStarted();
+            if (context.phase == InputActionPhase.Canceled) _capture?.OnInvRightCanceled();
+            return;
+        }
+        playerController?.InventoryRight(context);
     }
 
     private void Interact(InputAction.CallbackContext context)
     {
-        if (playerController == null) { return; }
-
-        playerController.Interact(context);
+        if (RollbackActive) { _capture?.OnInteract(); return; }
+        playerController?.Interact(context);
     }
 
     private void OnJumpInputDown(InputAction.CallbackContext context)
     {
-        if (playerController == null) { return; }
-
-        playerController.OnJumpInputDown(context);
+        if (RollbackActive) { _capture?.OnJumpDown(); return; }
+        playerController?.OnJumpInputDown(context);
     }
 
     private void OnJumpInputUp(InputAction.CallbackContext context)
     {
-        if (playerController == null) { return; }
-
-        playerController.OnJumpInputUp(context);
+        if (RollbackActive) { _capture?.OnJumpUp(); return; }
+        playerController?.OnJumpInputUp(context);
     }
 
     private void OpenMenu(InputAction.CallbackContext context)
     {
-        if (playerController == null) { return; }
-
-        playerController.OpenMenu(context);
+        // Menu is never part of the rollback simulation; always direct.
+        playerController?.OpenMenu(context);
     }
 
 }

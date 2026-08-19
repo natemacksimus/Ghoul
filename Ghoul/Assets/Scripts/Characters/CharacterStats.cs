@@ -1,13 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
 using UnityEngine.U2D;
 using Unity.Netcode;
+using Rollback;
 
 [SelectionBase]
-public abstract class CharacterStats : NetworkBehaviour, IDamageable
+public abstract class CharacterStats : NetworkBehaviour, IDamageable, ISnapshotable
 {
     #region BASE CHARACTER DEFINITIONS
     [Header("Character Stats")]
@@ -124,6 +126,25 @@ public abstract class CharacterStats : NetworkBehaviour, IDamageable
 
     public virtual void InflictDamage(float damageTaken)
     {
+        // In rollback mode both peers simulate the same hit deterministically, so
+        // health is applied locally without going through the server RPC chain.
+        if (RollbackSession.Instance != null && RollbackSession.Instance.IsSessionActive)
+        {
+            currentHealth = Mathf.Max(0f, currentHealth - damageTaken);
+            HealthChanged?.Invoke(currentHealth, maxHealth);
+            if (currentHealth <= 0f && characterController != null && !characterController.IsDead)
+            {
+                if (animator != null) animator.SetTrigger("die");
+                if (killable  != null) killable.Kill();
+            }
+            else if (damageTaken > 0f)
+            {
+                if (animator != null) animator.SetTrigger("damaged");
+            }
+            OnHealthChanged(currentHealth + damageTaken, currentHealth);
+            return;
+        }
+
         if (!IsSpawned)
         {
             LocalInflictDamage(damageTaken);
@@ -247,5 +268,27 @@ public abstract class CharacterStats : NetworkBehaviour, IDamageable
     {
         if (audioSource == null || weaponSwingSound == null) { return; }
         audioSource.PlayOneShot(weaponSwingSound);
+    }
+
+    // ── ISnapshotable ─────────────────────────────────────────────────────
+    // Health is part of the deterministic simulation when rollback is active.
+    // Subclasses should call base.SaveState/LoadState and then write their own stats.
+
+    public virtual void SaveState(BinaryWriter w)
+    {
+        w.Write(currentHealth);
+        w.Write(currentSpeed);
+        w.Write(currentDamage);
+        w.Write(currentKnockbackPower.x);
+        w.Write(currentKnockbackPower.y);
+    }
+
+    public virtual void LoadState(BinaryReader r)
+    {
+        currentHealth         = r.ReadSingle();
+        currentSpeed          = r.ReadSingle();
+        currentDamage         = r.ReadSingle();
+        currentKnockbackPower = new Vector2(r.ReadSingle(), r.ReadSingle());
+        HealthChanged?.Invoke(currentHealth, maxHealth);
     }
 }

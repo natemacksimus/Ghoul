@@ -1,15 +1,17 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
 using Unity.Netcode;
+using Rollback;
 //using LevelManagement;
 //using Cinemachine;
 
 [RequireComponent(typeof(PlayerInventory))]
-public class PlayerController : EntityController
+public class PlayerController : EntityController, IRollbackSimulated
 {
     [SerializeField] private float dodgeCooldownSet = 1f;
     [ShowOnly] [SerializeField] float dodgeCooldownTimer;
@@ -42,8 +44,8 @@ public class PlayerController : EntityController
     [SerializeField] private float accelerationStopping = 0.1f;  // smoothing transition when moving left to right or vice versa
     [SerializeField] private float accelerationTurning = 0.1f;  // smoothing transition when moving left to right or vice versa
 
-    [SerializeField] private float lookUpAmt = 0.8f;
-    [SerializeField] private float lookDownAmt = 0.15f;
+    //[SerializeField] private float lookUpAmt = 0.8f;
+    //[SerializeField] private float lookDownAmt = 0.15f;
 
     [SerializeField] private float fallAmountMax = 40f;  // terminal fall velocity; keep >= maxJumpYVelocity so it never clips the jump arc (otherwise the descent floats at a constant speed instead of being parabolic)
     [SerializeField] private float gravity = -10f;
@@ -56,7 +58,7 @@ public class PlayerController : EntityController
     [SerializeField] private Vector2 airTimeMaxPos;
     [ShowOnly][SerializeField] private float heightDrop;
     [ShowOnly] [SerializeField] private float heightDropFromMax;
-    [SerializeField] private float landingAnimThreshold = 5f;
+    //[SerializeField] private float landingAnimThreshold = 5f;
     [SerializeField] private bool isAirborne = false;
 
     //public float jump = 5f;
@@ -123,12 +125,20 @@ public class PlayerController : EntityController
     {
         if (!IsOwner)
         {
-            // Remote players: disable input and local physics.
-            // ClientNetworkTransform (added to the prefab) drives their position.
+            // Disable input processing on non-owned instances — only the owner
+            // sends inputs (either directly, or via rollback InputCapture).
+            // Do NOT disable PlayerController itself: Start() must run so that
+            // controller2D and other refs are assigned before rollback simulates this player.
             var playerInput = GetComponent<PlayerInput>();
             if (playerInput != null) { playerInput.enabled = false; }
-            enabled = false;
         }
+    }
+
+    private void OnDestroy()
+    {
+        // Stop the rollback session so it doesn't tick against destroyed objects
+        // (fires on scene unload, play-mode stop, and network despawn).
+        RollbackSession.Instance?.StopSession();
     }
 
     protected override void Start()
@@ -161,16 +171,47 @@ public class PlayerController : EntityController
 
     protected override void FixedUpdate()
     {
+        // Rollback active: RollbackSession drives all simulation via SimulateFrame.
+        if (RollbackSession.Instance != null && RollbackSession.Instance.IsSessionActive) return;
+        // No rollback: only simulate the locally owned player.
+        if (!IsOwner) return;
+
         base.FixedUpdate();
-        
+        RunFixedStep();
+    }
+
+    // ── IRollbackSimulated ────────────────────────────────────────────────
+
+    /// <summary>
+    /// Called by RollbackSession each frame (both for live simulation and re-simulation
+    /// during rollback). Applies the supplied input and advances physics by one fixed step.
+    /// </summary>
+    public void SimulateFrame(RollbackInput input)
+    {
+        if (controller2D == null) return; // not yet initialized (Start hasn't run)
+
+        ApplyRollbackInput(input);
+
+        // Run EntityController base simulation (knockback, airTime tracking).
+        if (directionalKnockback) HandleDirectionalKnockback();
+        else HandleKnockback();
+        if (!controller2D.collisions.below) airTime += Time.fixedDeltaTime;
+
+        RunFixedStep();
+    }
+
+    // ── Shared simulation body ────────────────────────────────────────────
+
+    private void RunFixedStep()
+    {
         // Manage timers
-        if (dodgeCooldownTimer > 0) { dodgeCooldownTimer -= Time.deltaTime; }
-        if (attackRateTimer > 0) { attackRateTimer -= Time.deltaTime; }
-        if (jumpBufferTimer > 0) 
-        { 
-            jumpBufferTimer -= Time.deltaTime;
-            
-            
+        if (dodgeCooldownTimer > 0) { dodgeCooldownTimer -= Time.fixedDeltaTime; }
+        if (attackRateTimer > 0) { attackRateTimer -= Time.fixedDeltaTime; }
+        if (jumpBufferTimer > 0)
+        {
+            jumpBufferTimer -= Time.fixedDeltaTime;
+
+
             if (controller2D.collisions.below) { AttemptJump(); }
         }
 
@@ -229,6 +270,157 @@ public class PlayerController : EntityController
 
         // log last dir input to use for directing projectiles
         if (directionalInput != Vector2.zero) { lastDirInput = directionalInput; }
+    }
+
+    // ── Rollback input application ────────────────────────────────────────
+
+    private void ApplyRollbackInput(RollbackInput input)
+    {
+        // Analog move (left stick → directionalInput + right-hand aim)
+        Vector2 move = input.MoveVector;
+        moveVectorRaw = move;
+        if (move.sqrMagnitude > stickDeadzoneSqr) lastMoveDir = move;
+        directionalInput = new Vector2(Mathf.RoundToInt(move.x), Mathf.RoundToInt(move.y));
+
+        // Analog aim (right stick → left-hand aim)
+        Vector2 aim = input.AimVector;
+        aimVectorRaw = aim;
+        if (aim.sqrMagnitude > stickDeadzoneSqr) lastAimDir = aim;
+
+        if (disableInput) return;
+
+        // Jump press (rising edge)
+        if (input.IsPressed(RollbackInput.BtnJump) && !disableJump)
+        {
+            jumpPressed = true;
+            if (directionalInput.y != -1)
+            {
+                if (!controller2D.collisions.below) jumpBufferTimer = jumpBuffer;
+                AttemptJump();
+            }
+        }
+
+        // Jump release
+        if (input.IsPressed(RollbackInput.BtnJumpRelease))
+        {
+            jumpPressed = false;
+            if (moveAmount.y > minJumpYVelocity) moveAmount.y = minJumpYVelocity;
+        }
+
+        // Attacks
+        if (input.IsPressed(RollbackInput.BtnUseRight))
+        {
+            Vector2 dir = moveVectorRaw.sqrMagnitude > stickDeadzoneSqr ? moveVectorRaw : lastMoveDir;
+            UseHand(Hand.Right, dir);
+        }
+        if (input.IsPressed(RollbackInput.BtnUseLeft))
+        {
+            Vector2 dir = aimVectorRaw.sqrMagnitude > stickDeadzoneSqr ? aimVectorRaw : lastAimDir;
+            UseHand(Hand.Left, dir);
+        }
+
+        // Dodge
+        if (input.IsPressed(RollbackInput.BtnDodge) && dodgeCooldownTimer <= 0)
+        {
+            dodgeCooldownTimer = dodgeCooldownSet;
+            isDodging = true;
+        }
+
+        // Inventory cycle / drop
+        if (input.IsPressed(RollbackInput.BtnInvLeft))  playerInventory?.Cycle(Hand.Left);
+        if (input.IsPressed(RollbackInput.BtnInvRight)) playerInventory?.Cycle(Hand.Right);
+        if (input.IsPressed(RollbackInput.BtnDropLeft))  playerInventory?.DropActive(Hand.Left);
+        if (input.IsPressed(RollbackInput.BtnDropRight)) playerInventory?.DropActive(Hand.Right);
+
+        // Interact / pickup
+        if (input.IsPressed(RollbackInput.BtnInteract))
+        {
+            if (itemToPickup != null && playerInventory != null)
+            {
+                playerInventory.TryPickup(itemToPickup);
+                itemToPickup = null;
+            }
+            else { objectToInteract?.InteractWithObject(); }
+        }
+        if (input.IsPressed(RollbackInput.BtnPickup))
+        {
+            if (itemToPickup != null) itemToPickup.CollectInventoryItem();
+            else objectToInteract?.InteractWithObject();
+        }
+    }
+
+    // ── ISnapshotable (overrides EntityController) ────────────────────────
+
+    public override void SaveState(BinaryWriter w)
+    {
+        base.SaveState(w); // position, velocity, flags, knockback
+
+        w.Write(directionalInput.x); w.Write(directionalInput.y);
+        w.Write(lastDirInput.x);     w.Write(lastDirInput.y);
+        w.Write(directionX);
+        w.Write(moveVectorRaw.x);    w.Write(moveVectorRaw.y);
+        w.Write(aimVectorRaw.x);     w.Write(aimVectorRaw.y);
+        w.Write(lastMoveDir.x);      w.Write(lastMoveDir.y);
+        w.Write(lastAimDir.x);       w.Write(lastAimDir.y);
+
+        w.Write(velocityXSmoothing);
+        w.Write(addJumpXVelocity);
+
+        w.Write(jumpPressed);
+        w.Write(jumpBufferTimer);
+
+        w.Write(isAirborne);
+        w.Write(airTimeStartPos.x);   w.Write(airTimeStartPos.y);
+        w.Write(airTimeEndPos.x);     w.Write(airTimeEndPos.y);
+        w.Write(airTimeMaxPos.x);     w.Write(airTimeMaxPos.y);
+        w.Write(heightDrop);
+        w.Write(heightDropFromMax);
+
+        w.Write(dodgeCooldownTimer);
+        w.Write(attackRateTimer);
+        w.Write(invRightHoldStart);
+        w.Write(invLeftHoldStart);
+
+        w.Write(wallSliding);
+        w.Write(wallDirX);
+        w.Write(timeToWallUnstick);
+        w.Write(onLadder);
+    }
+
+    public override void LoadState(BinaryReader r)
+    {
+        base.LoadState(r);
+
+        directionalInput = new Vector2(r.ReadSingle(), r.ReadSingle());
+        lastDirInput     = new Vector2(r.ReadSingle(), r.ReadSingle());
+        directionX       = r.ReadSingle();
+        moveVectorRaw    = new Vector2(r.ReadSingle(), r.ReadSingle());
+        aimVectorRaw     = new Vector2(r.ReadSingle(), r.ReadSingle());
+        lastMoveDir      = new Vector2(r.ReadSingle(), r.ReadSingle());
+        lastAimDir       = new Vector2(r.ReadSingle(), r.ReadSingle());
+
+        velocityXSmoothing = r.ReadSingle();
+        addJumpXVelocity   = r.ReadSingle();
+
+        jumpPressed     = r.ReadBoolean();
+        jumpBufferTimer = r.ReadSingle();
+
+        isAirborne      = r.ReadBoolean();
+        airTimeStartPos = new Vector2(r.ReadSingle(), r.ReadSingle());
+        airTimeEndPos   = new Vector2(r.ReadSingle(), r.ReadSingle());
+        airTimeMaxPos   = new Vector2(r.ReadSingle(), r.ReadSingle());
+        heightDrop      = r.ReadSingle();
+        heightDropFromMax = r.ReadSingle();
+
+        dodgeCooldownTimer = r.ReadSingle();
+        attackRateTimer    = r.ReadSingle();
+        invRightHoldStart  = r.ReadSingle();
+        invLeftHoldStart   = r.ReadSingle();
+
+        wallSliding       = r.ReadBoolean();
+        wallDirX          = r.ReadInt32();
+        timeToWallUnstick = r.ReadSingle();
+        onLadder          = r.ReadBoolean();
     }
 
     public void MoveInput(InputAction moveAction)
@@ -357,7 +549,7 @@ public class PlayerController : EntityController
 
     public void OpenMenu(InputAction.CallbackContext context)
     {
-        if (pauseMenu == null) { pauseMenu = FindObjectOfType<PauseMenu>(); }
+        if (pauseMenu == null) { pauseMenu = FindAnyObjectByType<PauseMenu>(); }
         if (pauseMenu != null) { pauseMenu.Toggle(); }
     }
 
