@@ -32,8 +32,14 @@ namespace Rollback
 
         // ── Settings ─────────────────────────────────────────────────────
         [Header("Rollback")]
-        [Tooltip("Maximum frames we can roll back. 8 frames @ 60 Hz = 133 ms.")]
-        [SerializeField] private int maxRollbackFrames = 8;
+        // Traffic always routes through Unity Relay (used for NAT traversal even between
+        // two local instances), not a direct LAN/loopback path. Measured confirmation
+        // latency is consistently ~18 frames (~300ms) round-trip even on one machine, so
+        // this must comfortably exceed that or a misprediction confirmed late is outside
+        // the search window in FindEarliestMisprediction() by the time it's checked —
+        // silently uncorrectable, not just delayed. 30 frames = 500ms gives real margin.
+        [Tooltip("Maximum frames we can roll back. Must exceed real Relay round-trip confirmation latency (measured ~18 frames/300ms) or late-confirmed mispredictions become permanently uncorrectable. 30 frames @ 60 Hz = 500 ms.")]
+        [SerializeField] private int maxRollbackFrames = 30;
         [Tooltip("How many consecutive input frames to bundle per packet for loss recovery.")]
         [SerializeField] private int inputRedundancy = 3;
 
@@ -55,6 +61,11 @@ namespace Rollback
 
         // Per-frame predicted remote input (what we assumed at simulation time)
         private RollbackInput[] _remotePredicted = new RollbackInput[BufSize];
+        // True only for frames where the remote input actually had to be predicted
+        // (i.e. wasn't confirmed yet at simulation time). Frames simulated with an
+        // already-confirmed remote input have nothing to mispredict and must be
+        // skipped, or stale data from BufSize frames ago falsely reads as a mismatch.
+        private bool[] _wasPredicted = new bool[BufSize];
 
         // State snapshots keyed by frame % BufSize
         private byte[][] _snapshots     = new byte[BufSize][];
@@ -108,6 +119,7 @@ namespace Rollback
 
             for (int i = 0; i < BufSize; i++) _remoteConfirmedFrame[i] = -1;
             Array.Clear(_snapshotValid, 0, BufSize);
+            Array.Clear(_wasPredicted, 0, BufSize);
 
             RegisterNetworkHandlers();
             IsSessionActive = true;
@@ -139,17 +151,15 @@ namespace Rollback
             _localInputs[frame % BufSize] = localInput;
             SendInputToRemote(frame, localInput);
 
-            // 2. Advance confirmed frame pointer.
-            AdvanceConfirmedFrame();
-
-            // 3. Check for mispredictions and rollback if needed.
+            // 2. Check for mispredictions and rollback if needed. ConfirmedFrame is updated
+            // directly in OnRemoteInputReceived as new data arrives (see there for why).
             int rollbackTo = FindEarliestMisprediction();
             if (rollbackTo >= 0)
             {
                 PerformRollback(rollbackTo);
             }
 
-            // 4. Simulate current frame speculatively and advance.
+            // 3. Simulate current frame speculatively and advance.
             SaveSnapshot(frame);
             SimulateFrame(frame);
             CurrentFrame++;
@@ -210,6 +220,12 @@ namespace Rollback
                     reader.ReadValueSafe(out inp.AimX);  reader.ReadValueSafe(out inp.AimY);
                     _remoteInputs[idx]         = inp;
                     _remoteConfirmedFrame[idx] = f;
+                    // High-water mark, not a gapless sequence: if frame 0's packet (or any
+                    // other) is ever lost, a strictly-sequential "confirmed frontier" would
+                    // get stuck at -1 forever even though every later frame IS arriving fine.
+                    // FindEarliestMisprediction already skips any actually-unconfirmed frame
+                    // within its scan range via the per-slot check above, so this is safe.
+                    if (f > ConfirmedFrame) { ConfirmedFrame = f; }
                 }
                 else
                 {
@@ -223,21 +239,17 @@ namespace Rollback
 
         private RollbackInput PredictRemoteInput(int frame)
         {
-            // Classic GGPO prediction: assume remote repeats last confirmed input.
+            // Classic GGPO prediction: assume remote repeats last confirmed input. That's
+            // correct for the continuous analog axes (held move/aim), but Buttons is a
+            // one-shot rising-edge EVENT bitmask (see RollbackInput's doc comment) — if the
+            // last confirmed frame happened to have e.g. the attack button bit set, blindly
+            // copying it would re-fire that action on every predicted frame until the real
+            // (event-cleared) input is confirmed, not just once. Predict "no new event" for
+            // buttons; only the analog state carries forward.
             if (ConfirmedFrame < 0) return default;
-            return _remoteInputs[ConfirmedFrame % BufSize];
-        }
-
-        // ── Confirmed frame tracking ──────────────────────────────────────
-
-        private void AdvanceConfirmedFrame()
-        {
-            int next = ConfirmedFrame + 1;
-            while (next <= CurrentFrame && _remoteConfirmedFrame[next % BufSize] == next)
-            {
-                ConfirmedFrame = next;
-                next++;
-            }
+            RollbackInput predicted = _remoteInputs[ConfirmedFrame % BufSize];
+            predicted.Buttons = 0;
+            return predicted;
         }
 
         // Returns the earliest frame index where our saved prediction differs from the
@@ -246,11 +258,22 @@ namespace Rollback
         {
             int earliest = -1;
             int oldest = Mathf.Max(0, CurrentFrame - maxRollbackFrames + 1);
+            // ConfirmedFrame is a high-water mark updated as network messages arrive,
+            // asynchronously relative to this peer's own tick — it can legitimately exceed
+            // CurrentFrame if the remote peer is simply running ahead. Never scan past
+            // CurrentFrame - 1: PerformRollback can only usefully rewind to frames this
+            // peer has actually simulated (its resimulation loop is f < CurrentFrame), so
+            // an unclamped ConfirmedFrame here could return a toFrame >= CurrentFrame —
+            // PerformRollback would then load a snapshot slot for a frame never simulated
+            // yet (stale data from a prior buffer cycle) and its resimulation loop would
+            // never execute, silently corrupting state instead of fixing it.
+            int latestCheckable = Mathf.Min(ConfirmedFrame, CurrentFrame - 1);
 
-            for (int f = oldest; f <= ConfirmedFrame; f++)
+            for (int f = oldest; f <= latestCheckable; f++)
             {
                 int idx = f % BufSize;
                 if (_remoteConfirmedFrame[idx] != f) continue;
+                if (!_wasPredicted[idx]) continue; // simulated with already-correct input; nothing to check
                 if (!_remotePredicted[idx].Equals(_remoteInputs[idx]))
                 {
                     earliest = f;
@@ -292,11 +315,15 @@ namespace Rollback
             int ri = frame % BufSize;
             RollbackInput remoteInput;
             if (_remoteConfirmedFrame[ri] == frame)
+            {
                 remoteInput = _remoteInputs[ri];
+                _wasPredicted[ri] = false; // already known-correct; nothing to mispredict
+            }
             else
             {
                 remoteInput = PredictRemoteInput(frame);
                 _remotePredicted[ri] = remoteInput; // save prediction for later comparison
+                _wasPredicted[ri] = true;
             }
 
             RollbackInput p0 = localIdx == 0 ? localInput : remoteInput;

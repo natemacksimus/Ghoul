@@ -21,7 +21,7 @@ public class PersistentSingleton<T> : MonoBehaviour where T : Component
         {
             if (instance == null)
             {
-                instance = FindObjectOfType<T>();
+                instance = FindAnyObjectByType<T>();
                 if (instance == null)
                 {
                     Debug.LogWarning($"No instance of {typeof(T).Name} found in the scene. Add a new one to scene.");

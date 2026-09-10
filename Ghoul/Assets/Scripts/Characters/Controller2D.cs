@@ -1,9 +1,30 @@
+using System;
 using UnityEngine;
 
 public class Controller2D : RaycastController
 {
     [SerializeField] float maxSlopeAngle = 80f;
     [SerializeField] float resetFallingThroughTimer = 0.25f;
+
+    // Physics2D.RaycastAll does not guarantee hit ordering. Under rollback, both peers
+    // must resolve the same multi-hit query (e.g. landing exactly on a platform edge/
+    // corner) to the same result — sorting by distance makes the outcome depend only on
+    // geometry, not on whichever incidental order the physics engine happened to return.
+    // Array.Sort is NOT stable, so two hits at the exact same distance (a flat corner)
+    // could still swap order unpredictably between peers if distance were the only key —
+    // break ties using the hit point itself (a pure function of the geometry, identical
+    // on both peers), never object identity (GetInstanceID differs per process).
+    private static void SortByDistance(RaycastHit2D[] hits)
+    {
+        Array.Sort(hits, (a, b) =>
+        {
+            int c = a.distance.CompareTo(b.distance);
+            if (c != 0) return c;
+            c = a.point.x.CompareTo(b.point.x);
+            if (c != 0) return c;
+            return a.point.y.CompareTo(b.point.y);
+        });
+    }
 
     public CollisionInfo collisions;
     [HideInInspector]
@@ -39,6 +60,15 @@ public class Controller2D : RaycastController
 
         transform.Translate(moveAmount);
 
+        // Physics2D.autoSyncTransforms is off project-wide (perf). During rollback
+        // resimulation this Move() runs many times for both players within a single
+        // real frame — without an explicit sync, a raycast against the OTHER player's
+        // collider can see a stale, pre-move position until Unity's next natural sync
+        // point, making collision-against-the-other-player order/timing dependent
+        // instead of a pure function of position. Force it so every subsequent raycast,
+        // by either player, sees current geometry immediately.
+        Physics2D.SyncTransforms();
+
         if (standingOnPlatform) { collisions.below = true; }
     }
     void HorizontalCollisions(ref Vector2 moveAmount)
@@ -52,6 +82,7 @@ public class Controller2D : RaycastController
             Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
             rayOrigin += Vector2.up * (horizontalRaySpacing * i);
             RaycastHit2D[] hit2 = Physics2D.RaycastAll(rayOrigin, Vector2.right * directionX, rayLength, collisionMask);
+            SortByDistance(hit2);
 
             //Debug.DrawRay(rayOrigin, Vector2.right * directionX, Color.red);
 
@@ -141,6 +172,7 @@ public class Controller2D : RaycastController
             rayOrigin += Vector2.right * (verticalRaySpacing * i + moveAmount.x);
 
             RaycastHit2D[] hit2 = Physics2D.RaycastAll(rayOrigin, Vector2.up * directionY, rayLength, collisionMask);
+            SortByDistance(hit2);
 
             //Debug.DrawRay(rayOrigin, Vector2.up * directionY, Color.red);
 
@@ -189,6 +221,7 @@ public class Controller2D : RaycastController
             Vector2 rayOrigin = ((directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight) + Vector2.up * moveAmount.y;
 
             RaycastHit2D[] hit2 = Physics2D.RaycastAll(rayOrigin, Vector2.right * directionX, rayLength, collisionMask);
+            SortByDistance(hit2);
 
             if (hit2.Length > 0)
             {
@@ -230,6 +263,8 @@ public class Controller2D : RaycastController
 
         RaycastHit2D[] maxSlopeHitLeft2 = Physics2D.RaycastAll(raycastOrigins.bottomLeft, Vector2.down, Mathf.Abs(moveAmount.y) + skinWidth, collisionMask);
         RaycastHit2D[] maxSlopeHitRight2 = Physics2D.RaycastAll(raycastOrigins.bottomRight, Vector2.down, Mathf.Abs(moveAmount.y) + skinWidth, collisionMask);
+        SortByDistance(maxSlopeHitLeft2);
+        SortByDistance(maxSlopeHitRight2);
 
         bool bottomLeftHit = false;
         bool bottomRightHit = false;
@@ -273,6 +308,7 @@ public class Controller2D : RaycastController
             Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomRight : raycastOrigins.bottomLeft;
 
             RaycastHit2D[] hit2 = Physics2D.RaycastAll(rayOrigin, -Vector2.up, Mathf.Infinity, collisionMask);
+            SortByDistance(hit2);
 
             if (hit2.Length > 0)
             {

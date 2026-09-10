@@ -509,6 +509,25 @@ public abstract class EntityController : NetworkBehaviour, IKillable, ISnapshota
         w.Write(airTime);
         w.Write(yValueAirMax);
         w.Write(yValueAirMin);
+
+        // Full Controller2D collision state. Reset() only clears above/below/left/right/
+        // climbingSlope/descendingSlope/slidingDownMaxSlope/slopeNormal/slopeAngle each
+        // Move() call — slopeAngleOld, moveAmountOld, faceDir, and fallingThroughPlatform
+        // all persist ACROSS Move() calls and feed back into collision math on the next
+        // one (slope-transition detection, slope-climb continuation, one-way-platform
+        // drop-through). None of it is a pure function of position alone, so a rollback
+        // that doesn't restore it leaves a resimulated frame reading whatever value real
+        // time/the live (non-rewound) run happened to leave behind — already confirmed to
+        // cause a permanent fall-through-the-level bug for fallingThroughPlatform; the
+        // same class of bug is possible for any of the others under sustained correction.
+        var c = controller2D.collisions;
+        w.Write(c.above); w.Write(c.below); w.Write(c.left); w.Write(c.right);
+        w.Write(c.climbingSlope); w.Write(c.descendingSlope); w.Write(c.slidingDownMaxSlope);
+        w.Write(c.slopeAngle); w.Write(c.slopeAngleOld);
+        w.Write(c.slopeNormal.x); w.Write(c.slopeNormal.y);
+        w.Write(c.moveAmountOld.x); w.Write(c.moveAmountOld.y);
+        w.Write(c.faceDir);
+        w.Write(c.fallingThroughPlatform);
     }
 
     public virtual void LoadState(BinaryReader r)
@@ -561,5 +580,20 @@ public abstract class EntityController : NetworkBehaviour, IKillable, ISnapshota
         airTime      = r.ReadSingle();
         yValueAirMax = r.ReadSingle();
         yValueAirMin = r.ReadSingle();
+
+        // Controller2D collision state (see SaveState for why this must be restored too)
+        controller2D.collisions.above = r.ReadBoolean();
+        controller2D.collisions.below = r.ReadBoolean();
+        controller2D.collisions.left  = r.ReadBoolean();
+        controller2D.collisions.right = r.ReadBoolean();
+        controller2D.collisions.climbingSlope     = r.ReadBoolean();
+        controller2D.collisions.descendingSlope   = r.ReadBoolean();
+        controller2D.collisions.slidingDownMaxSlope = r.ReadBoolean();
+        controller2D.collisions.slopeAngle    = r.ReadSingle();
+        controller2D.collisions.slopeAngleOld = r.ReadSingle();
+        controller2D.collisions.slopeNormal   = new Vector2(r.ReadSingle(), r.ReadSingle());
+        controller2D.collisions.moveAmountOld = new Vector2(r.ReadSingle(), r.ReadSingle());
+        controller2D.collisions.faceDir       = r.ReadInt32();
+        controller2D.collisions.fallingThroughPlatform = r.ReadBoolean();
     }
 }

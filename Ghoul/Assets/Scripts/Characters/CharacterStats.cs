@@ -233,6 +233,15 @@ public abstract class CharacterStats : NetworkBehaviour, IDamageable, ISnapshota
         float fy = Mathf.Sign(raw.y) * Mathf.Max(0f, Mathf.Abs(raw.y) - knockbackResistance.y);
         Vector2 velocity = new Vector2(fx, fy);
 
+        // In rollback mode both peers simulate the same hit deterministically (same as
+        // InflictDamage above), so apply directly instead of routing through NGO — an RPC
+        // arrives out-of-band from the fixed simulation tick and would desync on rollback.
+        if (RollbackSession.Instance != null && RollbackSession.Instance.IsSessionActive)
+        {
+            if (characterController != null) { characterController.ApplyDirectionalKnockback(velocity, knockbackTimeReceived, bounces, bounciness); }
+            return;
+        }
+
         if (!IsSpawned)
         {
             if (characterController != null) { characterController.ApplyDirectionalKnockback(velocity, knockbackTimeReceived, bounces, bounciness); }

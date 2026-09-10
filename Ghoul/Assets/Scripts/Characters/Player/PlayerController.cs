@@ -207,6 +207,8 @@ public class PlayerController : EntityController, IRollbackSimulated
         // Manage timers
         if (dodgeCooldownTimer > 0) { dodgeCooldownTimer -= Time.fixedDeltaTime; }
         if (attackRateTimer > 0) { attackRateTimer -= Time.fixedDeltaTime; }
+
+        playerAttack?.Tick();
         if (jumpBufferTimer > 0)
         {
             jumpBufferTimer -= Time.fixedDeltaTime;

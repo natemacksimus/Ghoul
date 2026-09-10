@@ -1,13 +1,15 @@
-using System.Collections;
+using System.IO;
 using UnityEngine;
-using Unity.Netcode;
 
-// Spawns a square hitbox that originates at the player's position and travels in the
-// attack direction for a configurable distance. The direction is chosen at the moment
-// the attack button is pressed (see PlayerController.UseRightHand/UseLeftHand): the
-// aimed stick direction, or the last aimed direction if centered. On contact the hitbox knocks
-// the target back along its travel direction (AttackHitboxLogic).
-public class PlayerAttack : MonoBehaviour
+// Simulates a square hitbox that travels from the player's position in the attack
+// direction for a configurable distance. Fully driven by the deterministic rollback
+// tick (Tick(), called once per SimulateFrame from PlayerController) rather than a
+// coroutine, and resolved with a manual bounds check rather than a Physics2D trigger,
+// so both peers reach identical results from identical inputs — no ownership gating,
+// no reliance on Unity's async trigger-callback timing. Damage/knockback are applied
+// as direct local state changes (CharacterStats/EntityController already fall back to
+// local application when a rollback session is active).
+public class PlayerAttack : MonoBehaviour, ISnapshotable
 {
     [Header("Attack")]
     [SerializeField] private float attackCooldown = 0.6f;
@@ -31,75 +33,139 @@ public class PlayerAttack : MonoBehaviour
     [Range(0f, 1f)]
     [SerializeField] private float knockbackBounciness = 1f;
 
+    // ── Simulated state (snapshotted) ───────────────────────────────────────
     private float cooldownTimer;
+    private bool attackActive;
+    private Vector2 attackDirection;
+    private float attackTraveled;
+    private bool hasHitTarget;
+
     private BoxCollider2D playerCollider;
     private EntityController entityController;
-    private NetworkObject networkObject;
-    private static Sprite squareSprite;
+    private CharacterStats otherTarget;
 
-    private bool IsOwner => networkObject != null && networkObject.IsOwner;
+    // Cosmetic only — recreated from simulated state each tick, never snapshotted.
+    private GameObject visual;
+    private SpriteRenderer visualSprite;
+    private static Sprite squareSprite;
 
     private void Awake()
     {
         playerCollider = GetComponent<BoxCollider2D>();
         entityController = GetComponent<EntityController>();
-        networkObject = GetComponent<NetworkObject>();
-    }
-
-    private void Update()
-    {
-        if (cooldownTimer > 0f) cooldownTimer -= Time.deltaTime;
     }
 
     // Called on attack-button press with the resolved attack direction (current input, or
-    // last input if none is held). Fires immediately if not on cooldown.
+    // last input if none is held). Starts the swing immediately if not on cooldown.
     public void Attack(Vector2 direction)
     {
-        if (!IsOwner) return;
-        if (cooldownTimer > 0f) return;
+        if (cooldownTimer > 0f || attackActive) return;
         cooldownTimer = attackCooldown;
 
         Vector2 dir = direction.sqrMagnitude > 0.0001f
             ? direction.normalized
             : (entityController != null && entityController.IsFacingRight ? Vector2.right : Vector2.left);
 
-        StartCoroutine(RunHitbox(dir));
+        attackActive = true;
+        attackDirection = dir;
+        attackTraveled = 0f;
+        hasHitTarget = false;
     }
 
-    private IEnumerator RunHitbox(Vector2 dir)
+    // Advances the active swing (if any) by one fixed simulation step. Called every
+    // SimulateFrame tick — both for live simulation and rollback resimulation — so its
+    // outcome depends only on simulated state and Time.fixedDeltaTime, never real time.
+    public void Tick()
     {
-        Vector2 startCenter = playerCollider != null ? (Vector2)playerCollider.bounds.center : (Vector2)transform.position;
-        Vector2 playerSize = playerCollider != null ? (Vector2)playerCollider.bounds.size : Vector2.one;
-        Vector2 hitboxSize = playerSize * hitboxSizeScale;
+        if (cooldownTimer > 0f) cooldownTimer -= Time.fixedDeltaTime;
 
-        GameObject hitbox = new GameObject("AttackHitbox");
-        hitbox.transform.position = startCenter;
-        hitbox.transform.localScale = new Vector3(hitboxSize.x, hitboxSize.y, 1f);
-
-        SpriteRenderer sr = hitbox.AddComponent<SpriteRenderer>();
-        sr.sprite = GetSquareSprite();
-        sr.color = Color.red;
-        sr.sortingOrder = 10;
-
-        BoxCollider2D col = hitbox.AddComponent<BoxCollider2D>();
-        col.isTrigger = true;
-        col.size = Vector2.one;
-
-        AttackHitboxLogic logic = hitbox.AddComponent<AttackHitboxLogic>();
-        logic.Initialize(gameObject, attackDamage, knockbackPower, knockbackTime, knockbackBounces, knockbackBounciness, dir);
-
-        // Slide the hitbox outward from the player until it has covered hitboxDistance.
-        float traveled = 0f;
-        while (traveled < hitboxDistance && hitbox != null)
+        if (!attackActive)
         {
-            float step = hitboxSpeed * Time.deltaTime;
-            if (traveled + step > hitboxDistance) { step = hitboxDistance - traveled; }
-            hitbox.transform.position += (Vector3)(dir * step);
-            traveled += step;
-            yield return null;
+            SetVisualActive(false);
+            return;
         }
 
-        if (hitbox != null) Destroy(hitbox);
+        float step = hitboxSpeed * Time.fixedDeltaTime;
+        if (attackTraveled + step > hitboxDistance) { step = hitboxDistance - attackTraveled; }
+        attackTraveled += step;
+
+        Vector2 center = HitboxOrigin() + attackDirection * attackTraveled;
+
+        if (!hasHitTarget) { CheckHit(center); }
+
+        UpdateVisual(center);
+
+        if (attackTraveled >= hitboxDistance)
+        {
+            attackActive = false;
+            SetVisualActive(false);
+        }
+    }
+
+    private Vector2 HitboxOrigin() =>
+        playerCollider != null ? (Vector2)playerCollider.bounds.center : (Vector2)transform.position;
+
+    private void CheckHit(Vector2 center)
+    {
+        CharacterStats target = FindOtherTarget();
+        if (target == null) return;
+        BoxCollider2D targetCollider = target.GetComponent<BoxCollider2D>();
+        if (targetCollider == null) return;
+
+        Vector2 playerSize = playerCollider != null ? (Vector2)playerCollider.bounds.size : Vector2.one;
+        Vector2 hitboxSize = playerSize * hitboxSizeScale;
+        var hitboxBounds = new Bounds(center, hitboxSize);
+
+        if (!hitboxBounds.Intersects(targetCollider.bounds)) return;
+
+        hasHitTarget = true;
+        target.InflictDamage(attackDamage);
+        // Knockback travels in the direction the hitbox is moving; the target bounces off
+        // surfaces knockbackBounces times (law of reflection) before it recovers.
+        target.KnockbackDirectional(attackDirection, knockbackPower, knockbackTime, knockbackBounces, knockbackBounciness);
+    }
+
+    // Exactly one other player exists in the current 2-player co-op model — resolved
+    // once and cached rather than snapshotted (it's a fixed scene reference, not state).
+    private CharacterStats FindOtherTarget()
+    {
+        if (otherTarget != null) return otherTarget;
+        var all = FindObjectsByType<CharacterStats>(FindObjectsSortMode.None);
+        foreach (var cs in all)
+        {
+            if (cs.gameObject != gameObject) { otherTarget = cs; break; }
+        }
+        return otherTarget;
+    }
+
+    // ── Cosmetic hitbox visual ───────────────────────────────────────────────
+
+    private void UpdateVisual(Vector2 center)
+    {
+        EnsureVisual();
+        visual.transform.position = center;
+        Vector2 playerSize = playerCollider != null ? (Vector2)playerCollider.bounds.size : Vector2.one;
+        Vector2 hitboxSize = playerSize * hitboxSizeScale;
+        visual.transform.localScale = new Vector3(hitboxSize.x, hitboxSize.y, 1f);
+        SetVisualActive(true);
+    }
+
+    private void SetVisualActive(bool active)
+    {
+        if (visual == null) { if (!active) return; EnsureVisual(); }
+        if (visual.activeSelf != active) { visual.SetActive(active); }
+    }
+
+    private void EnsureVisual()
+    {
+        if (visual != null) return;
+        visual = new GameObject("AttackHitboxVisual");
+        visual.transform.SetParent(null);
+        visualSprite = visual.AddComponent<SpriteRenderer>();
+        visualSprite.sprite = GetSquareSprite();
+        visualSprite.color = Color.red;
+        visualSprite.sortingOrder = 10;
+        visual.SetActive(false);
     }
 
     private static Sprite GetSquareSprite()
@@ -110,5 +176,33 @@ public class PlayerAttack : MonoBehaviour
         tex.Apply();
         squareSprite = Sprite.Create(tex, new Rect(0, 0, 1, 1), Vector2.one * 0.5f, 1f);
         return squareSprite;
+    }
+
+    private void OnDestroy()
+    {
+        if (visual != null) { Destroy(visual); }
+    }
+
+    // ── ISnapshotable ─────────────────────────────────────────────────────
+
+    public void SaveState(BinaryWriter w)
+    {
+        w.Write(cooldownTimer);
+        w.Write(attackActive);
+        w.Write(attackDirection.x); w.Write(attackDirection.y);
+        w.Write(attackTraveled);
+        w.Write(hasHitTarget);
+    }
+
+    public void LoadState(BinaryReader r)
+    {
+        cooldownTimer    = r.ReadSingle();
+        attackActive     = r.ReadBoolean();
+        attackDirection  = new Vector2(r.ReadSingle(), r.ReadSingle());
+        attackTraveled   = r.ReadSingle();
+        hasHitTarget     = r.ReadBoolean();
+
+        if (attackActive) { UpdateVisual(HitboxOrigin() + attackDirection * attackTraveled); }
+        else { SetVisualActive(false); }
     }
 }
