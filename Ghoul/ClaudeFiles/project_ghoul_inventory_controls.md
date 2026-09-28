@@ -1,5 +1,5 @@
 ---
-name: project_ghoul_inventory_controls
+name: project-ghoul-inventory-controls
 description: Two-hand inventory + revised player controls added; pending Unity Editor wiring
 metadata: 
   node_type: memory
@@ -22,8 +22,8 @@ Revised player controls and added a two-hand inventory system (2026-07-28).
 **Editor wiring status:**
 1. DONE — `PlayerInventory` component added to `Assets/Prefabs/Player.prefab` by hand-editing the prefab YAML (fileID 4998877665544332211, script guid f45478ccd28d7ab4d9d83f76ed080a98). Unity had already imported the new scripts so the GUID existed.
 2. PENDING — set `handSlot` on weapon/item pickup prefabs so pickups route to the intended hand. (No item-pickup prefabs exist yet; nothing to set until they're created.)
-3. PauseMenu — built an Editor tool instead of blind YAML: `Assets/Scripts/Editor/PauseMenuSetup.cs` adds menu items **Tools/World/Setup Pause Menu** (creates PauseUI canvas + full-screen dim PausePanel + PAUSED/hint text, wires PauseMenu.pausePanel, ensures EventSystem) and **Tools/World/Ensure Player Inventory** (idempotent add of PlayerInventory to Player.prefab via EditPrefabContentsScope). USER MUST RUN "Tools/World/Setup Pause Menu" once in World_Main and Ctrl+S. OpenMenu FindObjectOfType-fallbacks to the PauseMenu, so no per-player wiring.
+3. PauseMenu — built an Editor tool instead of blind YAML: `Assets/Scripts/Editor/PauseMenuSetup.cs` adds menu items **Tools/World/Setup Pause Menu** (creates PauseUI canvas + full-screen dim PausePanel + PAUSED/hint text, wires PauseMenu.pausePanel, ensures EventSystem) and **Tools/World/Ensure Player Inventory** (idempotent add of PlayerInventory to Player.prefab via EditPrefabContentsScope). USER MUST RUN "Tools/World/Setup Pause Menu" once in World_Main and Ctrl+S. OpenMenu falls back to `FindAnyObjectByType<PauseMenu>()`, so no per-player wiring.
 
 Unity MCP unusable this session: server allows only ONE connection and `unity-relay-client` held the slot, so `claude-code` was denied ("revoked") even after Editor restart + relay disable + approving the client. Never bound. So compile-verification wasn't done via MCP — user should confirm the Console is clean.
 
-Related: [[project_ghoul_combat]] (PlayerAttack directional hitbox), [[project_ghoul_multiplayer]] (inventory not yet synced).
+Related: [[project-ghoul-combat]] (PlayerAttack directional hitbox), [[project-ghoul-multiplayer]] (inventory not yet synced), [[project-ghoul-rollback]] (inventory is not yet in the rollback snapshot; PauseMenu's `Time.timeScale` is unreviewed against it).

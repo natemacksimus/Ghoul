@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 // Run via  Tools > World > Setup Pause Menu
 // Builds a screen-overlay pause / map canvas in the active scene and wires it to the
 // PauseMenu component. PlayerController.OpenMenu (the Pause input action) toggles it via
-// FindObjectOfType at runtime, so no per-player reference wiring is needed.
+// FindAnyObjectByType at runtime, so no per-player reference wiring is needed.
 //
 // Also exposes  Tools > World > Ensure Player Inventory  to (re)add the PlayerInventory
 // component to Assets/Prefabs/Player.prefab, matching the project's other setup tools.

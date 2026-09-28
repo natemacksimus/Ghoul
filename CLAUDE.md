@@ -5,7 +5,7 @@ Detailed context files live in `Ghoul/ClaudeFiles/` and are committed to the rep
 Read these at the start of every session:
 
 - `Ghoul/ClaudeFiles/MEMORY.md` — index
-- `Ghoul/ClaudeFiles/project_ghoul_multiplayer.md` — NGO 2.1.1 co-op, client-authority model, Cinemachine 3.x
+- `Ghoul/ClaudeFiles/project_ghoul_multiplayer.md` — NGO 2.1.1 session layer, client-authority fallback, Cinemachine 3.x
 - `Ghoul/ClaudeFiles/project_ghoul_save_system.md` — 5-slot world save, host-authoritative, editor setup tool
 - `Ghoul/ClaudeFiles/project_ghoul_combat.md` — directional traveling hitbox + reflecting knockback
 - `Ghoul/ClaudeFiles/project_ghoul_inventory_controls.md` — two-hand inventory, stick-aimed use, tap/hold controls
@@ -18,8 +18,8 @@ Read these at the start of every session:
 Ghoul/                  ← Unity project root
   Assets/
     Scripts/
-      Characters/       ← EntityController, Controller2D, RaycastController, CharacterStats
-        Player/         ← PlayerController, PlayerInput, PlayerAttack, PlayerStats, PlayerCinemachineTarget, AttackHitboxLogic
+      Characters/       ← EntityController, Controller2D, RaycastController, CharacterStats, ItemGravity
+        Player/         ← PlayerController, PlayerInput, PlayerAttack, PlayerStats, PlayerCinemachineTarget, PlayerHealthBar
       Inventory/        ← PlayerInventory
         Items/          ← Item, ItemDefinition, TorchItem, TorchFlare
       Item Pickups/     ← ItemDrop
