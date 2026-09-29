@@ -4,4 +4,4 @@
 - [Ghoul Save System](project_ghoul_save_system.md) — world save system: MainMenu + 5 slots, host-authoritative JSON saves, networked world scenes, Tools/World/Setup Save System
 - [Ghoul Combat](project_ghoul_combat.md) — PlayerAttack: directional traveling hitbox + reflecting knockback, now folded into the rollback deterministic tick (no more IsOwner gate/coroutine/trigger)
 - [Ghoul Inventory & Controls](project_ghoul_inventory_controls.md) — two-hand inventory (3/hand), stick-aimed hand use, tap-cycle/hold-drop, hold-Interact pickup; pending Editor wiring
-- [Ghoul Rollback Netcode](project_ghoul_rollback.md) — deterministic input-sync rollback replacing CNT state sync; RollbackSession, InputCapture, ISnapshotable; 9 determinism rules + desync debugging recipe; Controller2D float migration pending
+- [Ghoul Rollback Netcode](project_ghoul_rollback.md) — deterministic input-sync rollback replacing CNT state sync; RollbackSession, InputCapture, ISnapshotable; 10 determinism rules (incl. max-prediction stall) + desync debugging recipe; Controller2D float migration pending

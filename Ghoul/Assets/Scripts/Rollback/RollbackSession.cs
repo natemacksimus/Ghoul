@@ -42,6 +42,14 @@ namespace Rollback
         [SerializeField] private int maxRollbackFrames = 30;
         [Tooltip("How many consecutive input frames to bundle per packet for loss recovery.")]
         [SerializeField] private int inputRedundancy = 3;
+        // Max-prediction stall (GGPO): never predict so far past the last confirmed remote
+        // frame that its real input would arrive outside the rollback window. Without this,
+        // a peer whose FixedUpdate stops (window drag, hitch, breakpoint, focus loss) falls
+        // permanently behind; every input it sends afterwards lands outside the other
+        // peer's FindEarliestMisprediction window and is never corrected. Stalling instead
+        // makes the peer that's ahead wait. Must be < maxRollbackFrames (clamped in Awake).
+        [Tooltip("Stall (don't advance) once this many frames past the newest confirmed remote frame. Must be below Max Rollback Frames so a late input is still inside the rollback window.")]
+        [SerializeField] private int maxPredictionFrames = 28;
 
         // ── Public state ─────────────────────────────────────────────────
         public bool IsSessionActive { get; private set; }
@@ -80,11 +88,18 @@ namespace Rollback
         private const string MsgName = "RB";
         private NetworkManager _nm;
 
+        // ── Stall tracking ────────────────────────────────────────────────
+        public bool IsStalled { get; private set; }
+        private int _stallTicks;
+
         // ── Unity lifecycle ───────────────────────────────────────────────
         private void Awake()
         {
             if (Instance != null && Instance != this) { Destroy(gameObject); return; }
             Instance = this;
+            // Frame ConfirmedFrame+1 must still be inside [CurrentFrame - maxRollbackFrames + 1, ...]
+            // when it arrives, which holds while CurrentFrame - (ConfirmedFrame + 1) < maxRollbackFrames - 1.
+            maxPredictionFrames = Mathf.Clamp(maxPredictionFrames, 1, maxRollbackFrames - 2);
         }
 
         private void OnDestroy()
@@ -116,6 +131,8 @@ namespace Rollback
             _snapshotables     = snapshotables;
             CurrentFrame       = 0;
             ConfirmedFrame     = -1;
+            IsStalled          = false;
+            _stallTicks        = 0;
 
             for (int i = 0; i < BufSize; i++) _remoteConfirmedFrame[i] = -1;
             Array.Clear(_snapshotValid, 0, BufSize);
@@ -144,6 +161,38 @@ namespace Rollback
 
         private void TickFrame()
         {
+            // 0. Max-prediction stall. Frames ahead of the newest confirmed remote frame are
+            // all speculative; once that gap reaches maxPredictionFrames, advancing further
+            // would push the oldest unconfirmed frame out of the rollback window. Hold here
+            // until the remote catches up. This also absorbs start-up skew (one peer calling
+            // StartSession before the other).
+            if (CurrentFrame - (ConfirmedFrame + 1) >= maxPredictionFrames)
+            {
+                if (!IsStalled)
+                {
+                    IsStalled = true;
+                    Debug.Log($"[Rollback] Stalling at frame {CurrentFrame} (confirmed {ConfirmedFrame}) — waiting for remote.");
+                }
+                _stallTicks++;
+
+                // Keep correcting with whatever has arrived, and keep resending our newest
+                // inputs: if our last packets were lost while the remote is also stalled,
+                // this redundancy is the only thing that lets it advance.
+                int stallRollbackTo = FindEarliestMisprediction();
+                if (stallRollbackTo >= 0) { PerformRollback(stallRollbackTo); }
+                if (CurrentFrame > 0) { SendInputToRemote(CurrentFrame - 1, _localInputs[(CurrentFrame - 1) % BufSize]); }
+
+                // InputCapture is not drained, so presses made during the stall apply to
+                // the next simulated frame instead of being lost.
+                return;
+            }
+            if (IsStalled)
+            {
+                IsStalled = false;
+                Debug.Log($"[Rollback] Resumed at frame {CurrentFrame} after {_stallTicks} stalled ticks.");
+                _stallTicks = 0;
+            }
+
             int frame = CurrentFrame;
 
             // 1. Gather local input and send to remote.

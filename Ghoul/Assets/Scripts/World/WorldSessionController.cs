@@ -58,6 +58,8 @@ public class WorldSessionController : MonoBehaviour
             nm.OnClientStopped += OnClientStopped;
             nm.OnServerStopped += OnServerStopped;
         }
+
+        Application.quitting += OnApplicationQuitting;
     }
 
     private void OnDisable()
@@ -70,7 +72,13 @@ public class WorldSessionController : MonoBehaviour
             nm.OnClientStopped -= OnClientStopped;
             nm.OnServerStopped -= OnServerStopped;
         }
+
+        Application.quitting -= OnApplicationQuitting;
     }
+
+    // Quitting the app (or exiting Play mode in the Editor) shuts NGO down too, which
+    // raises OnClientStopped. That's not a dropped connection, so don't try to reconnect.
+    private void OnApplicationQuitting() => intentionalExit = true;
 
     // Hook this to the world scene's "Exit World" button.
     public void ExitWorld()

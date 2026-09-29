@@ -17,7 +17,7 @@ Revised player controls and added a two-hand inventory system (2026-07-28).
 - `TorchItem.cs` (: Item) + `TorchFlare.cs` — Torch's `UseItemAbility` override spawns a procedural warm radial-glow burst at the player that expands+fades then self-destroys (no lighting package / sprite asset needed). Demonstrates a real non-weapon item ability via left-hand use.
 - `PlayerController.cs` — Move captures raw left-stick vector (`moveVectorRaw`) → aims right hand; `AimInput` captures raw right-stick (`aimVectorRaw`) → aims left hand. `UseRightHand`/`UseLeftHand` use that hand's active item (weapon or empty → `PlayerAttack.Attack(dir)`; non-weapon → `Item.UseItemAbility`). Inventory buttons: tap = cycle, hold (`inventoryDropHoldTime` 0.4s) = drop active. `Interact` (hold) picks up nearby item into its `handSlot` hand, else calls `InteractableObjects.InteractWithObject()`. `OpenMenu` toggles a `PauseMenu`. Has `[RequireComponent(typeof(PlayerInventory))]`.
 - `PlayerInput.cs` — Aim/UseLeft/UseRight rewired; InventoryLeft/Right now subscribe started+canceled (for tap-vs-hold).
-- `Assets/Scripts/UI/PauseMenu.cs` — new. Toggles a panel GameObject + Time.timeScale.
+- `Assets/Scripts/UI/PauseMenu.cs` — new. Toggles a panel GameObject; freezes Time.timeScale offline only (during a rollback session it blocks gameplay input via `InputCapture.SetInputBlocked` instead).
 
 **Editor wiring status:**
 1. DONE — `PlayerInventory` component added to `Assets/Prefabs/Player.prefab` by hand-editing the prefab YAML (fileID 4998877665544332211, script guid f45478ccd28d7ab4d9d83f76ed080a98). Unity had already imported the new scripts so the GUID existed.
@@ -26,4 +26,4 @@ Revised player controls and added a two-hand inventory system (2026-07-28).
 
 Unity MCP unusable this session: server allows only ONE connection and `unity-relay-client` held the slot, so `claude-code` was denied ("revoked") even after Editor restart + relay disable + approving the client. Never bound. So compile-verification wasn't done via MCP — user should confirm the Console is clean.
 
-Related: [[project-ghoul-combat]] (PlayerAttack directional hitbox), [[project-ghoul-multiplayer]] (inventory not yet synced), [[project-ghoul-rollback]] (inventory is not yet in the rollback snapshot; PauseMenu's `Time.timeScale` is unreviewed against it).
+Related: [[project-ghoul-combat]] (PlayerAttack directional hitbox), [[project-ghoul-multiplayer]] (inventory not yet synced), [[project-ghoul-rollback]] (inventory is not yet in the rollback snapshot; PauseMenu is an overlay only during rollback sessions, not a time freeze).
