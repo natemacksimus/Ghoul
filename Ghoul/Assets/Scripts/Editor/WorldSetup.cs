@@ -171,12 +171,17 @@ public static class WorldSetup
         start.transform.position = new Vector3(0f, 0f, 0f);
         start.AddComponent<WorldStartPoint>();
 
-        // UI: Exit World button + join-code text.
+        // UI: Exit World button + join-code text + Copy button.
         EnsureEventSystem();
         GameObject canvasGO = MakeCanvas("WorldUI");
 
+        // Copy button hugs the top-left corner (x 10..80); the code text starts right after it (x 88..258).
+        GameObject copyGO = MakeButton("CopyCodeButton", canvasGO, "Copy", out Button copyButton, out Text copyLabel);
+        Anchor(copyGO, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(70f, 28f), new Vector2(45f, -24f));
+        copyLabel.fontSize = 14;
+
         GameObject codeGO = MakeText("JoinCodeText", canvasGO, "", 18, TextAnchor.MiddleLeft);
-        Anchor(codeGO, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(220f, 30f), new Vector2(120f, -24f));
+        Anchor(codeGO, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(170f, 30f), new Vector2(173f, -24f));
         codeGO.GetComponent<Text>().color = new Color(0.8f, 0.95f, 1f);
 
         GameObject exitGO = MakeButton("ExitWorldButton", canvasGO, "Exit World", out Button exitButton, out _);
@@ -196,6 +201,7 @@ public static class WorldSetup
         SerializedObject soCtrl = new SerializedObject(controller);
         soCtrl.FindProperty("joinCodeText").objectReferenceValue = codeGO.GetComponent<Text>();
         soCtrl.FindProperty("exitButton").objectReferenceValue = exitButton;
+        SetProp(soCtrl, "copyCodeButton", copyButton);
         SetProp(soCtrl, "reconnectingOverlay", overlayGO);
         SetProp(soCtrl, "reconnectingLabel", overlayLabelGO.GetComponent<Text>());
         soCtrl.ApplyModifiedProperties();
@@ -337,8 +343,9 @@ public static class WorldSetup
         GameObject joinLabel = MakeText("JoinLabel", canvasGO, "Join a friend's world:", 14, TextAnchor.MiddleCenter);
         Anchor(joinLabel, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(300f, 20f), new Vector2(0f, 120f));
 
+        // Input (x -215..-15), Join (x -5..85), Paste Code (x 95..215) — centered as a group.
         GameObject inputGO = RectChild("JoinCodeInput", canvasGO);
-        Anchor(inputGO, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(200f, 36f), new Vector2(-70f, 80f));
+        Anchor(inputGO, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(200f, 36f), new Vector2(-115f, 80f));
         inputGO.AddComponent<Image>().color = new Color(1f, 1f, 1f, 0.9f);
         InputField joinInput = inputGO.AddComponent<InputField>();
         GameObject inputText = MakeText("Text", inputGO, "", 18, TextAnchor.MiddleLeft);
@@ -347,7 +354,10 @@ public static class WorldSetup
         joinInput.textComponent = inputText.GetComponent<Text>();
 
         GameObject joinBtnGO = MakeButton("JoinButton", canvasGO, "Join", out Button joinButton, out _);
-        Anchor(joinBtnGO, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(90f, 36f), new Vector2(85f, 80f));
+        Anchor(joinBtnGO, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(90f, 36f), new Vector2(40f, 80f));
+
+        GameObject pasteBtnGO = MakeButton("PasteJoinButton", canvasGO, "Paste Code", out Button pasteJoinButton, out _);
+        Anchor(pasteBtnGO, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(120f, 36f), new Vector2(155f, 80f));
 
         // Code display (hidden until hosting) + status
         GameObject codeDisplay = RectChild("CodeDisplay", canvasGO);
@@ -370,6 +380,7 @@ public static class WorldSetup
         SetArray(so, "slotDeleteButtons", slotDelete);
         SetProp(so, "joinCodeInput", joinInput);
         SetProp(so, "joinButton", joinButton);
+        SetProp(so, "pasteJoinButton", pasteJoinButton);
         SetProp(so, "quitButton", quitButton);
         SetProp(so, "codeDisplay", codeDisplay);
         SetProp(so, "codeText", codeText.GetComponent<Text>());

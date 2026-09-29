@@ -19,6 +19,8 @@ public class WorldSessionController : MonoBehaviour
 {
     [SerializeField] private string mainMenuScene = "MainMenu";
     [SerializeField] private Text joinCodeText;   // host-only: shows the shareable code
+    [SerializeField] private Button copyCodeButton; // host-only: copies the code to the system clipboard
+    [SerializeField] private float copiedFeedbackSeconds = 1.5f;
     [SerializeField] private Button exitButton;   // "Exit World"
 
     [Header("Reconnect (client only)")]
@@ -31,17 +33,55 @@ public class WorldSessionController : MonoBehaviour
     private bool reconnecting;
     private bool intentionalExit;  // set when the player deliberately leaves the world
 
+    private Text copyCodeLabel;
+    private string copyCodeLabelDefault;
+    private Coroutine copiedFeedback;
+
     private void Start()
     {
         if (reconnectingOverlay != null) { reconnectingOverlay.SetActive(false); }
 
-        // Show the join code to the host (clients have no code / aren't hosting).
+        // Show the join code (and its Copy button) to the host only — clients have no
+        // code / aren't hosting.
+        bool isHost = GameSession.HasInstance && GameSession.Instance.IsHostingWorld;
+        string code = GameSession.HasInstance ? GameSession.Instance.JoinCode : null;
+        bool showCode = isHost && !string.IsNullOrEmpty(code);
+
         if (joinCodeText != null)
         {
-            bool isHost = GameSession.HasInstance && GameSession.Instance.IsHostingWorld;
-            string code = GameSession.HasInstance ? GameSession.Instance.JoinCode : null;
-            joinCodeText.text = isHost && !string.IsNullOrEmpty(code) ? $"Code: {code}" : string.Empty;
+            joinCodeText.text = showCode ? $"Code: {code}" : string.Empty;
         }
+        if (copyCodeButton != null)
+        {
+            copyCodeButton.gameObject.SetActive(showCode);
+            copyCodeLabel = copyCodeButton.GetComponentInChildren<Text>();
+            if (copyCodeLabel != null) { copyCodeLabelDefault = copyCodeLabel.text; }
+        }
+    }
+
+    // Puts the bare join code (no "Code: " prefix) on the OS clipboard so it can be
+    // pasted into Discord, a browser, etc.
+    public void CopyJoinCode()
+    {
+        string code = GameSession.HasInstance ? GameSession.Instance.JoinCode : null;
+        if (string.IsNullOrEmpty(code)) { return; }
+
+        GUIUtility.systemCopyBuffer = code;
+
+        if (copyCodeLabel != null)
+        {
+            if (copiedFeedback != null) { StopCoroutine(copiedFeedback); }
+            copiedFeedback = StartCoroutine(ShowCopiedFeedback());
+        }
+    }
+
+    // Realtime wait so the label still resets if the offline pause menu has frozen timeScale.
+    private System.Collections.IEnumerator ShowCopiedFeedback()
+    {
+        copyCodeLabel.text = "Copied!";
+        yield return new WaitForSecondsRealtime(copiedFeedbackSeconds);
+        copyCodeLabel.text = copyCodeLabelDefault;
+        copiedFeedback = null;
     }
 
     private void OnEnable()
@@ -50,6 +90,11 @@ public class WorldSessionController : MonoBehaviour
         {
             exitButton.onClick.RemoveListener(ExitWorld);
             exitButton.onClick.AddListener(ExitWorld);
+        }
+        if (copyCodeButton != null)
+        {
+            copyCodeButton.onClick.RemoveListener(CopyJoinCode);
+            copyCodeButton.onClick.AddListener(CopyJoinCode);
         }
 
         NetworkManager nm = NetworkManager.Singleton;
@@ -65,6 +110,7 @@ public class WorldSessionController : MonoBehaviour
     private void OnDisable()
     {
         if (exitButton != null) { exitButton.onClick.RemoveListener(ExitWorld); }
+        if (copyCodeButton != null) { copyCodeButton.onClick.RemoveListener(CopyJoinCode); }
 
         NetworkManager nm = NetworkManager.Singleton;
         if (nm != null)

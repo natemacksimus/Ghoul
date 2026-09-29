@@ -25,6 +25,7 @@ public class MainMenuUI : MonoBehaviour
     [Header("Join panel")]
     [SerializeField] private InputField joinCodeInput;
     [SerializeField] private Button joinButton;
+    [SerializeField] private Button pasteJoinButton;   // "Paste Code": join straight from the clipboard
 
     [Header("Quit")]
     [SerializeField] private Button quitButton;
@@ -45,6 +46,11 @@ public class MainMenuUI : MonoBehaviour
         {
             joinButton.onClick.RemoveAllListeners();
             joinButton.onClick.AddListener(() => _ = JoinWorld());
+        }
+        if (pasteJoinButton != null)
+        {
+            pasteJoinButton.onClick.RemoveAllListeners();
+            pasteJoinButton.onClick.AddListener(() => _ = PasteAndJoin());
         }
         if (quitButton != null)
         {
@@ -178,14 +184,53 @@ public class MainMenuUI : MonoBehaviour
     // Join a friend's world by code (client)
     // -------------------------------------------------------------------------
 
+    // Session join codes are short uppercase alphanumeric strings (6 chars in practice).
+    // Allow a little headroom on length so a future SDK change doesn't lock players out,
+    // while still rejecting whatever else happens to be on the clipboard (URLs, sentences).
+    private static readonly System.Text.RegularExpressions.Regex JoinCodePattern =
+        new System.Text.RegularExpressions.Regex("^[A-Z0-9]{6,12}$");
+
+    // Trims, uppercases, and strips an optional "Code:" label (as shown in the world HUD)
+    // and inner spaces/dashes. Returns null if the result isn't a valid join code.
+    private static string NormalizeJoinCode(string raw)
+    {
+        if (string.IsNullOrWhiteSpace(raw)) { return null; }
+        string code = raw.Trim().ToUpperInvariant();
+        if (code.StartsWith("CODE:")) { code = code.Substring(5); }
+        code = code.Replace(" ", string.Empty).Replace("-", string.Empty);
+        return JoinCodePattern.IsMatch(code) ? code : null;
+    }
+
+    private async Task PasteAndJoin()
+    {
+        if (busy) { return; }
+
+        string code = NormalizeJoinCode(GUIUtility.systemCopyBuffer);
+        if (code == null)
+        {
+            SetStatus("Clipboard doesn't contain a valid join code.");
+            return;
+        }
+
+        // Show what's being joined, then use the normal join path.
+        if (joinCodeInput != null) { joinCodeInput.text = code; }
+        await JoinWorld();
+    }
+
     private async Task JoinWorld()
     {
         if (busy) { return; }
 
-        string code = joinCodeInput != null ? joinCodeInput.text.Trim().ToUpper() : string.Empty;
-        if (string.IsNullOrEmpty(code))
+        string typed = joinCodeInput != null ? joinCodeInput.text : string.Empty;
+        if (string.IsNullOrWhiteSpace(typed))
         {
             SetStatus("Enter a join code first.");
+            return;
+        }
+        string code = NormalizeJoinCode(typed);
+        if (code == null)
+        {
+            SetStatus("That doesn't look like a join code (letters and numbers only).");
             return;
         }
 
@@ -219,6 +264,7 @@ public class MainMenuUI : MonoBehaviour
         if (slotPrimaryButtons != null) { foreach (Button b in slotPrimaryButtons) { if (b != null) { b.interactable = on; } } }
         if (slotDeleteButtons != null) { foreach (Button b in slotDeleteButtons) { if (b != null) { b.interactable = on; } } }
         if (joinButton != null) { joinButton.interactable = on; }
+        if (pasteJoinButton != null) { pasteJoinButton.interactable = on; }
     }
 
     private void SetStatus(string msg)

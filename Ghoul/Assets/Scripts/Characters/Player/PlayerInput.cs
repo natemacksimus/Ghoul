@@ -26,6 +26,21 @@ public class PlayerInput : MonoBehaviour
         }
     }
 
+    // Whether the mouse is over a UI element (e.g. the join-code Copy button), sampled
+    // each Update. Cached because the Input System warns if IsPointerOverGameObject is
+    // called from inside an input callback. Hand-use clicks over UI are ignored so
+    // clicking a button doesn't also swing.
+    private bool pointerOverUI;
+
+    private void Update()
+    {
+        var eventSystem = UnityEngine.EventSystems.EventSystem.current;
+        pointerOverUI = eventSystem != null && eventSystem.IsPointerOverGameObject();
+    }
+
+    private bool IsClickOnUI(InputAction.CallbackContext context) =>
+        pointerOverUI && context.control?.device is Pointer;
+
     #region PLAYER INPUT
     public InputSystem_Actions playerControls;
     private InputAction moveAction;
@@ -137,12 +152,14 @@ public class PlayerInput : MonoBehaviour
 
     private void UseLeftHand(InputAction.CallbackContext context)
     {
+        if (IsClickOnUI(context)) { return; }
         if (RollbackActive) { _capture?.OnUseLeft(); return; }
         playerController?.UseLeftHand(context);
     }
 
     private void UseRightHand(InputAction.CallbackContext context)
     {
+        if (IsClickOnUI(context)) { return; }
         if (RollbackActive) { _capture?.OnUseRight(); return; }
         playerController?.UseRightHand(context);
     }
