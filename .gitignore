@@ -5,11 +5,11 @@
 .utmp/
 /Ghoul/Library/
 /Ghoul/UserSettings/
-/[Tt]emp/
+/Ghoul/[Tt]emp/
 /[Oo]bj/
 /[Bb]uild/
 /[Bb]uilds/
-/[Ll]ogs/
+/Ghoul/[Ll]ogs/
 *.log
 
 # By default unity supports Blender asset imports, *.blend1 blender files do not need to be commited to version control.
