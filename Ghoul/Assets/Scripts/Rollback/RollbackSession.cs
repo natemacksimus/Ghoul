@@ -405,6 +405,14 @@ namespace Rollback
             using var ms = new MemoryStream(data);
             using var r  = new BinaryReader(ms);
             foreach (var s in _snapshotables) s.LoadState(r);
+
+            // LoadState moves transforms directly, but Physics2D.autoSyncTransforms is off, so
+            // collider bounds would still reflect the pre-rollback (future) positions until the
+            // next sync. The first resimulated step reads bounds before any Move() syncs them —
+            // PlayerAttack.Tick's hitbox origin/hit check and Controller2D.UpdateRaycastOrigins —
+            // so without this, hit detection and collisions (e.g. the knockback landing check)
+            // on the peer doing the rollback used stale geometry and diverged from the other peer.
+            Physics2D.SyncTransforms();
         }
 
         // ── Networking helpers ────────────────────────────────────────────
