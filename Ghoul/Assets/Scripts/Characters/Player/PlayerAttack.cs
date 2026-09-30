@@ -24,10 +24,11 @@ public class PlayerAttack : MonoBehaviour, ISnapshotable
     [SerializeField] private float hitboxSizeScale = 0.5f;
 
     [Header("Knockback")]
-    [Tooltip("Knockback speed applied to a hit target, in world units per second.")]
-    [SerializeField] private float knockbackPower = 30f;
-    [SerializeField] private float knockbackTime = 0.35f;
-    [Tooltip("How many times a knocked-back target reflects off surfaces before recovering.")]
+    [Tooltip("Initial (impulse) knockback speed given to a hit target, in world units per second. It then decays per the target's EntityController Knockback Decay Rate; total push distance ≈ power / decay rate.")]
+    [SerializeField] private float knockbackPower = 20f;
+    [Tooltip("Safety cap on knockback duration, in seconds. Normally the knockback ends earlier, when its speed decays below the target's Knockback Stop Speed.")]
+    [SerializeField] private float knockbackTime = 1f;
+    [Tooltip("How many times a knocked-back target bounces off walls, floors or ceilings (angle of reflection = angle of incidence). The next surface impact after that ends the knockback.")]
     [SerializeField] private int knockbackBounces = 1;
     [Tooltip("Fraction of speed kept after each bounce (1 = no energy loss, 0 = stops on impact).")]
     [Range(0f, 1f)]

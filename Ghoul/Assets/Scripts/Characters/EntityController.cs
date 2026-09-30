@@ -80,16 +80,31 @@ public abstract class EntityController : NetworkBehaviour, IKillable, ISnapshota
 
     [SerializeField] private float knockbackReduceFactor = 0.1f;
 
-    // Directional knockback (used by the redesigned PlayerAttack hitbox). While active
-    // the character is flung along knockbackVelocity and reflects off surfaces (angle of
-    // reflection = angle of incidence) up to knockbackBouncesRemaining times. This runs
-    // in parallel with the legacy horizontal knockback above without disturbing it.
+    // Directional knockback (used by the redesigned PlayerAttack hitbox). While active the
+    // character is flung along knockbackVelocity (the decaying impulse) plus
+    // knockbackFallVelocity (gravity, which builds up normally and is never decayed), so it
+    // arcs like a thrown object. It bounces off walls, floors and ceilings (angle of
+    // reflection = angle of incidence, using the real surface normal) up to
+    // knockbackBouncesRemaining times; the next impact after that ends it, as does the
+    // impulse decaying out. This runs in parallel with the legacy horizontal knockback
+    // above without disturbing it.
     [ShowOnly][SerializeField] protected bool directionalKnockback = false;
     public bool IsDirectionalKnockbackActive { get { return directionalKnockback; } }
 
     [ShowOnly][SerializeField] protected Vector2 knockbackVelocity = Vector2.zero;
+    [ShowOnly][SerializeField] protected float knockbackFallVelocity = 0f;   // gravity accumulated during the knockback
+    [ShowOnly][SerializeField] protected bool knockbackAirborne = false;     // left the ground during this knockback
     [ShowOnly][SerializeField] protected int knockbackBouncesRemaining = 0;
     [ShowOnly][SerializeField] protected float knockbackBounciness = 1f;  // speed retained per bounce (0..1)
+
+    // Directional knockback is an impulse: the hit sets the full velocity instantly, then it
+    // decays exponentially (v *= e^(-rate*dt) each step) so the push is sharp at impact and
+    // bleeds off quickly. Receiver-side, like drag, so the hit/RPC chain doesn't change;
+    // config only (same prefab on both rollback peers), not snapshotted.
+    [Tooltip("Exponential decay rate of knockback speed, per second. Higher = sharper, shorter push. Speed after t seconds = initial * e^(-rate * t).")]
+    [SerializeField] protected float knockbackDecayRate = 3f;
+    [Tooltip("Knockback ends once speed decays below this (world units/sec). The attack's knockback time is only a safety cap.")]
+    [SerializeField] protected float knockbackStopSpeed = 1.5f;
 
     // Syncs the owner's facing direction to all other clients.
     private NetworkVariable<bool> netFacingRight = new NetworkVariable<bool>(
@@ -197,59 +212,116 @@ public abstract class EntityController : NetworkBehaviour, IKillable, ISnapshota
         }
     }
 
-    // Drives a directional knockback for one physics step: reflects the velocity off any
-    // surface hit last frame (up to the allowed bounce count) then feeds the velocity to
-    // moveAmount so the normal Move() pipeline translates the character. PlayerController
-    // suppresses gravity/velocity-clamping while this is active so the flight stays
-    // straight between bounces and the reflection is clean.
+    // Drives a directional knockback for one physics step: handles surface impacts (bounce
+    // or end) from last frame's collisions, feeds impulse + fall velocity to moveAmount so
+    // the normal Move() pipeline translates the character, then decays the impulse for the
+    // next step (see knockbackDecayRate). Gravity is added separately by subclasses that
+    // have it (PlayerController → ApplyKnockbackGravity), in place of their normal gravity.
     protected void HandleDirectionalKnockback()
     {
         if (knockbackTimer <= 0f) { EndDirectionalKnockback(); return; }
         knockbackTimer -= Time.deltaTime;
 
-        // controller2D.collisions reflects last frame's Move. If we ran into a surface,
-        // bounce off it; once the configured bounces are spent, end the knockback.
-        Vector2 normal = GetCollisionNormal();
-        if (normal != Vector2.zero && Vector2.Dot(knockbackVelocity, normal) < 0f)
+        Vector2 total;
+
+        // controller2D.collisions describes last step's Move, and moveAmount still holds the
+        // exact velocity that Move used (impulse + fall + that step's gravity) — i.e. the
+        // velocity the character actually struck any surface with.
+        Controller2D.CollisionInfo c = controller2D != null ? controller2D.collisions : default;
+        Vector2 incoming = moveAmount;
+
+        if (!c.below) { knockbackAirborne = true; }
+
+        // Resting contact isn't an impact: a target still on the ground from a sideways or
+        // upward hit is just supported by it (gravity only pressed it into the floor), so it
+        // slides instead of bouncing. Landing after being airborne, or being knocked down
+        // into the floor it stands on, is an impact.
+        bool supported = c.below && !knockbackAirborne && knockbackVelocity.y >= 0f;
+        if (supported)
         {
-            if (knockbackBouncesRemaining > 0)
-            {
-                // Reflect (angle out = angle in), then scale the speed by bounciness so
-                // each bounce can lose energy. A value of 1 keeps the speed unchanged.
-                knockbackVelocity = Vector2.Reflect(knockbackVelocity, normal) * knockbackBounciness;
-                knockbackBouncesRemaining--;
-            }
-            else
+            knockbackFallVelocity = 0f;
+            if (incoming.y < 0f) { incoming.y = 0f; }  // drop the gravity press into the floor
+        }
+
+        Vector2 floorNormal = c.below ? SurfaceNormal(c.verticalHitNormal, Vector2.up)
+                            : c.above ? SurfaceNormal(c.verticalHitNormal, Vector2.down)
+                            : Vector2.zero;
+        Vector2 wallNormal  = c.left  ? SurfaceNormal(c.horizontalHitNormal, Vector2.right)
+                            : c.right ? SurfaceNormal(c.horizontalHitNormal, Vector2.left)
+                            : Vector2.zero;
+
+        // An impact = moving into a touched surface (velocity against its normal).
+        bool hitFloorOrCeiling = !supported && floorNormal != Vector2.zero && Vector2.Dot(incoming, floorNormal) < 0f;
+        bool hitWall = wallNormal != Vector2.zero && Vector2.Dot(incoming, wallNormal) < 0f;
+
+        if (hitFloorOrCeiling || hitWall)
+        {
+            // Out of bounces: the impact ends the knockback (landing, or stopping at a wall).
+            if (knockbackBouncesRemaining <= 0)
             {
                 EndDirectionalKnockback();
                 return;
             }
+
+            // Mirror the incoming velocity across the actual surface normal:
+            // Reflect(v, n) = v - 2(v·n)n keeps the tangential part and flips the normal part,
+            // so the angle of reflection equals the angle of incidence. A corner hit (floor or
+            // ceiling and wall in the same step) mirrors across both, like a ball into a corner,
+            // and counts as one bounce.
+            Vector2 reflected = incoming;
+            if (hitFloorOrCeiling) { reflected = Vector2.Reflect(reflected, floorNormal); }
+            if (hitWall) { reflected = Vector2.Reflect(reflected, wallNormal); }
+
+            // Bounciness scales speed only (1 = no loss), so the angle is unchanged. The
+            // reflected velocity becomes the new impulse; gravity builds again from zero.
+            knockbackVelocity = reflected * knockbackBounciness;
+            knockbackFallVelocity = 0f;
+            knockbackBouncesRemaining--;
+            total = knockbackVelocity;
+        }
+        else
+        {
+            total = knockbackVelocity + new Vector2(0f, knockbackFallVelocity);
         }
 
-        knockbackForce = knockbackVelocity;
-        moveAmount = knockbackVelocity;
+        knockbackForce = total;
+        moveAmount = total;
+
+        // Decay the impulse after moving, so the first step after the hit travels at full
+        // speed. Gravity's fall velocity is not decayed.
+        knockbackVelocity *= Mathf.Exp(-knockbackDecayRate * Time.deltaTime);
+        if (knockbackVelocity.sqrMagnitude < knockbackStopSpeed * knockbackStopSpeed)
+        {
+            // moveAmount keeps the current fall speed, so normal gravity continues seamlessly.
+            EndDirectionalKnockback();
+        }
     }
 
-    // Builds a surface normal from the controller's last collision result. Slopes carry a
-    // real normal; axis-aligned walls/floors/ceilings derive one from the collision flags.
-    private Vector2 GetCollisionNormal()
+    // Adds one step of gravity during a directional knockback. Called by subclasses with
+    // gravity (PlayerController) instead of their normal gravity step. It accumulates in
+    // knockbackFallVelocity, because HandleDirectionalKnockback rebuilds moveAmount from the
+    // knockback's own state each step, and is also applied to this step's moveAmount.
+    protected void ApplyKnockbackGravity(float gravityStep, float maxFallSpeed)
     {
-        if (controller2D == null) { return Vector2.zero; }
-        Controller2D.CollisionInfo c = controller2D.collisions;
-        if (c.slopeNormal != Vector2.zero) { return c.slopeNormal; }
+        knockbackFallVelocity += gravityStep;
+        if (knockbackFallVelocity < -maxFallSpeed) { knockbackFallVelocity = -maxFallSpeed; }
 
-        Vector2 n = Vector2.zero;
-        if (c.below) { n += Vector2.up; }
-        if (c.above) { n += Vector2.down; }
-        if (c.left)  { n += Vector2.right; }
-        if (c.right) { n += Vector2.left; }
-        return n == Vector2.zero ? Vector2.zero : n.normalized;
+        moveAmount.y += gravityStep;
+        if (moveAmount.y < -maxFallSpeed) { moveAmount.y = -maxFallSpeed; }
     }
+
+    // The real surface normal recorded by Controller2D's raycast (exact for flat ground,
+    // slopes and angled walls), normalized; falls back to the axis-aligned normal implied
+    // by the collision flag if none was recorded.
+    private static Vector2 SurfaceNormal(Vector2 hitNormal, Vector2 fallback) =>
+        hitNormal.sqrMagnitude > 0.0001f ? hitNormal.normalized : fallback;
 
     private void EndDirectionalKnockback()
     {
         directionalKnockback = false;
         knockbackVelocity = Vector2.zero;
+        knockbackFallVelocity = 0f;
+        knockbackAirborne = false;
         knockbackBouncesRemaining = 0;
         if (isKnockbacked)
         {
@@ -299,6 +371,10 @@ public abstract class EntityController : NetworkBehaviour, IKillable, ISnapshota
         lockFacingDir = true;
         directionalKnockback = true;
         knockbackVelocity = velocity;
+        // The hit replaces the current motion; gravity builds up again from zero. A target
+        // hit in mid-air counts as airborne, so touching down ends the knockback.
+        knockbackFallVelocity = 0f;
+        knockbackAirborne = controller2D != null && !controller2D.collisions.below;
         knockbackBouncesRemaining = Mathf.Max(0, bounces);
         knockbackBounciness = Mathf.Clamp01(bounciness);
         knockbackTimer = knockbackTime;
@@ -504,6 +580,8 @@ public abstract class EntityController : NetworkBehaviour, IKillable, ISnapshota
         w.Write(knockbackVelocity.y);
         w.Write(knockbackBouncesRemaining);
         w.Write(knockbackBounciness);
+        w.Write(knockbackFallVelocity);
+        w.Write(knockbackAirborne);
 
         // Air tracking
         w.Write(airTime);
@@ -528,6 +606,8 @@ public abstract class EntityController : NetworkBehaviour, IKillable, ISnapshota
         w.Write(c.moveAmountOld.x); w.Write(c.moveAmountOld.y);
         w.Write(c.faceDir);
         w.Write(c.fallingThroughPlatform);
+        w.Write(c.horizontalHitNormal.x); w.Write(c.horizontalHitNormal.y);
+        w.Write(c.verticalHitNormal.x);   w.Write(c.verticalHitNormal.y);
     }
 
     public virtual void LoadState(BinaryReader r)
@@ -575,6 +655,8 @@ public abstract class EntityController : NetworkBehaviour, IKillable, ISnapshota
         knockbackVelocity         = new Vector2(r.ReadSingle(), r.ReadSingle());
         knockbackBouncesRemaining = r.ReadInt32();
         knockbackBounciness       = r.ReadSingle();
+        knockbackFallVelocity     = r.ReadSingle();
+        knockbackAirborne         = r.ReadBoolean();
 
         // Air tracking
         airTime      = r.ReadSingle();
@@ -595,5 +677,7 @@ public abstract class EntityController : NetworkBehaviour, IKillable, ISnapshota
         controller2D.collisions.moveAmountOld = new Vector2(r.ReadSingle(), r.ReadSingle());
         controller2D.collisions.faceDir       = r.ReadInt32();
         controller2D.collisions.fallingThroughPlatform = r.ReadBoolean();
+        controller2D.collisions.horizontalHitNormal = new Vector2(r.ReadSingle(), r.ReadSingle());
+        controller2D.collisions.verticalHitNormal   = new Vector2(r.ReadSingle(), r.ReadSingle());
     }
 }

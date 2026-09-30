@@ -875,10 +875,16 @@ public class PlayerController : EntityController, IRollbackSimulated
             //moveAmount.x = horzVelocity;
         }
 
-        // While being flung by a directional knockback, the knockback owns moveAmount
-        // (both axes) so the flight stays straight and reflects cleanly — skip gravity
-        // and the terminal-velocity clamp entirely.
-        if (!directionalKnockback)
+        // While being flung by a directional knockback, the knockback owns moveAmount and
+        // rebuilds it each step, so gravity goes into the knockback's own fall velocity
+        // instead (same gravity, fall multiplier and terminal velocity as normal) — the
+        // flight arcs rather than moving in a straight line.
+        if (directionalKnockback)
+        {
+            float gravityThisStep = moveAmount.y < 0f ? gravity * fallGravityMultiplier : gravity;
+            ApplyKnockbackGravity(gravityThisStep, fallAmountMax);
+        }
+        else
         {
             if (!onLadder)
             {
@@ -902,15 +908,18 @@ public class PlayerController : EntityController, IRollbackSimulated
     {
         //Debug.Log("player moveAmount.y: " + moveAmount.y);
 
+        // Animation-driven X overrides below are skipped during a directional knockback: the
+        // knockback owns moveAmount so the target stays on its trajectory until it ends.
+
         // Continue X velocity when moving in the air
-        if (continueMoveX)
+        if (continueMoveX && !directionalKnockback)
         {
             if (controller2D.collisions.below) { DisableContinueMoveX(); }
             else { moveAmount.x = lastXVelocity; }
         }
 
         // Zero X movement if on the ground when zeroMoveX is enabled
-        if (ZeroMoveX)
+        if (ZeroMoveX && !directionalKnockback)
         {
             if (controller2D.collisions.below) { moveAmount.x = 0; }
         }
@@ -919,7 +928,8 @@ public class PlayerController : EntityController, IRollbackSimulated
         controller2D.Move(moveAmount * Time.deltaTime, directionalInput, false, jumpPressed);
 
         // Don't zero vertical velocity on floor/ceiling contact during a directional
-        // knockback — the reflection logic reads and flips that velocity next frame.
+        // knockback — HandleDirectionalKnockback reads it next frame to detect landing and
+        // ceiling bounces, and resets the knockback's fall velocity itself while grounded.
         if (!directionalKnockback && (controller2D.collisions.above || controller2D.collisions.below))
         {
             moveAmount.y = 0;

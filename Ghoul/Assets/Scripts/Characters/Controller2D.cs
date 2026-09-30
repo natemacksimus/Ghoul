@@ -69,7 +69,11 @@ public class Controller2D : RaycastController
         // by either player, sees current geometry immediately.
         Physics2D.SyncTransforms();
 
-        if (standingOnPlatform) { collisions.below = true; }
+        if (standingOnPlatform)
+        {
+            collisions.below = true;
+            if (collisions.verticalHitNormal == Vector2.zero) { collisions.verticalHitNormal = Vector2.up; }
+        }
     }
     void HorizontalCollisions(ref Vector2 moveAmount)
     {
@@ -155,6 +159,7 @@ public class Controller2D : RaycastController
                         //if (gameObject.tag == "Impasse") { Debug.Log("collisions layer: " + touch.collider.gameObject.layer + "; left: " + (directionX == -1)) ; }
                         collisions.left = directionX == -1;  // if we hit something and directionX is -1, set collisions.left = true
                         collisions.right = directionX == 1;
+                        collisions.horizontalHitNormal = touch.normal;
                     }
                 }
             }
@@ -211,6 +216,7 @@ public class Controller2D : RaycastController
 
                     collisions.below = directionY == -1;
                     collisions.above = directionY == 1;
+                    collisions.verticalHitNormal = touch.normal;
                 }
             }
         }
@@ -235,6 +241,7 @@ public class Controller2D : RaycastController
                         moveAmount.x = (touch.distance - skinWidth) * directionX;
                         collisions.slopeAngle = slopeAngle;
                         collisions.slopeNormal = touch.normal;
+                        collisions.verticalHitNormal = touch.normal;
                     }
                 }
             }
@@ -253,6 +260,7 @@ public class Controller2D : RaycastController
             collisions.climbingSlope = true;
             collisions.slopeAngle = slopeAngle;
             collisions.slopeNormal = slopeNormal;
+            collisions.verticalHitNormal = slopeNormal;
         }
     }
 
@@ -332,6 +340,7 @@ public class Controller2D : RaycastController
                                 collisions.descendingSlope = true;
                                 collisions.below = true;
                                 collisions.slopeNormal = touch.normal; // was hit.normal
+                                collisions.verticalHitNormal = touch.normal;
                             }
                         }
                     }
@@ -375,6 +384,12 @@ public class Controller2D : RaycastController
         public int faceDir;
         public bool fallingThroughPlatform;
 
+        // Actual surface normals (from the raycast hit) of the surfaces touched during the
+        // last Move: a wall for left/right, the floor/slope/ceiling for below/above. Zero
+        // when not touching. Used to reflect knockbacks off the real surface angle.
+        public Vector2 horizontalHitNormal;
+        public Vector2 verticalHitNormal;
+
         public void Reset()
         {
             above = below = false;
@@ -383,6 +398,8 @@ public class Controller2D : RaycastController
             descendingSlope = false;
             slidingDownMaxSlope = false;
             slopeNormal = Vector2.zero;
+            horizontalHitNormal = Vector2.zero;
+            verticalHitNormal = Vector2.zero;
 
             slopeAngleOld = slopeAngle;
             slopeAngle = 0;

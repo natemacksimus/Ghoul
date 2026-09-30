@@ -110,18 +110,23 @@ MonoBehaviour:
   knockbackReduceFactor: 0.1
   directionalKnockback: 0
   knockbackVelocity: {x: 0, y: 0}
+  knockbackFallVelocity: 0
+  knockbackAirborne: 0
   knockbackBouncesRemaining: 0
   knockbackBounciness: 1
+  knockbackDecayRate: 2
+  knockbackStopSpeed: 1.5
   dodgeCooldownSet: 1
   dodgeCooldownTimer: 0
+  stickDeadzoneSqr: 0.04
+  inventoryDropHoldTime: 0.4
+  pauseMenu: {fileID: 0}
   accelerationTimeAirborne: 0.2
   accelerationTimeGrounded: 0.1
   accelerationStopping: 0.1
   accelerationTurning: 0.1
-  lookUpAmt: 0.8
-  lookDownAmt: 0.15
   fallAmountMax: 40
-  gravity: -3
+  gravity: -2
   fallGravityMultiplier: 1.5
   coyoteTime: 0.05
   jumpBuffer: 0.05
@@ -131,7 +136,6 @@ MonoBehaviour:
   airTimeMaxPos: {x: 0, y: 0}
   heightDrop: -0.87999964
   heightDropFromMax: -3.6399984
-  landingAnimThreshold: 5
   isAirborne: 0
   maxJumpYVelocity: 35
   minJumpYVelocity: 5
@@ -429,10 +433,10 @@ MonoBehaviour:
   hitboxDistance: 3
   hitboxSpeed: 20
   hitboxSizeScale: 0.5
-  knockbackPower: 10
-  knockbackTime: 0.25
+  knockbackPower: 30
+  knockbackTime: 1
   knockbackBounces: 1
-  knockbackBounciness: 1
+  knockbackBounciness: 0.65
 --- !u!114 &4743262705519157201
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -469,7 +473,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f45478ccd28d7ab4d9d83f76ed080a98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInventory
   startingCapacity: 3
   dropOffset: 0.6
