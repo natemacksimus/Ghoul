@@ -32,10 +32,52 @@ public class PlayerInput : MonoBehaviour
     // clicking a button doesn't also swing.
     private bool pointerOverUI;
 
+    // Mouse aiming: the left hand aims from the player toward the cursor. Aim's only
+    // binding is the gamepad right stick; a mouse's delta (movement since last frame) is
+    // not a direction to the cursor, and its pixel-sized components also got clamped to
+    // ±1 by RollbackInput.EncodeAxis, snapping every mouse aim toward a diagonal.
+    // The direction is computed locally (camera + cursor) and sent as ordinary aim input,
+    // so both rollback peers simulate the same vector. Mouse aim is active from the last
+    // mouse movement/click until the right stick is used again.
+    private bool mouseAimActive;
+    private Camera aimCamera;
+    private BoxCollider2D aimOriginCollider;
+
     private void Update()
     {
         var eventSystem = UnityEngine.EventSystems.EventSystem.current;
         pointerOverUI = eventSystem != null && eventSystem.IsPointerOverGameObject();
+
+        Mouse mouse = Mouse.current;
+        if (mouse != null && mouse.delta.ReadValue().sqrMagnitude > 0f) { mouseAimActive = true; }
+        if (mouseAimActive) { ApplyMouseAim(); }
+    }
+
+    // Unit vector from the player's collider center (where attacks originate) to the
+    // cursor's world position. Zero if there's no mouse/camera or the cursor is on the player.
+    private Vector2 GetMouseAimDirection()
+    {
+        Mouse mouse = Mouse.current;
+        if (mouse == null) { return Vector2.zero; }
+        if (aimCamera == null || !aimCamera.isActiveAndEnabled) { aimCamera = Camera.main; }
+        if (aimCamera == null) { return Vector2.zero; }
+        if (aimOriginCollider == null) { aimOriginCollider = GetComponent<BoxCollider2D>(); }
+
+        Vector3 origin = aimOriginCollider != null ? aimOriginCollider.bounds.center : transform.position;
+        Vector2 screen = mouse.position.ReadValue();
+        // Project onto the player's z plane (correct for both ortho and perspective cameras).
+        float depth = origin.z - aimCamera.transform.position.z;
+        Vector3 cursorWorld = aimCamera.ScreenToWorldPoint(new Vector3(screen.x, screen.y, depth));
+
+        Vector2 toCursor = (Vector2)(cursorWorld - origin);
+        return toCursor.sqrMagnitude > 0.0001f ? toCursor.normalized : Vector2.zero;
+    }
+
+    private void ApplyMouseAim()
+    {
+        Vector2 dir = GetMouseAimDirection();
+        if (RollbackActive) { _capture?.OnAim(dir); return; }
+        playerController?.SetAim(dir);
     }
 
     private bool IsClickOnUI(InputAction.CallbackContext context) =>
@@ -144,6 +186,8 @@ public class PlayerInput : MonoBehaviour
 
     private void AimInput(InputAction.CallbackContext context)
     {
+        // Only the gamepad right stick drives Aim now; using it hands aiming back from the mouse.
+        mouseAimActive = false;
         Vector2 v = aimAction.ReadValue<Vector2>();
         if (RollbackActive) { _capture?.OnAim(v); return; }
         if (playerController == null) return;
@@ -153,6 +197,10 @@ public class PlayerInput : MonoBehaviour
     private void UseLeftHand(InputAction.CallbackContext context)
     {
         if (IsClickOnUI(context)) { return; }
+        // A mouse click aims at the cursor right now — input callbacks run before Update,
+        // so without this the attack would use last frame's cursor direction.
+        if (context.control?.device is Mouse) { mouseAimActive = true; }
+        if (mouseAimActive) { ApplyMouseAim(); }
         if (RollbackActive) { _capture?.OnUseLeft(); return; }
         playerController?.UseLeftHand(context);
     }

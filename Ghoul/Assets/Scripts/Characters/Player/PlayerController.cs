@@ -625,9 +625,13 @@ public class PlayerController : EntityController, IRollbackSimulated
     }
 
     // Stores the raw right-stick vector used to aim left-hand attacks/items.
-    public void AimInput(InputAction aimAction)
+    public void AimInput(InputAction aimAction) => SetAim(aimAction.ReadValue<Vector2>());
+
+    // Sets the left-hand aim directly — used for mouse aiming, where PlayerInput computes
+    // a unit direction from the player toward the cursor instead of reading a stick.
+    public void SetAim(Vector2 aim)
     {
-        aimVectorRaw = aimAction.ReadValue<Vector2>();
+        aimVectorRaw = aim;
         if (aimVectorRaw.sqrMagnitude > stickDeadzoneSqr) { lastAimDir = aimVectorRaw; }
     }
 
