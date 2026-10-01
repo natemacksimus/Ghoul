@@ -24,9 +24,9 @@ public class PlayerAttack : MonoBehaviour, ISnapshotable
     [SerializeField] private float hitboxSizeScale = 0.5f;
 
     [Header("Knockback")]
-    [Tooltip("Initial (impulse) knockback speed given to a hit target, in world units per second. It then decays per the target's EntityController Knockback Decay Rate; total push distance ≈ power / decay rate.")]
-    [SerializeField] private float knockbackPower = 20f;
-    [Tooltip("Safety cap on knockback duration, in seconds. Normally the knockback ends earlier, when its speed decays below the target's Knockback Stop Speed.")]
+    // Whether a hit knocks back, and how hard, is decided by the target's PlayerStamina
+    // (its Knockback Force, scaled by the attacking weapon's Knockback Power Multiplier).
+    [Tooltip("Safety cap on knockback duration, in seconds (scaled by the weapon's Knockback Duration Multiplier). Normally the knockback ends earlier, when its speed decays below the target's Knockback Stop Speed.")]
     [SerializeField] private float knockbackTime = 1f;
     [Tooltip("How many times a knocked-back target bounces off walls, floors or ceilings (angle of reflection = angle of incidence). The next surface impact after that ends the knockback.")]
     [SerializeField] private int knockbackBounces = 1;
@@ -40,10 +40,14 @@ public class PlayerAttack : MonoBehaviour, ISnapshotable
     private Vector2 attackDirection;
     private float attackTraveled;
     private bool hasHitTarget;
+    private float weaponKnockbackPowerMul = 1f;     // from the weapon that started this swing
+    private float weaponKnockbackDurationMul = 1f;
 
     private BoxCollider2D playerCollider;
     private EntityController entityController;
+    private PlayerStamina stamina;
     private CharacterStats otherTarget;
+    private PlayerStamina otherTargetStamina;
 
     // Cosmetic only — recreated from simulated state each tick, never snapshotted.
     private GameObject visual;
@@ -54,14 +58,21 @@ public class PlayerAttack : MonoBehaviour, ISnapshotable
     {
         playerCollider = GetComponent<BoxCollider2D>();
         entityController = GetComponent<EntityController>();
+        stamina = GetComponent<PlayerStamina>();
     }
 
     // Called on attack-button press with the resolved attack direction (current input, or
-    // last input if none is held). Starts the swing immediately if not on cooldown.
-    public void Attack(Vector2 direction)
+    // last input if none is held) and the weapon in that hand (null = empty hand). Starts the
+    // swing immediately if not on cooldown and not stunned, and costs stamina.
+    public void Attack(Vector2 direction, Item weapon = null)
     {
         if (cooldownTimer > 0f || attackActive) return;
+        if (stamina != null && stamina.IsStunned) return;
         cooldownTimer = attackCooldown;
+        if (stamina != null) { stamina.OnAttack(); }
+
+        weaponKnockbackPowerMul = weapon != null ? weapon.knockbackPowerMultiplier : 1f;
+        weaponKnockbackDurationMul = weapon != null ? weapon.knockbackDurationMultiplier : 1f;
 
         Vector2 dir = direction.sqrMagnitude > 0.0001f
             ? direction.normalized
@@ -121,10 +132,24 @@ public class PlayerAttack : MonoBehaviour, ISnapshotable
 
         hasHitTarget = true;
         target.InflictDamage(attackDamage);
+
+        // The target's stamina (checked before this hit's cost) decides the reaction:
+        // damage only, knockback, or knockback + stun. A target without stamina is always
+        // knocked back, as before.
+        PlayerStamina.HitReaction reaction = otherTargetStamina != null
+            ? otherTargetStamina.OnHitTaken()
+            : PlayerStamina.HitReaction.Knockback;
+        if (reaction == PlayerStamina.HitReaction.None) return;
+
         // Knockback travels in the direction the hitbox is moving; the target bounces off
-        // surfaces knockbackBounces times (law of reflection) before it recovers.
-        target.KnockbackDirectional(attackDirection, knockbackPower, knockbackTime, knockbackBounces, knockbackBounciness);
+        // surfaces knockbackBounces times (law of reflection) before it recovers. Force comes
+        // from the target, scaled by this swing's weapon; the weapon also stretches duration.
+        float force = (otherTargetStamina != null ? otherTargetStamina.KnockbackForce : DefaultKnockbackForce) * weaponKnockbackPowerMul;
+        target.KnockbackDirectional(attackDirection, force, knockbackTime, knockbackBounces, knockbackBounciness, weaponKnockbackDurationMul);
     }
+
+    // Knockback force for a target that has no PlayerStamina (none exist today).
+    private const float DefaultKnockbackForce = 20f;
 
     // Exactly one other player exists in the current 2-player co-op model — resolved
     // once and cached rather than snapshotted (it's a fixed scene reference, not state).
@@ -136,6 +161,7 @@ public class PlayerAttack : MonoBehaviour, ISnapshotable
         {
             if (cs.gameObject != gameObject) { otherTarget = cs; break; }
         }
+        if (otherTarget != null) { otherTargetStamina = otherTarget.GetComponent<PlayerStamina>(); }
         return otherTarget;
     }
 
@@ -193,6 +219,8 @@ public class PlayerAttack : MonoBehaviour, ISnapshotable
         w.Write(attackDirection.x); w.Write(attackDirection.y);
         w.Write(attackTraveled);
         w.Write(hasHitTarget);
+        w.Write(weaponKnockbackPowerMul);
+        w.Write(weaponKnockbackDurationMul);
     }
 
     public void LoadState(BinaryReader r)
@@ -202,6 +230,8 @@ public class PlayerAttack : MonoBehaviour, ISnapshotable
         attackDirection  = new Vector2(r.ReadSingle(), r.ReadSingle());
         attackTraveled   = r.ReadSingle();
         hasHitTarget     = r.ReadBoolean();
+        weaponKnockbackPowerMul    = r.ReadSingle();
+        weaponKnockbackDurationMul = r.ReadSingle();
 
         if (attackActive) { UpdateVisual(HitboxOrigin() + attackDirection * attackTraveled); }
         else { SetVisualActive(false); }

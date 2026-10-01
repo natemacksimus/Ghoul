@@ -94,6 +94,7 @@ public abstract class EntityController : NetworkBehaviour, IKillable, ISnapshota
     [ShowOnly][SerializeField] protected Vector2 knockbackVelocity = Vector2.zero;
     [ShowOnly][SerializeField] protected float knockbackFallVelocity = 0f;   // gravity accumulated during the knockback
     [ShowOnly][SerializeField] protected bool knockbackAirborne = false;     // left the ground during this knockback
+    [ShowOnly][SerializeField] protected float knockbackDurationScale = 1f;  // from the attacking weapon; >1 = longer push
     [ShowOnly][SerializeField] protected int knockbackBouncesRemaining = 0;
     [ShowOnly][SerializeField] protected float knockbackBounciness = 1f;  // speed retained per bounce (0..1)
 
@@ -289,7 +290,7 @@ public abstract class EntityController : NetworkBehaviour, IKillable, ISnapshota
 
         // Decay the impulse after moving, so the first step after the hit travels at full
         // speed. Gravity's fall velocity is not decayed.
-        knockbackVelocity *= Mathf.Exp(-knockbackDecayRate * Time.deltaTime);
+        knockbackVelocity *= Mathf.Exp(-(knockbackDecayRate / knockbackDurationScale) * Time.deltaTime);
         if (knockbackVelocity.sqrMagnitude < knockbackStopSpeed * knockbackStopSpeed)
         {
             // moveAmount keeps the current fall speed, so normal gravity continues seamlessly.
@@ -322,6 +323,7 @@ public abstract class EntityController : NetworkBehaviour, IKillable, ISnapshota
         knockbackVelocity = Vector2.zero;
         knockbackFallVelocity = 0f;
         knockbackAirborne = false;
+        knockbackDurationScale = 1f;
         knockbackBouncesRemaining = 0;
         if (isKnockbacked)
         {
@@ -362,8 +364,10 @@ public abstract class EntityController : NetworkBehaviour, IKillable, ISnapshota
 
     // Entry point for the redesigned PlayerAttack knockback (routed here from
     // CharacterStats on the receiver's owning client). velocity is the full 2D fling
-    // velocity; bounces is how many times it may reflect off surfaces.
-    public virtual void ApplyDirectionalKnockback(Vector2 velocity, float knockbackTime, int bounces, float bounciness)
+    // velocity; bounces is how many times it may reflect off surfaces. durationScale (from the
+    // attacking weapon, 1 = normal) stretches how long the push lasts: the impulse decays at
+    // knockbackDecayRate / durationScale and the safety cap is scaled to match.
+    public virtual void ApplyDirectionalKnockback(Vector2 velocity, float knockbackTime, int bounces, float bounciness, float durationScale = 1f)
     {
         if (invincible) { return; }
 
@@ -377,7 +381,8 @@ public abstract class EntityController : NetworkBehaviour, IKillable, ISnapshota
         knockbackAirborne = controller2D != null && !controller2D.collisions.below;
         knockbackBouncesRemaining = Mathf.Max(0, bounces);
         knockbackBounciness = Mathf.Clamp01(bounciness);
-        knockbackTimer = knockbackTime;
+        knockbackDurationScale = Mathf.Max(0.01f, durationScale);
+        knockbackTimer = knockbackTime * knockbackDurationScale;
 
         DisableInputOn();
 
@@ -582,6 +587,7 @@ public abstract class EntityController : NetworkBehaviour, IKillable, ISnapshota
         w.Write(knockbackBounciness);
         w.Write(knockbackFallVelocity);
         w.Write(knockbackAirborne);
+        w.Write(knockbackDurationScale);
 
         // Air tracking
         w.Write(airTime);
@@ -657,6 +663,7 @@ public abstract class EntityController : NetworkBehaviour, IKillable, ISnapshota
         knockbackBounciness       = r.ReadSingle();
         knockbackFallVelocity     = r.ReadSingle();
         knockbackAirborne         = r.ReadBoolean();
+        knockbackDurationScale    = r.ReadSingle();
 
         // Air tracking
         airTime      = r.ReadSingle();

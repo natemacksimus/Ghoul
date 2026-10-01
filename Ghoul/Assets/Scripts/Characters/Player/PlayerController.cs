@@ -106,6 +106,8 @@ public class PlayerController : EntityController, IRollbackSimulated
 
     private PlayerStats playerStats;
     private PlayerAttack playerAttack;
+    private PlayerStamina playerStamina;
+    private bool IsStunned => playerStamina != null && playerStamina.IsStunned;
     //private PlayerInventory playerInventory;
     //[SerializeField] private CinemachineVirtualCamera virtualCamera;
     //private CinemachineFramingTransposer transposer;
@@ -150,6 +152,7 @@ public class PlayerController : EntityController, IRollbackSimulated
         animator = GetComponent<Animator>();
         playerStats = GetComponent<PlayerStats>();
         playerAttack = GetComponent<PlayerAttack>();
+        playerStamina = GetComponent<PlayerStamina>();
         playerInventory = GetComponent<PlayerInventory>();
 
 
@@ -209,12 +212,13 @@ public class PlayerController : EntityController, IRollbackSimulated
         if (attackRateTimer > 0) { attackRateTimer -= Time.fixedDeltaTime; }
 
         playerAttack?.Tick();
+        playerStamina?.Tick(Time.fixedDeltaTime);
         if (jumpBufferTimer > 0)
         {
             jumpBufferTimer -= Time.fixedDeltaTime;
 
 
-            if (controller2D.collisions.below) { AttemptJump(); }
+            if (controller2D.collisions.below && !IsStunned) { AttemptJump(); }
         }
 
         // Calculate HeightDrop for each fall
@@ -288,6 +292,9 @@ public class PlayerController : EntityController, IRollbackSimulated
         Vector2 aim = input.AimVector;
         aimVectorRaw = aim;
         if (aim.sqrMagnitude > stickDeadzoneSqr) lastAimDir = aim;
+
+        // Stunned (PlayerStamina): no movement and no actions until the stun wears off.
+        if (IsStunned) { directionalInput = Vector2.zero; return; }
 
         if (disableInput) return;
 
@@ -667,7 +674,8 @@ public class PlayerController : EntityController, IRollbackSimulated
             return;
         }
 
-        if (playerAttack != null) { playerAttack.Attack(direction); }
+        // active is the weapon in this hand, or null for an empty hand.
+        if (playerAttack != null) { playerAttack.Attack(direction, active); }
     }
 
     // Hold-to-pick-up (the Interact action has a Hold interaction): collect a nearby

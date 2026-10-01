@@ -26,4 +26,4 @@ Revised player controls and added a two-hand inventory system (2026-07-28).
 
 Unity MCP unusable this session: server allows only ONE connection and `unity-relay-client` held the slot, so `claude-code` was denied ("revoked") even after Editor restart + relay disable + approving the client. Never bound. So compile-verification wasn't done via MCP — user should confirm the Console is clean.
 
-Related: [[project-ghoul-combat]] (PlayerAttack directional hitbox), [[project-ghoul-multiplayer]] (inventory not yet synced), [[project-ghoul-rollback]] (inventory is not yet in the rollback snapshot; PauseMenu is an overlay only during rollback sessions, not a time freeze).
+Related: [[project-ghoul-combat]] (PlayerAttack directional hitbox), [[project-ghoul-multiplayer]] (inventory not yet synced), [[project-ghoul-stamina]] (weapon knockback multipliers read from inventory), [[project-ghoul-rollback]] (inventory is not yet in the rollback snapshot; PauseMenu is an overlay only during rollback sessions, not a time freeze).

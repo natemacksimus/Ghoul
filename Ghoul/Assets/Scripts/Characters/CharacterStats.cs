@@ -222,8 +222,9 @@ public abstract class CharacterStats : NetworkBehaviour, IDamageable, ISnapshota
     // direction it is travelling, a scalar power, and the number of surface bounces to
     // allow. Routed to the receiver's owning client (client-authority) exactly like
     // Knockback above, so the bounce physics simulate on the owner and sync via
-    // ClientNetworkTransform.
-    public void KnockbackDirectional(Vector2 direction, float power, float knockbackTimeReceived, int bounces, float bounciness)
+    // ClientNetworkTransform. durationScale (from the attacking weapon) stretches how long the
+    // push lasts — see EntityController.ApplyDirectionalKnockback.
+    public void KnockbackDirectional(Vector2 direction, float power, float knockbackTimeReceived, int bounces, float bounciness, float durationScale = 1f)
     {
         Vector2 dir = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
         Vector2 raw = dir * power;
@@ -238,38 +239,38 @@ public abstract class CharacterStats : NetworkBehaviour, IDamageable, ISnapshota
         // arrives out-of-band from the fixed simulation tick and would desync on rollback.
         if (RollbackSession.Instance != null && RollbackSession.Instance.IsSessionActive)
         {
-            if (characterController != null) { characterController.ApplyDirectionalKnockback(velocity, knockbackTimeReceived, bounces, bounciness); }
+            if (characterController != null) { characterController.ApplyDirectionalKnockback(velocity, knockbackTimeReceived, bounces, bounciness, durationScale); }
             return;
         }
 
         if (!IsSpawned)
         {
-            if (characterController != null) { characterController.ApplyDirectionalKnockback(velocity, knockbackTimeReceived, bounces, bounciness); }
+            if (characterController != null) { characterController.ApplyDirectionalKnockback(velocity, knockbackTimeReceived, bounces, bounciness, durationScale); }
             return;
         }
-        if (IsServer) { SendDirectionalKnockbackToOwner(velocity, knockbackTimeReceived, bounces, bounciness); }
-        else { KnockbackDirectionalServerRpc(velocity, knockbackTimeReceived, bounces, bounciness); }
+        if (IsServer) { SendDirectionalKnockbackToOwner(velocity, knockbackTimeReceived, bounces, bounciness, durationScale); }
+        else { KnockbackDirectionalServerRpc(velocity, knockbackTimeReceived, bounces, bounciness, durationScale); }
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void KnockbackDirectionalServerRpc(Vector2 velocity, float knockbackTime, int bounces, float bounciness)
+    private void KnockbackDirectionalServerRpc(Vector2 velocity, float knockbackTime, int bounces, float bounciness, float durationScale)
     {
-        SendDirectionalKnockbackToOwner(velocity, knockbackTime, bounces, bounciness);
+        SendDirectionalKnockbackToOwner(velocity, knockbackTime, bounces, bounciness, durationScale);
     }
 
-    private void SendDirectionalKnockbackToOwner(Vector2 velocity, float knockbackTime, int bounces, float bounciness)
+    private void SendDirectionalKnockbackToOwner(Vector2 velocity, float knockbackTime, int bounces, float bounciness, float durationScale)
     {
         ClientRpcParams rpcParams = new ClientRpcParams
         {
             Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { OwnerClientId } }
         };
-        ApplyDirectionalKnockbackClientRpc(velocity, knockbackTime, bounces, bounciness, rpcParams);
+        ApplyDirectionalKnockbackClientRpc(velocity, knockbackTime, bounces, bounciness, durationScale, rpcParams);
     }
 
     [ClientRpc]
-    private void ApplyDirectionalKnockbackClientRpc(Vector2 velocity, float knockbackTime, int bounces, float bounciness, ClientRpcParams rpcParams = default)
+    private void ApplyDirectionalKnockbackClientRpc(Vector2 velocity, float knockbackTime, int bounces, float bounciness, float durationScale, ClientRpcParams rpcParams = default)
     {
-        if (characterController != null) { characterController.ApplyDirectionalKnockback(velocity, knockbackTime, bounces, bounciness); }
+        if (characterController != null) { characterController.ApplyDirectionalKnockback(velocity, knockbackTime, bounces, bounciness, durationScale); }
     }
 
     // Triggered in animation clips

@@ -37,7 +37,11 @@ public class Item : MonoBehaviour, IDamageable
     [Header("Item Stats")]
     [Range(-999, 999)] public int itemDamage = 0;  // value when item is equipped
     [Range(-999, 999)] public int itemAttackRate = 0;
-    public Vector2 knockbackPower = Vector2.zero;
+    public Vector2 knockbackPower = Vector2.zero;  // legacy (old animation-driven knockback); the directional hit uses the multipliers below
+    [Tooltip("Weapon: multiplies the knockback force applied when a hit with this weapon knocks the target back (1 = target's normal Knockback Force).")]
+    [Min(0f)] public float knockbackPowerMultiplier = 1f;
+    [Tooltip("Weapon: stretches how long that knockback push lasts (1 = normal, 2 = twice as long).")]
+    [Min(0.01f)] public float knockbackDurationMultiplier = 1f;
     [Range(-999, 999)] public int healthPoints = 0;  // amt of health points to add/subtract from player health when consumed
     [Range(-999, 999)] public int hungerPoints = 0;  // amt of health points to add/subtract from player health when consumed
     [Range(-999, 999)] public int thirstPoints = 0;  // amt of health points to add/subtract from player health when consumed

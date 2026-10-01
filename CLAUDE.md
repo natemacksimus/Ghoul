@@ -10,6 +10,7 @@ Read these at the start of every session:
 - `Ghoul/ClaudeFiles/project_ghoul_combat.md` — directional traveling hitbox + reflecting knockback
 - `Ghoul/ClaudeFiles/project_ghoul_inventory_controls.md` — two-hand inventory, stick-aimed use, tap/hold controls
 - `Ghoul/ClaudeFiles/project_ghoul_rollback.md` — deterministic input-sync rollback netcode replacing CNT state sync
+- `Ghoul/ClaudeFiles/project_ghoul_stamina.md` — PlayerStamina drain/regen, stamina-gated knockback + stun, weapon knockback multipliers
 
 **Do NOT write memory to `~/.claude/projects/…`** — this project is worked on across multiple machines; all persistent context must be committed here in `Ghoul/ClaudeFiles/`.
 
@@ -19,7 +20,7 @@ Ghoul/                  ← Unity project root
   Assets/
     Scripts/
       Characters/       ← EntityController, Controller2D, RaycastController, CharacterStats, ItemGravity
-        Player/         ← PlayerController, PlayerInput, PlayerAttack, PlayerStats, PlayerCinemachineTarget, PlayerHealthBar
+        Player/         ← PlayerController, PlayerInput, PlayerAttack, PlayerStats, PlayerStamina, PlayerCinemachineTarget, PlayerHealthBar, PlayerStaminaBar
       Inventory/        ← PlayerInventory
         Items/          ← Item, ItemDefinition, TorchItem, TorchFlare
       Item Pickups/     ← ItemDrop
@@ -30,7 +31,7 @@ Ghoul/                  ← Unity project root
       Network/          ← PlayerSpawner, ClientNetworkTransform, NetworkManagerUI, PlayerColorSync
         Editor/         ← MultiplayerSceneSetup
       Rollback/         ← RollbackSession, RollbackSetup, InputCapture, RollbackInput, ISnapshotable, Fix64, FixVec2
-      UI/               ← MainMenuUI, PauseMenu
+      UI/               ← MainMenuUI, PauseMenu, WorldSpaceBar
       Editor/           ← WorldSetup, PauseMenuSetup, TestPickupSetup
       Utilities/        ← PersistentSingleton, ScreenFader, EventSys, ShowOnlyAttribute
   ClaudeFiles/          ← committed project memory (read on session start)
