@@ -12,6 +12,9 @@ using UnityEngine.UI;
 //     times (see Unity MPS "reconnect to a session"); only fall back to the main
 //     menu if every attempt fails.
 //   - A deliberate Exit (or the host going away) -> return to the main menu.
+//   - Host exits -> first tells every client (HostLeaving named message) so they leave
+//     immediately with a "host closed the world" notice instead of treating it as a
+//     dropped connection and retrying.
 //
 // Returning to the menu is funnelled through ReturnToMenu() with a guard so it
 // only happens once, even though host shutdown raises several callbacks.
@@ -29,9 +32,17 @@ public class WorldSessionController : MonoBehaviour
     [SerializeField] private GameObject reconnectingOverlay; // hidden until a drop
     [SerializeField] private Text reconnectingLabel;
 
+    [Header("Host leaving")]
+    [Tooltip("Seconds the host waits after telling clients it's leaving, so the message is sent before the network shuts down.")]
+    [SerializeField] private float hostLeaveNotifyDelay = 0.3f;
+
+    private const string HostLeavingMessage = "HostLeaving";
+
     private bool returning;
     private bool reconnecting;
+    private bool exiting;
     private bool intentionalExit;  // set when the player deliberately leaves the world
+    private bool hostLeavingHandlerRegistered;
 
     private Text copyCodeLabel;
     private string copyCodeLabelDefault;
@@ -102,6 +113,12 @@ public class WorldSessionController : MonoBehaviour
         {
             nm.OnClientStopped += OnClientStopped;
             nm.OnServerStopped += OnServerStopped;
+
+            if (nm.CustomMessagingManager != null)
+            {
+                nm.CustomMessagingManager.RegisterNamedMessageHandler(HostLeavingMessage, OnHostLeavingMessage);
+                hostLeavingHandlerRegistered = true;
+            }
         }
 
         Application.quitting += OnApplicationQuitting;
@@ -117,19 +134,33 @@ public class WorldSessionController : MonoBehaviour
         {
             nm.OnClientStopped -= OnClientStopped;
             nm.OnServerStopped -= OnServerStopped;
+
+            if (hostLeavingHandlerRegistered && nm.CustomMessagingManager != null)
+            {
+                nm.CustomMessagingManager.UnregisterNamedMessageHandler(HostLeavingMessage);
+            }
         }
+        hostLeavingHandlerRegistered = false;
 
         Application.quitting -= OnApplicationQuitting;
     }
 
     // Quitting the app (or exiting Play mode in the Editor) shuts NGO down too, which
     // raises OnClientStopped. That's not a dropped connection, so don't try to reconnect.
-    private void OnApplicationQuitting() => intentionalExit = true;
+    // A quitting host also tells clients it's leaving (best effort — no time to wait).
+    private void OnApplicationQuitting()
+    {
+        intentionalExit = true;
+        if (!exiting) { NotifyClientsHostLeaving(); }
+    }
 
     // Hook this to the world scene's "Exit World" button.
-    public void ExitWorld()
+    public void ExitWorld() => _ = ExitWorldAsync();
+
+    private async Task ExitWorldAsync()
     {
-        if (returning) { return; }
+        if (returning || exiting) { return; }
+        exiting = true;
 
         // Mark this as a deliberate leave so the resulting OnClientStopped doesn't
         // get mistaken for a dropped connection and trigger a reconnect.
@@ -140,6 +171,13 @@ public class WorldSessionController : MonoBehaviour
         {
             // Host owns the save — persist current world content before tearing down.
             SaveCurrentWorld();
+
+            // Tell clients first, and give the message time to go out before shutdown.
+            if (NotifyClientsHostLeaving())
+            {
+                await Task.Delay(TimeSpan.FromSeconds(Mathf.Max(0f, hostLeaveNotifyDelay)));
+                if (this == null) { return; }
+            }
         }
 
         if (RelayConnector.HasActiveSession || (nm != null && nm.IsListening))
@@ -147,6 +185,45 @@ public class WorldSessionController : MonoBehaviour
             // Leaving the session shuts NGO down, which raises OnClientStopped /
             // OnServerStopped, and ReturnToMenu runs from there.
             _ = RelayConnector.LeaveActiveSession();
+        }
+        else
+        {
+            ReturnToMenu();
+        }
+    }
+
+    // Host only: tells every connected client that the host is closing the world.
+    // Returns true if there was anyone to tell.
+    private bool NotifyClientsHostLeaving()
+    {
+        NetworkManager nm = NetworkManager.Singleton;
+        if (nm == null || !nm.IsServer || !nm.IsListening || nm.CustomMessagingManager == null) { return false; }
+
+        bool anyClient = false;
+        foreach (ulong id in nm.ConnectedClientsIds)
+        {
+            if (id != NetworkManager.ServerClientId) { anyClient = true; break; }
+        }
+        if (!anyClient) { return false; }
+
+        using var writer = new FastBufferWriter(1, Unity.Collections.Allocator.Temp);
+        writer.WriteValueSafe((byte)0);
+        nm.CustomMessagingManager.SendNamedMessageToAll(HostLeavingMessage, writer, NetworkDelivery.Reliable);
+        return true;
+    }
+
+    // Client: the host is closing the world — leave right away and go to the menu.
+    private void OnHostLeavingMessage(ulong senderId, FastBufferReader reader)
+    {
+        NetworkManager nm = NetworkManager.Singleton;
+        if (nm == null || nm.IsServer || returning) { return; }
+
+        intentionalExit = true;
+        if (GameSession.HasInstance) { GameSession.Instance.PendingMenuMessage = "The host closed the world."; }
+
+        if (RelayConnector.HasActiveSession || nm.IsListening)
+        {
+            _ = RelayConnector.LeaveActiveSession();   // OnClientStopped -> ReturnToMenu
         }
         else
         {
@@ -209,6 +286,7 @@ public class WorldSessionController : MonoBehaviour
 
         reconnecting = false;
         HideReconnecting();
+        if (GameSession.HasInstance) { GameSession.Instance.PendingMenuMessage = "Lost connection to the host."; }
         ReturnToMenu();
     }
 

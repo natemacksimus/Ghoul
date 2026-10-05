@@ -23,6 +23,17 @@ public class GameSession : PersistentSingleton<GameSession>
 
     public void SetJoinCode(string code) => JoinCode = code;
 
+    // A one-shot message for the main menu to show after returning from a world (e.g.
+    // "The host closed the world."). Survives Clear(); MainMenuUI consumes it.
+    public string PendingMenuMessage { get; set; }
+
+    public string ConsumeMenuMessage()
+    {
+        string msg = PendingMenuMessage;
+        PendingMenuMessage = null;
+        return msg;
+    }
+
     public void BeginHosting(WorldSaveData world, bool isNew)
     {
         ActiveWorld = world;

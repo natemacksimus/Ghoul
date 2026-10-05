@@ -58,6 +58,10 @@ public class MainMenuUI : MonoBehaviour
             quitButton.onClick.AddListener(QuitGame);
         }
         RefreshSlots();
+
+        // Explain why we're back at the menu, if the world sent us here (e.g. host left).
+        string message = GameSession.HasInstance ? GameSession.Instance.ConsumeMenuMessage() : null;
+        if (!string.IsNullOrEmpty(message)) { SetStatus(message); }
     }
 
     // -------------------------------------------------------------------------

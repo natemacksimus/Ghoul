@@ -27,7 +27,11 @@ public class PlayerSpawner : MonoBehaviour
     private int spawnCount;
 
     private bool worldSceneLoaded;
-    private bool sceneEventsHooked;
+    // The NetworkSceneManager we subscribed to. NGO replaces it on every start and has
+    // already discarded it by the time OnServerStopped fires, so track the instance
+    // itself (not a bool) — otherwise a stale "hooked" flag blocks re-subscribing and the
+    // next hosted world never spawns players.
+    private NetworkSceneManager hookedSceneManager;
 
     private static bool UseWorldFlow => GameSession.HasInstance && GameSession.Instance.ActiveWorld != null;
 
@@ -76,16 +80,17 @@ public class PlayerSpawner : MonoBehaviour
 
     private void HookSceneEvents()
     {
-        if (sceneEventsHooked || NetworkManager.Singleton.SceneManager == null) { return; }
-        NetworkManager.Singleton.SceneManager.OnLoadComplete += OnLoadComplete;
-        sceneEventsHooked = true;
+        NetworkSceneManager current = NetworkManager.Singleton.SceneManager;
+        if (current == null || current == hookedSceneManager) { return; }
+        UnhookSceneEvents();
+        current.OnLoadComplete += OnLoadComplete;
+        hookedSceneManager = current;
     }
 
     private void UnhookSceneEvents()
     {
-        if (!sceneEventsHooked || NetworkManager.Singleton == null || NetworkManager.Singleton.SceneManager == null) { return; }
-        NetworkManager.Singleton.SceneManager.OnLoadComplete -= OnLoadComplete;
-        sceneEventsHooked = false;
+        if (hookedSceneManager != null) { hookedSceneManager.OnLoadComplete -= OnLoadComplete; }
+        hookedSceneManager = null;
     }
 
     // World flow: each client (host included) gets a player once it finishes loading

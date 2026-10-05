@@ -15,7 +15,9 @@ public class WorldLoader : MonoBehaviour
     // The world setup tool populates this with a few sample NPCs/buildings/resources.
     [SerializeField] private WorldObjectRecord[] newWorldSeed;
 
-    private bool hooked;
+    // The NetworkSceneManager we subscribed to (see PlayerSpawner: NGO discards it before
+    // OnServerStopped, so a bool flag would get stuck and block re-subscribing next session).
+    private NetworkSceneManager hookedSceneManager;
 
     private void OnEnable()
     {
@@ -38,16 +40,17 @@ public class WorldLoader : MonoBehaviour
 
     private void HookSceneEvents()
     {
-        if (hooked || NetworkManager.Singleton == null || NetworkManager.Singleton.SceneManager == null) { return; }
-        NetworkManager.Singleton.SceneManager.OnLoadComplete += OnLoadComplete;
-        hooked = true;
+        NetworkSceneManager current = NetworkManager.Singleton != null ? NetworkManager.Singleton.SceneManager : null;
+        if (current == null || current == hookedSceneManager) { return; }
+        UnhookSceneEvents(false);
+        current.OnLoadComplete += OnLoadComplete;
+        hookedSceneManager = current;
     }
 
     private void UnhookSceneEvents(bool _)
     {
-        if (!hooked || NetworkManager.Singleton == null || NetworkManager.Singleton.SceneManager == null) { return; }
-        NetworkManager.Singleton.SceneManager.OnLoadComplete -= OnLoadComplete;
-        hooked = false;
+        if (hookedSceneManager != null) { hookedSceneManager.OnLoadComplete -= OnLoadComplete; }
+        hookedSceneManager = null;
     }
 
     // Fires once per client as each finishes loading a networked scene. We only act
