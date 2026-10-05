@@ -50,6 +50,17 @@ namespace Rollback
         // makes the peer that's ahead wait. Must be < maxRollbackFrames (clamped in Awake).
         [Tooltip("Stall (don't advance) once this many frames past the newest confirmed remote frame. Must be below Max Rollback Frames so a late input is still inside the rollback window.")]
         [SerializeField] private int maxPredictionFrames = 28;
+        // Frame-advantage time sync (GGPO). The two peers start their sessions at different
+        // moments (each starts when IT sees both players), so one runs permanently ahead.
+        // The peer ahead receives the other's inputs later relative to its own frame, so it
+        // predicts — and visibly corrects — the other player constantly, while the peer
+        // behind looks smooth. Each packet carries the sender's lead (CurrentFrame -
+        // ConfirmedFrame); the peer whose lead exceeds the remote's skips an occasional tick
+        // until both are even. A skew of S frames shows up as a lead difference of ~2S.
+        [Tooltip("Skip a tick when our lead exceeds the remote's by at least this many frames (lead difference ≈ 2 × frame skew).")]
+        [SerializeField] private int timeSyncThreshold = 3;
+        [Tooltip("Minimum ticks between time-sync skips, so the peer catching up slows gently rather than freezing.")]
+        [SerializeField] private int timeSyncInterval = 5;
 
         // ── Public state ─────────────────────────────────────────────────
         public bool IsSessionActive { get; private set; }
@@ -92,6 +103,12 @@ namespace Rollback
         public bool IsStalled { get; private set; }
         private int _stallTicks;
 
+        // ── Time sync ─────────────────────────────────────────────────────
+        private int _remoteLead;              // remote's CurrentFrame - ConfirmedFrame, from its newest packet
+        private int _remoteLeadFrame = -1;    // frame of the packet that carried _remoteLead (ignore older, reordered packets)
+        private int _timeSyncCooldown;
+        private int _timeSyncSkips;           // for the periodic log
+
         // ── Unity lifecycle ───────────────────────────────────────────────
         private void Awake()
         {
@@ -133,6 +150,10 @@ namespace Rollback
             ConfirmedFrame     = -1;
             IsStalled          = false;
             _stallTicks        = 0;
+            _remoteLead        = 0;
+            _remoteLeadFrame   = -1;
+            _timeSyncCooldown  = 0;
+            _timeSyncSkips     = 0;
 
             for (int i = 0; i < BufSize; i++) _remoteConfirmedFrame[i] = -1;
             Array.Clear(_snapshotValid, 0, BufSize);
@@ -193,6 +214,28 @@ namespace Rollback
                 _stallTicks = 0;
             }
 
+            // 0b. Time sync: if we're running ahead of the remote, skip this tick (spaced
+            // out by timeSyncInterval) so it catches up. Same handling as a stall — keep
+            // correcting and resending, don't drain InputCapture.
+            if (_timeSyncCooldown > 0) { _timeSyncCooldown--; }
+            else if (_remoteLeadFrame >= 0 && (CurrentFrame - ConfirmedFrame) - _remoteLead >= timeSyncThreshold)
+            {
+                _timeSyncCooldown = timeSyncInterval;
+                if (_timeSyncSkips++ == 0)
+                {
+                    Debug.Log($"[Rollback] Time sync: running ahead (local lead {CurrentFrame - ConfirmedFrame}, remote lead {_remoteLead}) — slowing down to let the remote catch up.");
+                }
+                int syncRollbackTo = FindEarliestMisprediction();
+                if (syncRollbackTo >= 0) { PerformRollback(syncRollbackTo); }
+                if (CurrentFrame > 0) { SendInputToRemote(CurrentFrame - 1, _localInputs[(CurrentFrame - 1) % BufSize]); }
+                return;
+            }
+            else if (_timeSyncSkips > 0 && (CurrentFrame - ConfirmedFrame) - _remoteLead < timeSyncThreshold)
+            {
+                Debug.Log($"[Rollback] Time sync: caught up after {_timeSyncSkips} skipped ticks.");
+                _timeSyncSkips = 0;
+            }
+
             int frame = CurrentFrame;
 
             // 1. Gather local input and send to remote.
@@ -231,12 +274,14 @@ namespace Rollback
 
             // Bundle the last inputRedundancy frames in case earlier packets were dropped.
             int count = Mathf.Min(inputRedundancy, frame + 1);
-            // Header: frame(4) + count(1) = 5 bytes; each input = 10 bytes.
-            int msgSize = 5 + count * 10;
+            // Header: frame(4) + count(1) + lead(2) = 7 bytes; each input = 10 bytes.
+            int msgSize = 7 + count * 10;
+            short lead = (short)Mathf.Clamp(CurrentFrame - ConfirmedFrame, short.MinValue, short.MaxValue);
 
             using var writer = new FastBufferWriter(msgSize, Unity.Collections.Allocator.Temp);
             writer.WriteValueSafe(frame);
             writer.WriteValueSafe((byte)count);
+            writer.WriteValueSafe(lead);   // for frame-advantage time sync
             for (int i = 0; i < count; i++)
             {
                 int f = frame - i;
@@ -254,6 +299,12 @@ namespace Rollback
         {
             reader.ReadValueSafe(out int latestFrame);
             reader.ReadValueSafe(out byte count);
+            reader.ReadValueSafe(out short lead);
+            if (latestFrame > _remoteLeadFrame)   // ignore leads from older, reordered packets
+            {
+                _remoteLead = lead;
+                _remoteLeadFrame = latestFrame;
+            }
 
             for (int i = 0; i < count; i++)
             {

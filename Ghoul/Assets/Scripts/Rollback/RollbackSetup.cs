@@ -31,7 +31,24 @@ namespace Rollback
 
         private void Start()
         {
-            StartCoroutine(WaitForPlayersAndStart());
+            StartCoroutine(RunSessions());
+        }
+
+        // Lives on the persistent NetworkManager, so it must start a fresh rollback session
+        // for EVERY pairing in this app run — a second world, or a client leaving and
+        // rejoining — not just the first. (Previously it ran once, so later sessions silently
+        // fell back to ClientNetworkTransform state sync.)
+        private IEnumerator RunSessions()
+        {
+            while (true)
+            {
+                yield return WaitForPlayersAndStart();
+
+                // Wait for this session to end (a player despawning calls StopSession), then
+                // loop to wait for the next pair of players.
+                while (RollbackSession.Instance != null && RollbackSession.Instance.IsSessionActive)
+                    yield return new WaitForSeconds(pollInterval);
+            }
         }
 
         private IEnumerator WaitForPlayersAndStart()
