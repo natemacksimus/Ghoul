@@ -6,3 +6,4 @@
 - [Ghoul Inventory & Controls](project_ghoul_inventory_controls.md) — two-hand inventory (3/hand), stick-aimed hand use, tap-cycle/hold-drop, hold-Interact pickup; pending Editor wiring
 - [Ghoul Rollback Netcode](project_ghoul_rollback.md) — deterministic input-sync rollback replacing CNT state sync; RollbackSession, InputCapture, ISnapshotable; 11 determinism rules (incl. max-prediction stall, sync after LoadSnapshot) + desync debugging recipe; Controller2D float migration pending
 - [Ghoul Stamina](project_ghoul_stamina.md) — PlayerStamina: hit/attack drain, regen delay, stamina-gated knockback/stun (deterministic stun roll), weapon knockback multipliers, stacked world-space bars
+- [Ghoul Player Visuals](project_ghoul_player_visuals.md) — gameplay root vs Visual child, Animator on root driven read-only by PlayerAnimator, animation rules that keep rollback deterministic

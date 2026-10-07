@@ -62,6 +62,20 @@ public abstract class CharacterStats : NetworkBehaviour, IDamageable, ISnapshota
         killable = GetComponent<IKillable>();
         characterController = GetComponent<EntityController>();
         audioSource = GetComponent<AudioSource>();
+        hasAnimationDriver = GetComponent<PlayerAnimator>() != null;
+    }
+
+    // True when a separate component (PlayerAnimator) drives this character's Animator from
+    // its simulated state each frame. Then hits/deaths must not fire triggers from here: in a
+    // rollback session this code runs inside the simulation, so a trigger would fire on
+    // mispredicted hits that get undone and again on every resimulated frame.
+    private bool hasAnimationDriver;
+
+    // Hit/death animation for characters without their own animation driver.
+    private void PlayHitAnimation(bool died)
+    {
+        if (animator == null || hasAnimationDriver) { return; }
+        animator.SetTrigger(died ? "die" : "damaged");
     }
 
     protected virtual void Update() { }
@@ -84,12 +98,12 @@ public abstract class CharacterStats : NetworkBehaviour, IDamageable, ISnapshota
         HealthChanged?.Invoke(currentHealth, maxHealth);
         if (next <= 0f && prev > 0f)
         {
-            if (animator != null) { animator.SetTrigger("die"); }
+            PlayHitAnimation(true);
             if (killable != null) { killable.Kill(); }
         }
         else if (next < prev)
         {
-            if (animator != null) { animator.SetTrigger("damaged"); }
+            PlayHitAnimation(false);
         }
         OnHealthChanged(prev, next);
     }
@@ -104,7 +118,7 @@ public abstract class CharacterStats : NetworkBehaviour, IDamageable, ISnapshota
             currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
             if (currentHealth <= 0)
             {
-                if (animator != null) { animator.SetTrigger("die"); }
+                PlayHitAnimation(true);
                 if (killable != null) { killable.Kill(); }
             }
             return;
@@ -134,12 +148,12 @@ public abstract class CharacterStats : NetworkBehaviour, IDamageable, ISnapshota
             HealthChanged?.Invoke(currentHealth, maxHealth);
             if (currentHealth <= 0f && characterController != null && !characterController.IsDead)
             {
-                if (animator != null) animator.SetTrigger("die");
+                PlayHitAnimation(true);
                 if (killable  != null) killable.Kill();
             }
             else if (damageTaken > 0f)
             {
-                if (animator != null) animator.SetTrigger("damaged");
+                PlayHitAnimation(false);
             }
             OnHealthChanged(currentHealth + damageTaken, currentHealth);
             return;
@@ -172,12 +186,12 @@ public abstract class CharacterStats : NetworkBehaviour, IDamageable, ISnapshota
         if (currentHealth <= 0)
         {
             currentHealth = 0;
-            if (animator != null) { animator.SetTrigger("die"); }
+            PlayHitAnimation(true);
             if (killable != null) { killable.Kill(); }
         }
         else
         {
-            if (animator != null) { animator.SetTrigger("damaged"); }
+            PlayHitAnimation(false);
         }
         HealthChanged?.Invoke(currentHealth, maxHealth);
     }

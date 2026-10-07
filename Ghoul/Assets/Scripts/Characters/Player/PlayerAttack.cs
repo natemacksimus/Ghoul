@@ -61,6 +61,9 @@ public class PlayerAttack : MonoBehaviour, ISnapshotable
         stamina = GetComponent<PlayerStamina>();
     }
 
+    // True while a swing's hitbox is travelling (read by PlayerAnimator; cosmetic use only).
+    public bool IsAttacking => attackActive;
+
     // Called on attack-button press with the resolved attack direction (current input, or
     // last input if none is held) and the weapon in that hand (null = empty hand). Starts the
     // swing immediately if not on cooldown and not stunned, and costs stamina.

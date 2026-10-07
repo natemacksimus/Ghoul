@@ -11,6 +11,7 @@ Read these at the start of every session:
 - `Ghoul/ClaudeFiles/project_ghoul_inventory_controls.md` — two-hand inventory, stick-aimed use, tap/hold controls
 - `Ghoul/ClaudeFiles/project_ghoul_rollback.md` — deterministic input-sync rollback netcode replacing CNT state sync
 - `Ghoul/ClaudeFiles/project_ghoul_stamina.md` — PlayerStamina drain/regen, stamina-gated knockback + stun, weapon knockback multipliers
+- `Ghoul/ClaudeFiles/project_ghoul_player_visuals.md` — player art/animation setup (Visual child, Animator + PlayerAnimator on root, cosmetic-only rules)
 
 **Do NOT write memory to `~/.claude/projects/…`** — this project is worked on across multiple machines; all persistent context must be committed here in `Ghoul/ClaudeFiles/`.
 
@@ -20,7 +21,7 @@ Ghoul/                  ← Unity project root
   Assets/
     Scripts/
       Characters/       ← EntityController, Controller2D, RaycastController, CharacterStats, ItemGravity
-        Player/         ← PlayerController, PlayerInput, PlayerAttack, PlayerStats, PlayerStamina, PlayerCinemachineTarget, PlayerHealthBar, PlayerStaminaBar
+        Player/         ← PlayerController, PlayerInput, PlayerAttack, PlayerStats, PlayerStamina, PlayerAnimator, PlayerCinemachineTarget, PlayerHealthBar, PlayerStaminaBar
       Inventory/        ← PlayerInventory
         Items/          ← Item, ItemDefinition, TorchItem, TorchFlare
       Item Pickups/     ← ItemDrop

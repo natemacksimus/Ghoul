@@ -37,7 +37,8 @@ public class PlayerColorSync : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        // The art lives on a child ("Visual") so the root keeps the gameplay collider/scale.
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         netColorIndex.OnValueChanged += OnColorIndexChanged;
         ApplyColor(netColorIndex.Value);
     }
